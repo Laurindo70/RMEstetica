@@ -3,18 +3,10 @@
 /** @type {typeof import('@adonisjs/lucid/src/Lucid/Model')} */
 const Model = use('Model')
 
-class User extends Model {
-   static boot() {
-      super.boot()
+class RotaApi extends Model {
 
-      this.addHook('beforeSave', async (userInstance) => {
-         if (userInstance.dirty.senha) {
-            userInstance.senha = await Hash.make(userInstance.senha)
-         }
-      })
-   }
    static get table() {
-      return 'usuario'
+      return 'rota_api'
    }
 
    static get createdAtColumn() {
@@ -28,6 +20,7 @@ class User extends Model {
    //static get primaryKey() {
       //return false
    //}
+
 }
 
-module.exports = User
+module.exports = RotaApi

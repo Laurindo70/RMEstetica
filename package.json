@@ -27,7 +27,6 @@
     "@adonisjs/vow": "^1.0.17",
     "pg": "^8.11.0"
   },
-  "devDependencies": {},
   "autoload": {
     "App": "./app"
   }
