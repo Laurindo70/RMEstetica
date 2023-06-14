@@ -1,5 +1,6 @@
+'use strict'
+
 const { test, trait } = use('Test/Suite')('Usuários')
-const User = use('App/Models/User')
 
 trait('Test/ApiClient')
 
@@ -27,10 +28,27 @@ test('Cadastro de usuários', async ({ client }) => {
     .end()
 
   response.assertStatus(200)
-  response.assertJSONSubset([{
+  response.assertJSONSubset({
     message: "Usuário cadastrado com sucesso."
-  }])
+  })
 })
+
+test('Login', async ({ client }) => {
+  const response = await client
+    .post('/login')
+    .send({
+      senha: "3214",
+      email_usuario: "teste@gmail.com"
+    })
+    .end()
+
+  response.assertStatus(200)
+  response.assertJSONSubset({
+    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c.",
+    nome_usuario: "teste"
+  })
+})
+
 
 test('Recuperando usuário', async ({ client }) => {
   const response = await client

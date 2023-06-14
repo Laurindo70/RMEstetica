@@ -1,5 +1,6 @@
-const { test, trait } = use('Test/Suite')('Usuários')
-const User = use('App/Models/User')
+'use strict'
+
+const { test, trait } = use('Test/Suite')('Rotas')
 
 trait('Test/ApiClient')
 
@@ -26,9 +27,9 @@ test('Cadastro de rotas da api', async ({ client }) => {
     .end()
 
   response.assertStatus(200)
-  response.assertJSONSubset([{
+  response.assertJSONSubset({
     message: "Rota cadastrada com sucesso."
-  }])
+  })
 })
 
 test('Lista de rotas do menu', async ({ client }) => {
@@ -55,7 +56,7 @@ test('Cadastro de rotas da api', async ({ client }) => {
     .end()
 
   response.assertStatus(200)
-  response.assertJSONSubset([{
+  response.assertJSONSubset({
     message: "Rota cadastrada com sucesso."
-  }])
+  })
 })

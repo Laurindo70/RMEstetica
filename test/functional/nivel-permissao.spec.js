@@ -1,7 +1,6 @@
 'use strict'
 
-const { test, trait } = use('Test/Suite')('Usuários')
-const User = use('App/Models/User')
+const { test, trait } = use('Test/Suite')('Nível Permissão')
 
 trait('Test/ApiClient')
 
@@ -29,7 +28,7 @@ test('Cadastro de nível de permissão', async ({ client }) => {
     .end()
 
   response.assertStatus(200)
-  response.assertJSONSubset([{
-    message: "Usuário cadastrado com sucesso."
-  }])
+  response.assertJSONSubset({
+    message: "Nível de permissão cadastrado com sucesso."
+  })
 })
