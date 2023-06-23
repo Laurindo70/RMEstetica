@@ -13,8 +13,7 @@ class NivelPermissaoController {
    async post({ request, response }){
       try {
          
-         const mensagemErro = msgCadastro;
-         const validacao = await validateAll(request.all(), camposCadastro, mensagemErro);
+         const validacao = await validateAll(request.all(), camposCadastro, msgCadastro);
 
          if(validacao.fails()){
             return response.status(417).send({ mensagem: validacao.messages() });
