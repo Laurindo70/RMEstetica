@@ -21,15 +21,15 @@ CREATE TABLE usuario(
 CREATE TABLE estabelecimento(
    id SERIAL PRIMARY KEY,
    nome_estabelecimento VARCHAR(150) NOT NULL,
-   endereco_bairro
-   endereco_numero
-   endereco_logradouro
-   endereco_nome_logradouro VARCHAR(150)
-   endereco_cidade VARCHAR(100)
-   endereco_estado VARCHAR(100)
+   endereco_bairro VARCHAR(255) NOT NULL,
+   endereco_numero INTEGER NOT NULL,
+   endereco_logradouro VARCHAR(150) NOT NULL,
+   endereco_nome_logradouro VARCHAR(150) NOT NULL,
+   endereco_cidade VARCHAR(100) NOT NULL,
+   endereco_estado VARCHAR(100) NOT NULL,
    endereco_complemento TEXT,
    endereco_cep CHAR(9),
-   ativo BOOLEAND DEFAULT TRUE,
+   ativo BOOLEAN DEFAULT TRUE,
    visivel_agendamento BOOLEAN NOT NULL,
    horario_abertura TIME NOT NULL,
    horario_fechamento_almoco TIME,

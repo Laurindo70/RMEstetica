@@ -37,6 +37,46 @@ class NivelPermissaoController {
       }
    }
 
+   async getById({ request, response, params }){
+      try {
+         
+         const permissao =  await Database
+         .table('nivel_permissao')
+         .where('id', params.id)
+         .first()
+
+         return response.status(201).send(permissao);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação." 
+            }
+         )
+      }
+   }
+
+   async getAll({ request, response, params }){
+      try {
+         
+         const permissao =  await Database
+         .table('nivel_permissao')
+
+         return response.status(201).send(permissao);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação." 
+            }
+         )
+      }
+   }
+
 }
 
 module.exports = NivelPermissaoController

@@ -7,3 +7,5 @@ Route.get('/', () => {
 });
 
 Route.post('/permissao', 'NivelPermissaoController.post');
+Route.get('/permissao/:id', 'NivelPermissaoController.getById');
+Route.get('/permissao', 'NivelPermissaoController.getAll');
