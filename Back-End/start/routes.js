@@ -15,3 +15,4 @@ Route.get('/permissao', 'NivelPermissaoController.getAll');
 /// --------------- Usuários --------------- 
 Route.post('/usuario', 'UsuarioController.post');
 Route.put('/usuario/:id', 'UsuarioController.put');
+Route.delete('/usuario/:id', 'UsuarioController.delete');

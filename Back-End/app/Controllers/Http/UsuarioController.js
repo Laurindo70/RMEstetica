@@ -91,6 +91,30 @@ class UsuarioController {
       }
    }
 
+   async delete({ request, response, params }){
+      try {
+
+         const usuarioAtualizado = await Database
+            .table('usuario')
+            .where('id', params.id)
+            .update({
+               ativo: false,
+               atualizado_em: new Date()
+            });
+
+         return response.status(200).send(usuarioAtualizado);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
 }
 
 module.exports = UsuarioController
