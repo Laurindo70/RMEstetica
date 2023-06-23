@@ -6,4 +6,10 @@ const camposCadastro = {
    cpf: 'max:14'
 };
 
-module.exports = { camposCadastro };
+const camposAtualizacao = {
+   nome_usuario: 'required',
+   nivel_permissao_id: 'required',
+   cpf: 'max:14'
+};
+
+module.exports = { camposCadastro, camposAtualizacao };

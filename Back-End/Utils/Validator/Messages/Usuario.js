@@ -7,4 +7,10 @@ const msgCadastro = {
    "cpf.max": "O cpf pode possuir no máximo 14 dígitos."
 };
 
-module.exports = { msgCadastro }
+const msgAtualizacao = {
+   "nome_usuario.required": "É necessario digitar o nome do usuário.",
+   "nivel_permissao_id.required": "É necessario selecionar o nível de permissão do usuário.",
+   "cpf.max": "O cpf pode possuir no máximo 14 dígitos."
+}
+
+module.exports = { msgCadastro, msgAtualizacao }
