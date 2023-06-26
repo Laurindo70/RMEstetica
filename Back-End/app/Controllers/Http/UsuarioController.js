@@ -115,6 +115,39 @@ class UsuarioController {
       }
    }
 
+   async login({ request, response, auth }){
+      try {
+         
+         const { email_usuario, senha } = request.all();
+
+         const permissao =  await Database
+         .table('usuario')
+         .where('email_usuario', email_usuario)
+         .first()
+
+         if (!permissao) {
+            return response.status(401).send({ mensagem: "Usuario não cadastrado." });
+         }
+
+         if (!permissao.ativo) {
+            return response.status(417).send({ mensagem: "Usuario inativado." });
+         }
+
+         const token = await auth.attempt(email_usuario, senha);
+
+         return response.status(200).send({ token: token.token, permissao });
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
 }
 
 module.exports = UsuarioController
