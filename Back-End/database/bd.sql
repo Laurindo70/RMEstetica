@@ -28,7 +28,7 @@ CREATE TABLE estabelecimento(
    endereco_cidade VARCHAR(100) NOT NULL,
    endereco_estado VARCHAR(100) NOT NULL,
    endereco_complemento TEXT,
-   endereco_cep CHAR(9),
+   endereco_cep CHAR(9) NOT NULL,
    ativo BOOLEAN DEFAULT TRUE,
    visivel_agendamento BOOLEAN NOT NULL,
    horario_abertura TIME NOT NULL,
