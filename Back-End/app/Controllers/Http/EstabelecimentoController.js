@@ -135,6 +135,36 @@ class EstabelecimentoController {
       }
    }
 
+   async delete({ request, response, params }){
+      try {
+
+         const validacaoCadastro = await Database.from('estabelecimento').where('id', '=', params.id);
+
+         if(validacaoCadastro.rows == 0){
+            return response.status(404).send({ mensagem: 'Estabelecimento não encontrado.' });
+         }
+
+         const estabelecimentoAtualizado = await Database
+            .table('estabelecimento')
+            .where('id', params.id)
+            .update({
+               ativo: false,
+               atualizado_em: new Date()
+            });
+
+         return response.status(200).send(estabelecimentoAtualizado);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
 }
 
 module.exports = EstabelecimentoController

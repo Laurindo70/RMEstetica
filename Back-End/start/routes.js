@@ -21,3 +21,4 @@ Route.delete('/usuario/:id', 'UsuarioController.delete');
 /// --------------- Estabelecimentos --------------- 
 Route.post('/estabelecimento', 'EstabelecimentoController.post');
 Route.put('/estabelecimento/:id', 'EstabelecimentoController.put');
+Route.delete('/estabelecimento/:id', 'EstabelecimentoController.delete');
