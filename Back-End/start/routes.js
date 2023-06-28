@@ -22,3 +22,4 @@ Route.delete('/usuario/:id', 'UsuarioController.delete');
 Route.post('/estabelecimento', 'EstabelecimentoController.post');
 Route.put('/estabelecimento/:id', 'EstabelecimentoController.put');
 Route.delete('/estabelecimento/:id', 'EstabelecimentoController.delete');
+Route.get('/estabelecimento/visivel-agendamento=:visivelAgendamento?', 'EstabelecimentoController.getAll');

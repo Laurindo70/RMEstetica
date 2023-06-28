@@ -165,6 +165,32 @@ class EstabelecimentoController {
       }
    }
 
+   async getAll({ request, response, params }){
+      try {
+
+         if(params.visivelAgendamento == null){
+            const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento').from('estabelecimento');
+            
+            return response.status(200).send(estabelecimentos);
+         }
+
+         const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento')
+            .from('estabelecimento')
+            .where('visivel_agendamento', '=', params.visivelAgendamento);
+
+         return response.status(200).send(estabelecimentos);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
 }
 
 module.exports = EstabelecimentoController
