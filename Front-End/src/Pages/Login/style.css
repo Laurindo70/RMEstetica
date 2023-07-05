@@ -1,0 +1,83 @@
+.main{
+   width: 100vw;
+   height: 100vh;
+   background: #FE9CCC;
+}
+
+.card-login{
+   height: 100%;
+   width: 40%;
+   color: #FE9CCC;
+   padding: 0px;
+   margin: 0;
+   float: left;
+   align-items: center;
+   justify-content: center;
+   display: flex;
+}
+
+.card{
+   height: 60%;
+   width: 80%;
+   border-radius: 20px;
+   background: #fff;
+   color: #A9335D;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: column;
+}
+
+.card h1{
+   font-size: xx-large;
+}
+
+.main-card {
+   height: 70%;
+   width: 80%;
+}
+
+.main-card form{
+   margin-top: 10%;
+}
+
+.main-card input{
+   margin-top: -80px;
+   outline: 0;
+   border: 0;
+   width: 100%;
+   background: rgba(254, 156, 204, 0.5);
+   border-bottom: solid #A9335D 2px;
+   margin: 0 0 15px;
+   padding: 5px;
+   box-sizing: border-box;
+   font-size: 14px;
+   text-align: left;
+   border-radius: 0 10px 0 0;
+}
+
+.card-footer{
+   margin-top: 10%;
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+}
+
+.card-footer button{
+   width: 30%;
+   height: 3vh;
+   background: #A9335D;
+   border: none;
+   font-weight: bold;
+   color: #fff;
+   border-radius: 5px;
+}
+
+.card-footer a {
+   margin-top: 3vh;
+   cursor: pointer;
+   font-weight: bold;
+   text-decoration: underline;
+}
