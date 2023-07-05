@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './style.css';
+import imagemInicio from '../../Images/Spring flower-pana.svg'
 
 function Login() {
    return (
@@ -25,7 +26,8 @@ function Login() {
             </div>
          </div>
          <div className="imagem-login">
-
+            <h1>Seja muito Bem-Vindo</h1>
+            <img src={imagemInicio}></img>
          </div>
       </div>
    )
