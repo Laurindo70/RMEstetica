@@ -38,6 +38,7 @@ background-size: cover;
 .main-card {
    height: 70%;
    width: 80%;
+   font-weight: bold;
 }
 
 .main-card form{
@@ -51,7 +52,7 @@ background-size: cover;
    width: 100%;
    background: rgba(254, 156, 204, 0.5);
    border-bottom: solid #A9335D 2px;
-   margin: 0 0 15px;
+   margin: 0 0 25px;
    padding: 5px;
    box-sizing: border-box;
    font-size: 14px;
@@ -78,7 +79,7 @@ background-size: cover;
    border-radius: 5px;
 }
 
-.card-footer a .link{
+.card-footer a {
    margin-top: 3vh;
    cursor: pointer;
    font-weight: bold;

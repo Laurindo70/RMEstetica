@@ -1,24 +1,13 @@
 import React, { useState } from 'react';
 import './style.css';
 import imagemInicio from '../../Images/Spring flower-pana.svg'
-import { useNavigate } from 'react-router-dom';
 
-function Login() {
-   const navigate = useNavigate();
-
-   function cadastroUser(){
-      navigate("/register-user");
-   }
-
-   function cadastroEstabelecimento(){
-      alert("Funcionando");
-   }
-
+function RegisterUser() {
    return (
       <div className="main">
          <div className="card-login">
             <div className="card">
-               <h1>Login</h1>
+               <h1>Cadastro Usuário</h1>
                <div className='main-card'>
                   <form>
                      <label>Email</label>
@@ -27,10 +16,14 @@ function Login() {
                      <label>Senha</label>
                      <input type="password" required />
 
+                     <label>Confirmar Senha</label>
+                     <input type="password" required />
+
+                     <label>CPF(Opcional)</label>
+                     <input type="password" required />
+
                      <div className='card-footer'>
-                        <button>Login</button>
-                        <a onClick={cadastroUser}>Inscrever-se</a>
-                        <a  onClick={cadastroEstabelecimento}>Cadastra Empresa</a>
+                        <button>Salvar</button>
                      </div>
                   </form>
                </div>
@@ -44,4 +37,4 @@ function Login() {
    )
 }
 
-export default Login;
+export default RegisterUser;
