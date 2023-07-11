@@ -11,7 +11,7 @@ function Login() {
    }
 
    function cadastroEstabelecimento(){
-      alert("Funcionando");
+      navigate("/register-estabelecimento");
    }
 
    return (
@@ -30,7 +30,7 @@ function Login() {
                      <div className='card-footer'>
                         <button>Login</button>
                         <a onClick={cadastroUser}>Inscrever-se</a>
-                        <a  onClick={cadastroEstabelecimento}>Cadastra Empresa</a>
+                        <a  onClick={cadastroEstabelecimento}>Cadastrar Empresa</a>
                      </div>
                   </form>
                </div>
