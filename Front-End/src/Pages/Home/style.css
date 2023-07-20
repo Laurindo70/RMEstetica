@@ -1,0 +1,33 @@
+.main-home {
+   min-height: 100vh;
+}
+
+.botao-sair {
+   background: #FE9CCC;
+   color: #fff;
+   border: none;
+}
+
+.header-home {
+   box-shadow: 5px 5px 5px #1E1E1E;
+   padding: 0;
+   background: #fff;
+}
+
+.opcao-sair {
+   margin-right: 5%;
+   display: inline;
+   float: right;
+}
+
+.opcoes {
+   background: #FE9CCC;
+   color: #fff;
+}
+
+.home-main {
+   margin: 24px 16px;
+   padding: 24px;
+   min-height: 280;
+   background: #fff;
+}

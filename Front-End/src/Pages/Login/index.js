@@ -1,36 +1,88 @@
 import React, { useState } from 'react';
 import './style.css';
+import { message, notification } from 'antd';
 import imagemInicio from '../../Images/Spring flower-pana.svg'
 import { useNavigate } from 'react-router-dom';
+import api from '../../Utils/api';
 
 function Login() {
    const navigate = useNavigate();
+   const [messageApi, contextHolder] = message.useMessage();
+   const [apiNot, contextHolderNot] = notification.useNotification();
 
-   function cadastroUser(){
+   const [email_usuario, setEmail_usuario] = useState('');
+   const [senha, setSenha] = useState('');
+
+   function cadastroUser() {
       navigate("/register-user");
    }
 
-   function cadastroEstabelecimento(){
+   function cadastroEstabelecimento() {
       navigate("/register-estabelecimento");
+   }
+
+   async function entrar(e) {
+      console.log({ email_usuario, senha });
+      e.preventDefault();
+      messageApi.open({
+         type: 'loading',
+         content: 'Carregando...',
+         duration: 0,
+      });
+
+      try {
+
+         await api.post('/login', { email_usuario, senha }).then(
+            (response) => {
+               localStorage.setItem('TokenRm', `bearer ${response.data.token}`);
+               localStorage.setItem('NomeRm', `${response.data.permissao.nome_usuario}`);
+               messageApi.destroy();
+               console.log(response.data);
+               navigate("/home");
+            }
+         )
+
+      } catch (error) {
+         if (error.response.status === 401) {
+            messageApi.destroy();
+            apiNot.error({
+               message: `Não foi possível realizar o login.`,
+               description: error.response.data.mensagem,
+               placement: 'top',
+            });
+
+            setSenha('');
+         } else {
+            messageApi.destroy();
+            apiNot.error({
+               message: `Não foi possível realizar o login.`,
+               description: 'Erro no sistema.',
+               placement: 'top',
+            });
+         }
+      }
+
    }
 
    return (
       <div className="main">
          <div className="card-login">
+            {contextHolderNot}
+            {contextHolder}
             <div className="card">
                <h1>Login</h1>
                <div className='main-card'>
-                  <form>
+                  <form onSubmit={entrar}>
                      <label>Email</label>
-                     <input type="email" required />
+                     <input type="email" value={email_usuario} onChange={e => setEmail_usuario(e.target.value)} required />
 
                      <label>Senha</label>
-                     <input type="password" required />
+                     <input type="password" value={senha} onChange={e => setSenha(e.target.value)} required />
 
                      <div className='card-footer'>
                         <button>Login</button>
                         <a onClick={cadastroUser}>Inscrever-se</a>
-                        <a  onClick={cadastroEstabelecimento}>Cadastrar Empresa</a>
+                        <a onClick={cadastroEstabelecimento}>Cadastrar Empresa</a>
                      </div>
                   </form>
                </div>
