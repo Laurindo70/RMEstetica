@@ -20,7 +20,7 @@ background-size: cover;
 }
 
 .card{
-   height: 60%;
+   height: auto;
    width: 80%;
    border-radius: 20px;
    background: #fff;
@@ -32,6 +32,7 @@ background-size: cover;
 }
 
 .card h1{
+   margin-top: 3%;
    font-size: xx-large;
 }
 
@@ -89,6 +90,21 @@ background-size: cover;
 }
 
 .main-card input{
+   margin-top: -80px;
+   outline: 0;
+   border: 0;
+   width: 100%;
+   background: rgba(254, 156, 204, 0.5);
+   border-bottom: solid #A9335D 2px;
+   margin: 0 0 15px;
+   padding: 5px;
+   box-sizing: border-box;
+   font-size: 14px;
+   text-align: left;
+   border-radius: 0 10px 0 0;
+}
+
+.main-card textarea{
    margin-top: -80px;
    outline: 0;
    border: 0;
@@ -178,6 +194,7 @@ background-size: cover;
 
 .card-footer-empresa{
    margin-top: 5%;
+   margin-bottom: 5%;
    width: 100%;
    display: flex;
    align-items: right;

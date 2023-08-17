@@ -16,10 +16,11 @@ Route.get('/permissao', 'NivelPermissaoController.getAll');
 Route.post('/usuario', 'UsuarioController.post');
 Route.post('/login', 'UsuarioController.login');
 Route.put('/usuario/:id', 'UsuarioController.put');
+Route.get('/usuario/:nome?', 'UsuarioController.get');
 Route.delete('/usuario/:id', 'UsuarioController.delete');
 
 /// --------------- Estabelecimentos --------------- 
 Route.post('/estabelecimento', 'EstabelecimentoController.post');
 Route.put('/estabelecimento/:id', 'EstabelecimentoController.put');
 Route.delete('/estabelecimento/:id', 'EstabelecimentoController.delete');
-Route.get('/estabelecimento/visivel-agendamento=:visivelAgendamento?', 'EstabelecimentoController.getAll');
+Route.get('/estabelecimento/nome=:nome?', 'EstabelecimentoController.getAll');

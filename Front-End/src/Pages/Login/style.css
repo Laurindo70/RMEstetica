@@ -68,6 +68,7 @@ background-size: cover;
    align-items: center;
    justify-content: center;
    flex-direction: column;
+   margin-bottom: 5%;
 }
 
 .card-footer button{

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './style.css';
 import { message, notification } from 'antd';
-import imagemInicio from '../../Images/Spring flower-pana.svg'
+import imagemInicio from '../../Images/Spring flower-pana.svg';
 import { useNavigate } from 'react-router-dom';
 import api from '../../Utils/api';
 
@@ -22,7 +22,6 @@ function Login() {
    }
 
    async function entrar(e) {
-      console.log({ email_usuario, senha });
       e.preventDefault();
       messageApi.open({
          type: 'loading',
@@ -37,7 +36,6 @@ function Login() {
                localStorage.setItem('TokenRm', `bearer ${response.data.token}`);
                localStorage.setItem('NomeRm', `${response.data.permissao.nome_usuario}`);
                messageApi.destroy();
-               console.log(response.data);
                navigate("/home");
             }
          )

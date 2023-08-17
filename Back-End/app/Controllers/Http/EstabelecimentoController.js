@@ -168,15 +168,15 @@ class EstabelecimentoController {
    async getAll({ request, response, params }){
       try {
 
-         if(params.visivelAgendamento == null){
-            const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento').from('estabelecimento');
+         if(params.nome == null){
+            const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo as situacao', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento').from('estabelecimento');
             
             return response.status(200).send(estabelecimentos);
          }
 
-         const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento')
+         const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo as situacao', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento')
             .from('estabelecimento')
-            .where('visivel_agendamento', '=', params.visivelAgendamento);
+            .where('nome_estabelecimento', 'ILIKE', `%${params.nome}%`);
 
          return response.status(200).send(estabelecimentos);
 

@@ -1,25 +1,72 @@
 import React, { useState } from 'react';
 import { Switch } from 'antd';
 import './style.css';
-import imagemInicio from '../../Images/Spring flower-pana.svg'
+import imagemInicio from '../../Images/Spring flower-pana.svg';
+import { useNavigate } from 'react-router-dom';
+import api from '../../Utils/api';
 
 
 function RegisterEstabelecimento() {
+   const navigate = useNavigate();
 
    const [tab, setTab] = useState(0);
+   const [nomeEstabelecimento, setNomeEstabelecimento] = useState('');
+   const [enderecoBairro, setEnderecoBairro] = useState('');
+   const [enderecoNumero, setEnderecoNumero] = useState(0);
+   const [enderecoLogradouro, setEnderecoLogradouro] = useState('');
+   const [enderecoNomeLogradouro, setEnderecoNomeLogradouro] = useState('');
+   const [enderecoCidade, setEnderecoCidade] = useState('');
+   const [enderecoEstado, setEnderecoEstado] = useState('');
+   const [enderecoCep, setEnderecoCep] = useState('');
+   const [visivelAgendamento, setVisivelAgendamento] = useState(true);
+   const [horarioAbertura, setHorarioAbertura] = useState('');
+   const [horarioFechamento, setHorarioFechamento] = useState('');
+   const [fechamentoAlmoco, setFechamentoAlmoco] = useState(true);
+   const [enderecoComplemento, setEnderecoComplemento] = useState('');
+   const [horarioFechamentoAlmoco, setHorarioFechamentoAlmoco] = useState('');
+   const [horarioVoltaAlmoco, setHorarioVoltaAlmoco] = useState('');
 
    const alteracaoTab = (e) => { e.preventDefault(); setTab(tab === 0 ? 1 : 0) };
 
    const onChangeDispAgendamento = (checked) => {
-      console.log(checked);
+      setVisivelAgendamento(checked);
    };
 
    const onChangeFecAlmoco = (checked) => {
-      console.log(checked);
+      setFechamentoAlmoco(checked);
    };
 
    async function salvar(e) {
       e.preventDefault();
+
+      const dados = {
+         nome_estabelecimento: nomeEstabelecimento,
+         endereco_bairro: enderecoBairro,
+         endereco_numero: enderecoNumero,
+         endereco_logradouro: enderecoLogradouro,
+         endereco_nome_logradouro: enderecoNomeLogradouro,
+         endereco_cidade: enderecoCidade,
+         endereco_estado: enderecoEstado,
+         endereco_cep: enderecoCep,
+         visivel_agendamento: visivelAgendamento,
+         horario_abertura: horarioAbertura,
+         horario_fechamento: horarioFechamento,
+         fechamento_almoco: fechamentoAlmoco,
+         endereco_complemento: enderecoComplemento,
+         horario_fechamento_almoco: horarioFechamentoAlmoco,
+         horario_volta_almoco: horarioVoltaAlmoco
+      };
+
+      try {
+         await api.post('/estabelecimento', dados).then(
+            (Response) => {
+               navigate(`/register-user/${Response.data.id}`);
+               console.log(Response.data);
+            }
+         )
+      } catch (error) {
+         console.log(error.response.data.mensagem);
+      }
    }
 
    return (
@@ -35,19 +82,21 @@ function RegisterEstabelecimento() {
                   {tab === 0 ?
                      <form onSubmit={alteracaoTab}>
                         <label>Nome do Estabelecimento</label>
-                        <input type="text" required />
+                        <input onChange={e => setNomeEstabelecimento(e.target.value)} value={nomeEstabelecimento} type="text" required />
 
                         <label>Disponível para agendamento de todos usuários ?</label>
                         <p><Switch colorPrimary='#A9335D' className='switch' defaultChecked onChange={onChangeDispAgendamento} /></p>
 
                         <label>Horário de abertura e fechamento do estabelecimento</label>
-                        <p><input className='time' type="time" required /><span> as </span><input className='time' type="time" required /></p>
+                        <p><input onChange={e => setHorarioAbertura(e.target.value)} value={horarioAbertura} className='time' type="time" required /><span> as </span><input onChange={e => setHorarioFechamento(e.target.value)} value={horarioFechamento} className='time' type="time" required /></p>
 
                         <label>Fecha para horario de almoço ?</label>
                         <p><Switch colorPrimary='#A9335D' className='switch' defaultChecked onChange={onChangeFecAlmoco} /></p>
 
-                        <label>Horário do começo do almoço e retorno</label>
-                        <input className='time' type="time" /><span> as </span><input className='time' type="time" />
+                        {fechamentoAlmoco
+                           ? <><label>Horário do começo do almoço e retorno</label>
+                              <input onChange={e => setHorarioFechamentoAlmoco(e.target.value)} value={horarioFechamentoAlmoco} className='time' type="time" /><span> as </span><input onChange={e => setHorarioVoltaAlmoco(e.target.value)} value={horarioVoltaAlmoco} className='time' type="time" /></>
+                           : null}
 
                         <div className='card-footer-empresa'>
                            <button>Próximo</button>
@@ -57,20 +106,26 @@ function RegisterEstabelecimento() {
                      <form onSubmit={salvar}>
                         <p>
                            <p><label>Logradouro</label> <label className='nome_logradouro_label'>Nome Logradouro</label></p>
-                           <input className='logradouro' type="text" required />
-                           <input className='nome_logradouro' type="text" required />
+                           <input onChange={e => setEnderecoLogradouro(e.target.value)} value={enderecoLogradouro} className='logradouro' type="text" required />
+                           <input onChange={e => setEnderecoNomeLogradouro(e.target.value)} value={enderecoNomeLogradouro} className='nome_logradouro' type="text" required />
                         </p>
 
                         <p>
                            <p><label>Bairro</label> <label className='numero_label'>Numero</label></p>
-                           <input type="text" required className='bairro'/> <input type="number" required  className='numero'/>
+                           <input onChange={e => setEnderecoBairro(e.target.value)} value={enderecoBairro} type="text" required className='bairro' /> <input onChange={e => setEnderecoNumero(e.target.value)} value={enderecoNumero} type="number" required className='numero' />
                         </p>
 
                         <label>Cidade</label>
-                        <input type="text" required />
+                        <input onChange={e => setEnderecoCidade(e.target.value)} value={enderecoCidade} type="text" required />
+
+                        <label>Cep</label>
+                        <input onChange={e => setEnderecoCep(e.target.value)} value={enderecoCep} type="text" required />
 
                         <label>Estado</label>
-                        <input type="text" required />
+                        <input onChange={e => setEnderecoEstado(e.target.value)} value={enderecoEstado} type="text" required />
+
+                        <label>Complemento</label>
+                        <textarea onChange={e => setEnderecoComplemento(e.target.value)} value={enderecoComplemento} type="textarea"></textarea>
 
                         <div className='card-footer-empresa'>
                            <button>Finalizar</button>

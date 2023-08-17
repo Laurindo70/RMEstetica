@@ -1,9 +1,11 @@
 CREATE TABLE nivel_permissao(
    id SERIAL PRIMARY KEY,
-   nome_nivel VARCHAR(150) NOT NULL,
+   nome_nivel VARCHAR(150) NOT NULL UNIQUE,
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now()
 );
+
+INSERT INTO nivel_permissao (nome_nivel) values ('Administrador');
 
 CREATE TABLE usuario(
    id SERIAL PRIMARY KEY,
@@ -11,7 +13,7 @@ CREATE TABLE usuario(
    nome_usuario VARCHAR(150) NOT NULL,
    cpf CHAR(14),
    senha VARCHAR(255) NOT NULL,
-   email_usuario VARCHAR(150) NOT NULL,
+   email_usuario VARCHAR(150) NOT NULL UNIQUE,
    ativo BOOLEAN DEFAULT TRUE,
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),

@@ -1,0 +1,13 @@
+.opcoes-usuarios{
+   background-color: rgba(254, 156, 204, 0.8);
+   height: 8vh;
+   display: flex;
+   align-items: center;
+   border-radius: 10px;
+   border: solid 1px #fff;
+   padding: 5px;
+}
+
+.botao-salvar{
+   margin-top: 5%;
+}

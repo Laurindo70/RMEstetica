@@ -20,7 +20,7 @@ background-size: cover;
 }
 
 .card{
-   height: 60%;
+   height: auto;
    width: 80%;
    border-radius: 20px;
    background: #fff;

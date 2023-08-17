@@ -9,3 +9,40 @@
 button {
   cursor: pointer;
 }
+
+.botao {
+  background: #A9335D;
+  color: #fff;
+  align-items: center;
+}
+
+.input-filtro {
+  width: 100%;
+  background-color: rgba(169, 51, 93, 0.5);
+  color: #fff;
+  border: solid #A9335D 1px;
+}
+
+.input-filtro::placeholder {
+  color: #fff;
+}
+
+.input-cadastro {
+  background-color: #FE9CCC;
+  border: solid 1px #A9335D;
+}
+
+.label-cadastro {
+  color: #A9335D;
+  font-weight: bold;
+}
+
+.botao-salvar button {
+  width: 30%;
+  height: 4vh;
+  background: #A9335D;
+  border: none;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 5px;
+}

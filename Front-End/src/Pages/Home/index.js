@@ -4,18 +4,24 @@ import {
    HomeOutlined,
    MenuUnfoldOutlined,
    MenuFoldOutlined,
-   ExclamationCircleFilled
+   ExclamationCircleFilled,
+   UserOutlined,
+   BankOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Button, Dropdown, Modal } from 'antd';
-import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import LocaleProvider from 'antd/es/locale';
 
 const { Header, Sider, Content } = Layout;
 const { confirm } = Modal;
 
 function Home() {
+   let location = useLocation();
+   const nomeUsuario = localStorage.getItem('NomeRm');
    const navigate = useNavigate();
 
    const [collapsed, setCollapsed] = useState(false);
+   const [ itens, setItens ] = useState([]);
 
    const sair = () => {
       confirm({
@@ -43,7 +49,7 @@ function Home() {
          key: '1',
          label: (
             <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-               Ronan L. Flor
+               {nomeUsuario}
             </a>
          ),
       },
@@ -65,30 +71,42 @@ function Home() {
       },
    ];
 
+   function mudarPagina(value){
+      setCollapsed(true)
+      navigate(`${value.key}`);
+   }
+
+   useEffect(() => {
+      setItens([
+         {
+            key: '',
+            icon: <HomeOutlined />,
+            label: 'Home',
+         },
+         {
+            key: 'usuarios',
+            icon: <UserOutlined />,
+            label: 'Usuários',
+         },
+         {
+            key: 'estabelecimentos',
+            icon: <BankOutlined />,
+            label: 'Estabelecimentos',
+         },
+      ]);
+      console.log(location)
+      console.log();
+   }, [location])
+
    return (
       <Layout className="main-home">
          <Sider style={{ background: '#FE9CCC' }} className='sidebar-home' trigger={null} collapsible collapsed={collapsed}>
             <Menu
                style={{ background: '#FE9CCC', color: '#fff', fontWeight: 'bold' }}
                mode="inline"
-               defaultSelectedKeys={['1']}
-               items={[
-                  {
-                     key: '1',
-                     icon: <HomeOutlined />,
-                     label: 'Home',
-                  },
-                  {
-                     key: '2',
-                     icon: <HomeOutlined />,
-                     label: 'nav 2',
-                  },
-                  {
-                     key: '3',
-                     icon: <HomeOutlined />,
-                     label: 'nav 3',
-                  },
-               ]}
+               defaultSelectedKeys={[location.pathname.substring(6, location.pathname.length)]}
+               onClick={mudarPagina}
+               items={itens}
             />
          </Sider>
          <Layout>

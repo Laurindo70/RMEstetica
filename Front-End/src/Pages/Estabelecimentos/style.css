@@ -1,0 +1,16 @@
+.input-time{
+   margin-top: -80px;
+   outline: 0;
+   border: 0;
+   width: 100%;
+   background: rgba(254, 156, 204, 0.5);
+   border: solid #A9335D 1px;
+   margin: 0 0 15px;
+   padding: 5px;
+   box-sizing: border-box;
+   font-size: 14px;
+   text-align: left;
+   border-radius: 10px ;
+   width: 40%;
+   height: auto;  
+}
