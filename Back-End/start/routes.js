@@ -24,3 +24,4 @@ Route.post('/estabelecimento', 'EstabelecimentoController.post');
 Route.put('/estabelecimento/:id', 'EstabelecimentoController.put');
 Route.delete('/estabelecimento/:id', 'EstabelecimentoController.delete');
 Route.get('/estabelecimento/nome=:nome?', 'EstabelecimentoController.getAll');
+Route.get('/estabelecimento/:id', 'EstabelecimentoController.getById');

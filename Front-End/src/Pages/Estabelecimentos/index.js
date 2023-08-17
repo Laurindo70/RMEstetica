@@ -28,6 +28,7 @@ function Estabelecimentos() {
    const [enderecoComplemento, setEnderecoComplemento] = useState('');
    const [horarioFechamentoAlmoco, setHorarioFechamentoAlmoco] = useState('');
    const [horarioVoltaAlmoco, setHorarioVoltaAlmoco] = useState('');
+   const [estabelecimentoId, setEstabelecimentoId] = useState(null);
 
    const [filtro, setFiltro] = useState('');
 
@@ -70,6 +71,12 @@ function Estabelecimentos() {
          dataIndex: 'ativo',
          key: 'ativo',
          render: (sit) => sit[0] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Desativar</Button> : "Desativado"
+      },
+      {
+         title: 'Editar',
+         dataIndex: 'editar',
+         key: 'editar',
+         render: (edit) => edit[0] ? <Button type="primary" onClick={() => { editar(edit[1]) }} danger>Editar</Button> : "Desativado"
       }
    ];
 
@@ -94,18 +101,35 @@ function Estabelecimentos() {
          horario_volta_almoco: horarioVoltaAlmoco
       };
 
-      try {
-         await api.post('/estabelecimento', dados).then(
-            (Response) => {
-               setIsModalOpen(false);
-               messageApi.open({
-                  type: 'success',
-                  content: 'Cadastrado com sucesso.',
-               });
-            }
-         )
-      } catch (error) {
-         console.log(error.response.data.mensagem);
+      if (estabelecimentoId == null) {
+
+         try {
+            await api.post('/estabelecimento', dados).then(
+               (Response) => {
+                  setIsModalOpen(false);
+                  messageApi.open({
+                     type: 'success',
+                     content: 'Cadastrado com sucesso.',
+                  });
+               }
+            )
+         } catch (error) {
+            console.log(error.response.data.mensagem);
+         }
+      } else {
+         try {
+            await api.put(`/estabelecimento/${estabelecimentoId}`, dados).then(
+               (Response) => {
+                  setIsModalOpen(false);
+                  messageApi.open({
+                     type: 'success',
+                     content: 'Cadastrado com sucesso.',
+                  });
+               }
+            )
+         } catch (error) {
+            console.log(error.response.data.mensagem);
+         }
       }
    }
 
@@ -124,6 +148,33 @@ function Estabelecimentos() {
       } catch (error) {
          console.log(error.response.data.mensagem);
       }
+
+   }
+
+   async function editar(id) {
+      setEstabelecimentoId(id);
+      setIsModalOpen(true);
+      console.log(id);
+      await api.get(`/estabelecimento/${id}`).then(
+         (response) => {
+            setNomeEstabelecimento(response.data[0].nome_estabelecimento);
+            setEnderecoBairro(response.data[0].endereco_bairro);
+            setEnderecoNumero(response.data[0].endereco_numero);
+            setEnderecoLogradouro(response.data[0].endereco_logradouro);
+            setEnderecoNomeLogradouro(response.data[0].endereco_nome_logradouro);
+            setEnderecoCidade(response.data[0].endereco_cidade);
+            setEnderecoEstado(response.data[0].endereco_estado);
+            setEnderecoCep(response.data[0].endereco_cep);
+            setVisivelAgendamento(response.data[0].visivel_agendamento);
+            setHorarioAbertura(response.data[0].horario_abertura);
+            setHorarioFechamento(response.data[0].horario_fechamento);
+            setFechamentoAlmoco(response.data[0].fechamento_almoco);
+            setEnderecoComplemento(response.data[0].endereco_complemento);
+            setHorarioFechamentoAlmoco(response.data[0].horario_fechamento_almoco);
+            setHorarioVoltaAlmoco(response.data[0].horario_volta_almoco);
+            console.log(response.data);
+         }
+      )
    }
 
    useEffect(() => {
@@ -134,7 +185,8 @@ function Estabelecimentos() {
                data.push({
                   nome_estabelecimento: Response.data[i].nome_estabelecimento,
                   situacao: Response.data[i].situacao,
-                  ativo: [Response.data[i].ativo, Response.data[i].id]
+                  ativo: [Response.data[i].ativo, Response.data[i].id],
+                  editar: [Response.data[i].ativo, Response.data[i].id]
                });
             }
             setEstabelecimentos(data);
@@ -154,14 +206,14 @@ function Estabelecimentos() {
                <form onSubmit={alteracaoTab}>
                   <Row justify="start">
                      <label>Nome do Estabelecimento</label>
-                     <Input className='input-cadastro' onChange={e => setNomeEstabelecimento(e.target.value)} value={nomeEstabelecimento} type="text" required />
+                     <Input disabled={estabelecimentoId == null ? false : true} className='input-cadastro' onChange={e => setNomeEstabelecimento(e.target.value)} value={nomeEstabelecimento} type="text" required />
                   </Row>
 
                   <Row justify="start">
                      <label>Disponível para agendamento de todos usuários ?</label>
                   </Row>
                   <Row justify="start">
-                     <p><Switch colorPrimary='#A9335D' className='switch' defaultChecked onChange={onChangeDispAgendamento} /></p>
+                     <p><Switch colorPrimary='#A9335D' className='switch' defaultChecked onChange={onChangeDispAgendamento} checked={visivelAgendamento} /></p>
                   </Row>
 
                   <Row justify="start">
@@ -176,7 +228,7 @@ function Estabelecimentos() {
                      <label>Fecha para horario de almoço ?</label>
                   </Row>
                   <Row justify="start">
-                     <p><Switch colorPrimary='#A9335D' className='switch' defaultChecked onChange={onChangeFecAlmoco} /></p>
+                     <p><Switch colorPrimary='#A9335D' className='switch' defaultChecked onChange={onChangeFecAlmoco} checked={fechamentoAlmoco} /></p>
                   </Row>
 
                   {fechamentoAlmoco

@@ -80,7 +80,7 @@ class EstabelecimentoController {
 
          const validacaoCadastro = await Database.from('estabelecimento').where('id', '=', params.id);
 
-         if(validacaoCadastro.rows == 0){
+         if(validacaoCadastro.length == 0){
             return response.status(404).send({ mensagem: 'Estabelecimento não encontrado.' });
          }
 
@@ -179,6 +179,26 @@ class EstabelecimentoController {
             .where('nome_estabelecimento', 'ILIKE', `%${params.nome}%`);
 
          return response.status(200).send(estabelecimentos);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
+   async getById({ request, response, params }){
+      try {
+         
+         const estabelecimento = await Database.select("*").from('estabelecimento').where('id', '=', params.id);
+
+         if(estabelecimento.length == 0) { return response.status(404).send("Estabelecimento não encontrado.") }
+
+         return response.status(200).send(estabelecimento);
 
       } catch (error) {
          console.log(error);
