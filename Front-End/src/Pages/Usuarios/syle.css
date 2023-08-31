@@ -11,3 +11,11 @@
 .botao-salvar{
    margin-top: 5%;
 }
+
+.senha-ok{
+   color: green;
+}
+
+.senha-erro{
+   color: red;
+}

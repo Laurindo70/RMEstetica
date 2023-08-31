@@ -12,7 +12,78 @@ const { camposCadastro, camposAtualizacao } = require('../../../Utils/Validator/
 
 class UsuarioController {
 
-   async post({ request, response }) {
+   async post({ request, response, auth }) {
+      const transacao = await Database.beginTransaction();
+      try {
+
+         const usuario = await auth.getUser();
+
+         const validacao = await validateAll(request.all(), camposCadastro, msgCadastro);
+
+         if (validacao.fails()) {
+            return response.status(417).send({ mensagem: validacao.messages() });
+         }
+
+         const { nome_usuario, nivel_permissao_id, senha, email_usuario, cpf, estabelecimento_id } = request.all();
+
+         let usuarioCadastrado;
+
+         if (estabelecimento_id) {
+
+            usuarioCadastrado = await Usuario.create({
+               nome_usuario,
+               nivel_permissao_id,
+               senha,
+               email_usuario,
+               cpf,
+               usuario_criador: usuario.$attributes.id
+            }, transacao);
+
+            if (estabelecimento_id.length > 1) {
+               for (let cont = 0; cont < estabelecimento_id.length; cont++) {
+                  await UsuarioEstabelecimento.create({
+                     usuario_id: usuarioCadastrado.id,
+                     estabelecimento_id: estabelecimento_id[cont]
+                  }, transacao);
+               }
+            } else {
+               await UsuarioEstabelecimento.create({
+                  usuario_id: usuarioCadastrado.id,
+                  estabelecimento_id
+               }, transacao);
+            }
+
+
+            await transacao.commit();
+            return response.status(201).send(usuarioCadastrado);
+
+         }
+
+         usuarioCadastrado = await Usuario.create({
+            nome_usuario,
+            nivel_permissao_id,
+            senha,
+            email_usuario,
+            cpf,
+            usuario_criador: usuario.$attributes.id 
+         });
+
+
+         return response.status(201).send(usuarioCadastrado);
+
+      } catch (error) {
+         await transacao.rollback();
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
+   async registerUser({ request, response }){
       const transacao = await Database.beginTransaction();
       try {
 
@@ -33,13 +104,24 @@ class UsuarioController {
                nivel_permissao_id,
                senha,
                email_usuario,
-               cpf
+               cpf,
+               usuario_criador: null
             }, transacao);
 
-            await UsuarioEstabelecimento.create({
-               usuario_id: usuarioCadastrado.id,
-               estabelecimento_id
-            }, transacao);
+            if (estabelecimento_id.length > 1) {
+               for (let cont = 0; cont < estabelecimento_id.length; cont++) {
+                  await UsuarioEstabelecimento.create({
+                     usuario_id: usuarioCadastrado.id,
+                     estabelecimento_id: estabelecimento_id[cont]
+                  }, transacao);
+               }
+            } else {
+               await UsuarioEstabelecimento.create({
+                  usuario_id: usuarioCadastrado.id,
+                  estabelecimento_id
+               }, transacao);
+            }
+
 
             await transacao.commit();
             return response.status(201).send(usuarioCadastrado);
@@ -51,7 +133,8 @@ class UsuarioController {
             nivel_permissao_id,
             senha,
             email_usuario,
-            cpf
+            cpf,
+            usuario_criador: null
          });
 
 
@@ -68,6 +151,7 @@ class UsuarioController {
          )
       }
    }
+
 
    async put({ request, response, params }) {
       try {
@@ -120,11 +204,15 @@ class UsuarioController {
    async delete({ request, response, params }) {
       try {
 
+         const usuario = await Database
+            .table('usuario')
+            .where('id', params.id)
+
          const usuarioAtualizado = await Database
             .table('usuario')
             .where('id', params.id)
             .update({
-               ativo: false,
+               ativo: !usuario.ativo,
                atualizado_em: new Date()
             });
 
@@ -174,18 +262,16 @@ class UsuarioController {
       }
    }
 
-   async get({ request, response, params }){
+   async get({ request, response, params, auth }) {
       try {
-         
+         const usuario = await auth.getUser();
+
          const nome = await params.nome || '';
 
-         console.log(nome);
-
          const usuarios = await Database
-            .raw(`select nome_usuario, email_usuario, ativo, nivel_permissao.nome_nivel as permissao from usuario 
+            .raw(`select usuario.id, nome_usuario, email_usuario, ativo, nivel_permissao.nome_nivel as permissao from usuario 
             inner JOIN nivel_permissao on nivel_permissao.id=usuario.nivel_permissao_id 
-            where nome_usuario ilike '%${nome}%'`);
-         console.log(usuarios.rows);
+            where nome_usuario ilike '%${nome}%' and usuario_criador = ${usuario.$attributes.id} or usuario.id = ${usuario.$attributes.id} order by usuario.nome_usuario`);
 
          return response.status(200).send(usuarios.rows);
 

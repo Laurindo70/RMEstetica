@@ -28,14 +28,6 @@ function RegisterUser() {
       });
 
       try {
-         console.log({
-            nome_usuario: nome,
-            nivel_permissao_id: 1,
-            senha: senha,
-            email_usuario: email,
-            cpf: cpf,
-            estabelecimento_id: estabelecimentoId
-         });
          if(senha != confSenha){
             return apiNot.error({
                message: `Não foi possível realizar o cadastro.`,
@@ -44,7 +36,7 @@ function RegisterUser() {
             });
          }
 
-         await api.post('/usuario', {
+         await api.post('/usuario-register', {
             nome_usuario: nome,
             nivel_permissao_id: 1,
             senha: senha,
@@ -93,6 +85,9 @@ function RegisterUser() {
 
                      <label>CPF(Opcional)</label>
                      <input onChange={e => setCpf(cpfMask(e.target.value))} value={cpf} type="text" />
+
+                     {senha == confSenha ? <p className={senha.length < 4 ? 'senha-erro' : 'senha-ok'} >A senha deve conter pelo menos 4 dígitos</p> : ''}
+                     <p className={senha != confSenha ? 'senha-erro' : 'senha-ok'} >{senha != confSenha ? 'As senhas não batem' : 'As senhas são iguais'}</p>
 
                      <div className='card-footer'>
                         <button>Salvar</button>

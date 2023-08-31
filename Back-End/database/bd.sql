@@ -15,6 +15,7 @@ CREATE TABLE usuario(
    senha VARCHAR(255) NOT NULL,
    email_usuario VARCHAR(150) NOT NULL UNIQUE,
    ativo BOOLEAN DEFAULT TRUE,
+   usuario_criador INTEGER,
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),
    FOREIGN KEY(nivel_permissao_id) REFERENCES nivel_permissao(id)

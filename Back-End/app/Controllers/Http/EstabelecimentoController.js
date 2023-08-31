@@ -165,18 +165,24 @@ class EstabelecimentoController {
       }
    }
 
-   async getAll({ request, response, params }){
+   async getAll({ request, response, params, auth }){
       try {
 
+         const usuario = await auth.getUser();
+
          if(params.nome == null){
-            const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo as situacao', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento').from('estabelecimento');
+            const estabelecimentos = await Database.select('estabelecimento.id', 'estabelecimento.nome_estabelecimento', 'estabelecimento.ativo as situacao', 'estabelecimento.ativo', 'estabelecimento.horario_abertura', 'estabelecimento.horario_fechamento', 'estabelecimento.fechamento_almoco', 'estabelecimento.horario_fechamento_almoco', 'estabelecimento.horario_volta_almoco', 'estabelecimento.visivel_agendamento')
+               .table('estabelecimento')
+               .innerJoin('estabelecimento_has_usuario', 'estabelecimento.id', 'estabelecimento_has_usuario.estabelecimento_id')
+               .where('estabelecimento_has_usuario.usuario_id', '=', usuario.$attributes.id);
             
             return response.status(200).send(estabelecimentos);
          }
 
-         const estabelecimentos = await Database.select('id', 'nome_estabelecimento', 'ativo as situacao', 'ativo', 'horario_abertura', 'horario_fechamento', 'fechamento_almoco', 'horario_fechamento_almoco', 'horario_volta_almoco', 'visivel_agendamento')
-            .from('estabelecimento')
-            .where('nome_estabelecimento', 'ILIKE', `%${params.nome}%`);
+         const estabelecimentos = await Database.select('estabelecimento.id', 'estabelecimento.nome_estabelecimento', 'estabelecimento.ativo as situacao', 'estabelecimento.ativo', 'estabelecimento.horario_abertura', 'estabelecimento.horario_fechamento', 'estabelecimento.fechamento_almoco', 'estabelecimento.horario_fechamento_almoco', 'estabelecimento.horario_volta_almoco', 'estabelecimento.visivel_agendamento')
+            .table('estabelecimento').innerJoin('estabelecimento_has_usuario', 'estabelecimento.id', 'estabelecimento_has_usuario.estabelecimento_id')
+            .where('estabelecimento_has_usuario.usuario_id', '=', usuario.$attributes.id)
+            .andWhere('nome_estabelecimento', 'ILIKE', `%${params.nome}%`);
 
          return response.status(200).send(estabelecimentos);
 

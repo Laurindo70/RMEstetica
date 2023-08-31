@@ -104,3 +104,11 @@ background-size: cover;
 .imagem-login img{
    height: 90%;
 }
+
+.senha-ok{
+   color: green;
+}
+
+.senha-erro{
+   color: red;
+}

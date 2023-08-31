@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Switch, message } from 'antd';
 import './style.css';
-import { cpfMask } from '../../Utils/mascaras';
 import api from '../../Utils/api';
 
 const { Title } = Typography;
 const { TextArea } = Input;
 
 function Estabelecimentos() {
+   const token = localStorage.getItem('TokenRm');
    const [messageApi, contextHolder] = message.useMessage();
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [tab, setTab] = useState(0);
@@ -104,7 +104,11 @@ function Estabelecimentos() {
       if (estabelecimentoId == null) {
 
          try {
-            await api.post('/estabelecimento', dados).then(
+            await api.post('/estabelecimento', {
+               headers: {
+                  Authorization: token
+               }
+            }, dados).then(
                (Response) => {
                   setIsModalOpen(false);
                   messageApi.open({
@@ -118,7 +122,11 @@ function Estabelecimentos() {
          }
       } else {
          try {
-            await api.put(`/estabelecimento/${estabelecimentoId}`, dados).then(
+            await api.put(`/estabelecimento/${estabelecimentoId}`, {
+               headers: {
+                  Authorization: token
+               }
+            }, dados).then(
                (Response) => {
                   setIsModalOpen(false);
                   messageApi.open({
@@ -134,9 +142,12 @@ function Estabelecimentos() {
    }
 
    async function inativar(id) {
-      console.log(id);
       try {
-         await api.delete(`/estabelecimento/${id}`).then(
+         await api.delete(`/estabelecimento/${id}`, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
             (Response) => {
                setIsModalOpen(false);
                messageApi.open({
@@ -155,7 +166,11 @@ function Estabelecimentos() {
       setEstabelecimentoId(id);
       setIsModalOpen(true);
       console.log(id);
-      await api.get(`/estabelecimento/${id}`).then(
+      await api.get(`/estabelecimento/${id}`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
          (response) => {
             setNomeEstabelecimento(response.data[0].nome_estabelecimento);
             setEnderecoBairro(response.data[0].endereco_bairro);
@@ -178,7 +193,11 @@ function Estabelecimentos() {
    }
 
    useEffect(() => {
-      api.get(`/estabelecimento/nome=${filtro}`).then(
+      api.get(`/estabelecimento/nome=${filtro}`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {
