@@ -45,5 +45,51 @@ CREATE TABLE estabelecimento(
 
 CREATE TABLE estabelecimento_has_usuario(
    estabelecimento_id INTEGER NOT NULL,
-   usuario_id INTEGER NOT NULL
+   usuario_id INTEGER NOT NULL,
+   FOREIGN KEY(usuario_id) REFERENCES usuario(id),
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+);
+
+CREATE TABLE produtos(
+   id SERIAL PRIMARY KEY,
+   estabelecimento_id INTEGER NOT NULL,
+   nome_produto VARCHAR(150) UNIQUE NOT NULL,
+   quantidade INTEGER DEFAULT 0,
+   valor_produto DOUBLE PRECISION NOT NULL,
+   ativo BOOLEAN DEFAULT TRUE,
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id),
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now()
+);
+
+CREATE TABLE despesas(
+   id SERIAL PRIMARY KEY,
+   estabelecimento_id INTEGER NOT NULL,
+   usuario_id INTEGER NOT NULL,
+   nome_despesa VARCHAR(150) NOT NULL,
+   valor_despesa DOUBLE PRECISION NOT NULL,
+   ativo BOOLEAN DEFAULT true,
+   data_despesa timestamp DEFAULT now(),
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(usuario_id) REFERENCES usuario(id),
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+);
+
+CREATE TABLE movimentacao_estoque(
+	id SERIAL PRIMARY KEY,
+	agendamento_id INTEGER,
+	estabelecimento_id INTEGER NOT NULL,
+	data_movimentacao TIMESTAMP DEFAULT NOW(),
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now(),
+	entrada BOOLEAN DEFAULT TRUE,
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+);
+
+CREATE TABLE movimentacao_estoque_has_produtos(
+   movimentacao_estoque_id INTEGER NOT NULL,
+   produto_id INTEGER NOT NULL,
+   FOREIGN KEY(movimentacao_estoque_id) REFERENCES movimentacao_estoque(id),
+   FOREIGN KEY(produto_id) REFERENCES produtos(id)
 );

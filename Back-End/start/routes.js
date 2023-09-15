@@ -26,3 +26,13 @@ Route.put('/estabelecimento/:id', 'EstabelecimentoController.put');
 Route.delete('/estabelecimento/:id', 'EstabelecimentoController.delete');
 Route.get('/estabelecimento/nome=:nome?', 'EstabelecimentoController.getAll').middleware('auth');
 Route.get('/estabelecimento/:id', 'EstabelecimentoController.getById');
+
+/// --------------- Depesas --------------- 
+Route.post('/despesa', 'DespesaController.post').middleware('auth');
+Route.delete('/despesa/:id', 'DespesaController.delete');
+Route.get('/despesa', 'DespesaController.getAll').middleware('auth');
+
+/// --------------- Produtos --------------- 
+Route.post('/produto', 'ProdutoController.post');
+Route.delete('/produto/:id', 'ProdutoController.delete');
+Route.get('/produto/:estabelecimentoId', 'ProdutoController.getAll');

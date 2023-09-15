@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class Despesa extends Model {
    static get table() {
-      return 'despesa'
+      return 'despesas'
    }
 
    static get createdAtColumn() {

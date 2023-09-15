@@ -4,7 +4,7 @@ import './style.css';
 import imagemInicio from '../../Images/Spring flower-pana.svg';
 import { useNavigate } from 'react-router-dom';
 import api from '../../Utils/api';
-
+import { cepMask } from '../../Utils/mascaras';
 
 function RegisterEstabelecimento() {
    const navigate = useNavigate();
@@ -119,7 +119,7 @@ function RegisterEstabelecimento() {
                         <input onChange={e => setEnderecoCidade(e.target.value)} value={enderecoCidade} type="text" required />
 
                         <label>Cep</label>
-                        <input onChange={e => setEnderecoCep(e.target.value)} value={enderecoCep} type="text" required />
+                        <input onChange={e => setEnderecoCep(cepMask(e.target.value))} value={enderecoCep} type="text" required />
 
                         <label>Estado</label>
                         <input onChange={e => setEnderecoEstado(e.target.value)} value={enderecoEstado} type="text" required />

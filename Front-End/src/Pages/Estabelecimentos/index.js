@@ -3,6 +3,7 @@ import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Switch, message } from 'antd';
 import './style.css';
 import api from '../../Utils/api';
+import { cepMask } from '../../Utils/mascaras';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -292,7 +293,7 @@ function Estabelecimentos() {
                      <label className='label-cadastro'>Cep</label>
                   </Row>
                   <Row justify="start">
-                     <Input className='input-cadastro' onChange={e => setEnderecoCep(e.target.value)} value={enderecoCep} />
+                     <Input className='input-cadastro' onChange={e => setEnderecoCep(cepMask(e.target.value))} value={enderecoCep} />
                   </Row>
                   <Row justify="start">
                      <label className='label-cadastro'>Estado</label>

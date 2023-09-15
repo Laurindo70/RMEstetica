@@ -8,6 +8,8 @@ import Home from './Pages/Home';
 import Usuarios from './Pages/Usuarios';
 import Estabelecimentos from './Pages/Estabelecimentos';
 import Inicio from './Pages/Inicio';
+import Despesas from './Pages/Despesas';
+import Estoque from './Pages/Estoque';
 
 function Rotas() {
    return (
@@ -27,6 +29,8 @@ function Rotas() {
                   <Route path='' element={<Inicio />} />
                   <Route path='usuarios' element={<Usuarios />} />
                   <Route path='estabelecimentos' element={<Estabelecimentos />} />
+                  <Route path='despesas' element={<Despesas />} />
+                  <Route path='estoque' element={<Estoque />} />
                </Route>
             </Routes>
          </Router>

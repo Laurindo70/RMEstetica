@@ -6,11 +6,12 @@ import {
    MenuFoldOutlined,
    ExclamationCircleFilled,
    UserOutlined,
-   BankOutlined
+   BankOutlined,
+   DollarOutlined,
+   ShoppingCartOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Button, Dropdown, Modal } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import LocaleProvider from 'antd/es/locale';
 
 const { Header, Sider, Content } = Layout;
 const { confirm } = Modal;
@@ -93,6 +94,16 @@ function Home() {
             icon: <BankOutlined />,
             label: 'Estabelecimentos',
          },
+         {
+            key: 'despesas',
+            icon: <DollarOutlined />,
+            label: 'Despesas'
+         },
+         {
+            key: 'estoque',
+            icon: <ShoppingCartOutlined />,
+            label: 'Estoque'
+         }
       ]);
       console.log(location)
       console.log();
