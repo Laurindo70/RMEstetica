@@ -191,8 +191,8 @@ function Estoque() {
             <Col span={4}>
                <Button icon={<PlusCircleOutlined />} className='botao' onClick={handleModalCadastro}>Novo Produto</Button>
             </Col>
-            <Col span={4}>
-               <Button icon={<PlusOutlined />} className='botao' onClick={handleModalCadastro}>Entrada Produto</Button>
+            <Col span={5}>
+               <Button icon={<PlusOutlined />} className='botao' onClick={handleModalCadastro}>Realizar Movimentação</Button>
             </Col>
             <Col span={4}>
                <Button icon={<MinusOutlined />} className='botao' onClick={handleModalCadastro}>Saida Produto</Button>

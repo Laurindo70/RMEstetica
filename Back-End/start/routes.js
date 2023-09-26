@@ -36,3 +36,6 @@ Route.get('/despesa', 'DespesaController.getAll').middleware('auth');
 Route.post('/produto', 'ProdutoController.post');
 Route.delete('/produto/:id', 'ProdutoController.delete');
 Route.get('/produto/:estabelecimentoId', 'ProdutoController.getAll');
+
+/// --------------- movimentação --------------- 
+Route.post('/movimentacao', 'MovimentacaoController.post');

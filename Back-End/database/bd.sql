@@ -79,17 +79,20 @@ CREATE TABLE despesas(
 CREATE TABLE movimentacao_estoque(
 	id SERIAL PRIMARY KEY,
 	agendamento_id INTEGER,
+	usuario_id INTEGER NOT NULL,
 	estabelecimento_id INTEGER NOT NULL,
 	data_movimentacao TIMESTAMP DEFAULT NOW(),
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),
 	entrada BOOLEAN DEFAULT TRUE,
-   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id),
+   FOREIGN KEY(usuario_id) REFERENCES usuario(id)
 );
 
 CREATE TABLE movimentacao_estoque_has_produtos(
    movimentacao_estoque_id INTEGER NOT NULL,
    produto_id INTEGER NOT NULL,
+   quantidade INTEGER NOT NULL,
    FOREIGN KEY(movimentacao_estoque_id) REFERENCES movimentacao_estoque(id),
    FOREIGN KEY(produto_id) REFERENCES produtos(id)
 );

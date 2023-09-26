@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class MovimentacaoEstoqueHasProduto extends Model {
    static get table() {
-      return 'movimentacao_estoque_has_produto'
+      return 'movimentacao_estoque_has_produtos'
    }
 
    static get createdAtColumn() {
