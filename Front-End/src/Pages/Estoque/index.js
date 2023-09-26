@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircleOutlined, SyncOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import './style.css';
+import { PlusCircleOutlined, SyncOutlined, PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message } from 'antd';
 import api from '../../Utils/api';
 import { moneyMask } from '../../Utils/mascaras';
@@ -11,13 +12,21 @@ function Estoque() {
 
    const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
    const [isModalCadastro, setIsModalCadastro] = useState(false);
+   const [isModalMovimentacao, setIsModalMovimentacao] = useState(false);
+
    const [messageApi, contextHolder] = message.useMessage();
    const [produtos, setProdutos] = useState([]);
+   const [produtosMov, setProdutosMov] = useState([]);
+   const [produtosSelecMov, setProdutosSelecMov] = useState([]);
    const [estabelecimentos, setEstabelecimentos] = useState();
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
 
    const [nomeProduto, setNomeProduto] = useState(null);
    const [valorProduto, setValorProduto] = useState(null);
+
+   const [tipoMovimentacao, setTipoMovimentacao] = useState(null);
+   const [produtoSelecMovimentacao, setProdutoSelecMovimentacao] = useState(null);
+   const [quantidadeMov, setQuantidadeMov] = useState(null);
 
    const colunas = [
       {
@@ -50,6 +59,10 @@ function Estoque() {
 
    const handleModalCadastro = () => {
       setIsModalCadastro(!isModalCadastro);
+   }
+
+   const handleModalMovimentacao = () => {
+      setIsModalMovimentacao(!isModalMovimentacao);
    }
 
    async function inativar(id) {
@@ -103,6 +116,34 @@ function Estoque() {
 
    }
 
+   function adicionarProduto(e) {
+      e.preventDefault();
+      try {
+         let dadosProd = produtosSelecMov;
+         dadosProd.push({
+            nome_produto: produtos[produtoSelecMovimentacao].nome_produto,
+            produto_id: produtos[produtoSelecMovimentacao].id,
+            quantidade: quantidadeMov,
+            remove: produtos[produtoSelecMovimentacao].id
+         });
+         console.log(dadosProd);
+         setProdutosSelecMov(dadosProd);
+         setQuantidadeMov(0);
+
+      } catch (error) {
+         messageApi.open({
+            type: 'error',
+            content: 'Erro ao adicionar produto.',
+         });
+      }
+   }
+
+   function removerProduto(id) {
+      setProdutosSelecMov(produtosSelecMov.filter((produtoMov) => produtoMov.produto_id !== id));
+   }
+
+   async function salvar
+
    useEffect(() => {
       if (estabelecimentoSelecionado !== null) {
          api.get(`/produto/${estabelecimentoSelecionado}`, {
@@ -112,6 +153,7 @@ function Estoque() {
          }).then(
             (Response) => {
                let dadosProdutos = [];
+               let dadosMov = [];
 
                for (let i = 0; i < Response.data.length; i++) {
                   dadosProdutos.push({
@@ -121,13 +163,19 @@ function Estoque() {
                      valor_produto: Response.data[i].valor_produto,
                      ativo: [Response.data[i].ativo, Response.data[i].id]
                   });
+                  dadosMov.push({
+                     id: Response.data[i].id,
+                     label: Response.data[i].nome_produto,
+                     value: i
+                  })
                }
 
                setProdutos(dadosProdutos);
+               setProdutosMov(dadosMov);
             }
          )
       }
-   }, [isModalSelecEstab]);
+   }, [isModalSelecEstab, isModalCadastro]);
 
    useEffect(() => {
       api.get(`/estabelecimento/nome=`, {
@@ -182,6 +230,65 @@ function Estoque() {
             </form>
          </Modal>
 
+         <Modal title={<Title level={3}>Realizar movimentação</Title>} open={isModalMovimentacao} onOk={handleModalMovimentacao} onCancel={handleModalMovimentacao} footer={[]}>
+            <form>
+               <Row justify="start">
+                  <label className='label-cadastro'>Selecione o tipo da movimentação</label>
+                  <Select
+                     style={{
+                        width: '100%',
+                        border: 'solid 1px #A9335D',
+                        borderRadius: '5px',
+                     }}
+                     onChange={(value) => { setTipoMovimentacao(value) }}
+                     options={[{ label: "Entrada", value: true }, { label: "Saida", value: false }]}
+                  />
+               </Row>
+               <Divider />
+               <Row justify="start">
+                  <label className='label-cadastro'>Selecione o produto</label>
+                  <Select
+                     style={{
+                        width: '100%',
+                        border: 'solid 1px #A9335D',
+                        borderRadius: '5px',
+                     }}
+                     onChange={(value) => { setProdutoSelecMovimentacao(value) }}
+                     options={produtosMov}
+                  />
+               </Row>
+               <Row justify="start">
+                  <label className='label-cadastro'>Quantidade</label>
+                  <Input className='input-cadastro' onChange={e => setQuantidadeMov(e.target.value)} value={quantidadeMov} type="number" required />
+               </Row>
+               <Row justify="center" className='botao-salvar'>
+                  <button className='botao-salvar' onClick={adicionarProduto} >Adicionar</button>
+               </Row>
+               <Divider />
+
+               <table className='tabela-produtos-mov'>
+                  <tr>
+                     <th>Nome</th>
+                     <th>Quantidade</th>
+                     <th>Remover</th>
+                  </tr>
+                  
+                  {produtosSelecMov.map((produtoMovSel) => (
+                   <tr>
+                     <td>{produtoMovSel.nome_produto}</td>
+                     <td>{produtoMovSel.quantidade}</td>
+                     <td><Button type="primary" onClick={() => { removerProduto(produtoMovSel.produto_id) }} danger><DeleteOutlined /></Button></td>
+                  </tr>
+                  ))}
+               </table>
+               <Divider />
+               <Row justify="end" className='botao-salvar'>
+                  <button className='botao-salvar' >Salvar</button>
+               </Row>
+
+            </form>
+         </Modal>
+
          <Title level={3}>Estoque</Title>
          <Divider />
          <Row justify="end" className='opcoes-usuarios'>
@@ -192,7 +299,7 @@ function Estoque() {
                <Button icon={<PlusCircleOutlined />} className='botao' onClick={handleModalCadastro}>Novo Produto</Button>
             </Col>
             <Col span={5}>
-               <Button icon={<PlusOutlined />} className='botao' onClick={handleModalCadastro}>Realizar Movimentação</Button>
+               <Button icon={<PlusOutlined />} className='botao' onClick={handleModalMovimentacao}>Realizar Movimentação</Button>
             </Col>
             <Col span={4}>
                <Button icon={<MinusOutlined />} className='botao' onClick={handleModalCadastro}>Saida Produto</Button>
