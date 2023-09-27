@@ -142,7 +142,40 @@ function Estoque() {
       setProdutosSelecMov(produtosSelecMov.filter((produtoMov) => produtoMov.produto_id !== id));
    }
 
-   async function salvar
+   async function salvarMovi(e){
+      e.preventDefault();
+
+      const dados = {
+         "estabelecimento_id": estabelecimentoSelecionado,
+         "entrada": tipoMovimentacao,
+         "produtos": produtosSelecMov
+      }
+
+      console.log(dados);
+
+      try {
+
+         await api.post('/movimentacao', dados, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
+            (Response) => {
+               handleModalMovimentacao();
+               setProdutosSelecMov([]);
+               setQuantidadeMov(0);
+               messageApi.open({
+                  type: 'success',
+                  content: 'Realizado com sucesso.',
+               });
+            }
+         )
+
+      } catch (error) {
+         console.log(error.data);
+         alert('Erro no cadastro')
+      }
+   }
 
    useEffect(() => {
       if (estabelecimentoSelecionado !== null) {
@@ -175,7 +208,7 @@ function Estoque() {
             }
          )
       }
-   }, [isModalSelecEstab, isModalCadastro]);
+   }, [isModalSelecEstab, isModalCadastro, isModalMovimentacao]);
 
    useEffect(() => {
       api.get(`/estabelecimento/nome=`, {
@@ -231,7 +264,7 @@ function Estoque() {
          </Modal>
 
          <Modal title={<Title level={3}>Realizar movimentação</Title>} open={isModalMovimentacao} onOk={handleModalMovimentacao} onCancel={handleModalMovimentacao} footer={[]}>
-            <form>
+            <form onSubmit={salvarMovi}>
                <Row justify="start">
                   <label className='label-cadastro'>Selecione o tipo da movimentação</label>
                   <Select

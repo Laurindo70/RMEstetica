@@ -74,7 +74,7 @@ class MovimentacaoController {
    async getAll({ request, response, params }){
       try {
          
-         // const estabelecimentos = await 
+          
 
       } catch (error) {
          console.error(error);
