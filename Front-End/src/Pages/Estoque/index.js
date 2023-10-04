@@ -175,7 +175,10 @@ function Estoque() {
 
       } catch (error) {
          console.log(error.data);
-         alert('Erro no cadastro')
+         messageApi.open({
+            type: 'error',
+            content: 'Erro ao realizar movimentação.',
+         });
       }
    }
 

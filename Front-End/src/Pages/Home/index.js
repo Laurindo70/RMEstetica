@@ -8,8 +8,11 @@ import {
    UserOutlined,
    BankOutlined,
    DollarOutlined,
-   ShoppingCartOutlined
+   ShoppingCartOutlined,
+   AuditOutlined,
+   CalendarOutlined
 } from '@ant-design/icons';
+import { BsFillClipboard2PlusFill } from "react-icons/bs";
 import { Layout, Menu, Button, Dropdown, Modal } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -103,6 +106,16 @@ function Home() {
             key: 'estoque',
             icon: <ShoppingCartOutlined />,
             label: 'Estoque'
+         },
+         {
+            key: 'agendamento',
+            icon: <CalendarOutlined />,
+            label: 'Agendamentos'
+         },
+         {
+            key: 'procedimento',
+            icon: <BsFillClipboard2PlusFill />,
+            label: 'Procedimentos'
          }
       ]);
       console.log(location)

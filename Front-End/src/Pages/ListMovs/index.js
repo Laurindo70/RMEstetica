@@ -44,7 +44,7 @@ function ListMov(props) {
                   dados.push(
                      {
                         key: response.data[i].key,
-                        label: `${response.data[i].data} por ${response.data[i].usuario}`,
+                        label: <Text type={response.data[i].entrada ? 'success' : 'danger'} >{response.data[i].entrada ? 'Entrada' : 'Saida'} - {response.data[i].data} por {response.data[i].usuario}</Text>,
                         children: <Table dataSource={response.data[i].produtos} columns={colunas} pagination={false} />,
                      },
                   );
