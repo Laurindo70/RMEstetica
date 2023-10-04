@@ -54,7 +54,7 @@ function RegisterUser() {
          messageApi.destroy();
          apiNot.error({
             message: `Não foi possível realizar o cadastro.`,
-            description: error.response.data.mensagem,
+            description: error.response.data.mensagem[0].message,
             placement: 'top',
          });
       }

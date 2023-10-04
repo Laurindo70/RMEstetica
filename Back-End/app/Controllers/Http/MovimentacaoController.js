@@ -74,7 +74,25 @@ class MovimentacaoController {
    async getAll({ request, response, params }){
       try {
          
-          
+         let movimentacoes = [];
+
+         const consulta = await Database.raw(`select movimentacao_estoque.id, to_char(data_movimentacao, 'DD/MM/YYYY HH24:MI') as data, usuario.nome_usuario as usuario
+from movimentacao_estoque INNER JOIN usuario on usuario.id=movimentacao_estoque.usuario_id
+where movimentacao_estoque.estabelecimento_id = ${params.estabelecimentoId} and movimentacao_estoque.data_movimentacao BETWEEN '${params.dataInicio} 00:00:00.0' and '${params.dataFim} 23:59:59.0';`);
+
+         for(let i = 0; i < consulta.rows.length; i++){
+            const produtos = await Database.raw(`select produtos.id as key, produtos.nome_produto, movimentacao_estoque_has_produtos.quantidade 
+            from movimentacao_estoque_has_produtos INNER JOIN produtos on produtos.id=movimentacao_estoque_has_produtos.produto_id
+            where movimentacao_estoque_id = ${consulta.rows[i].id};`);
+            movimentacoes.push({
+               key:consulta.rows[i].id,
+               data: consulta.rows[i].data,
+               usuario: consulta.rows[i].usuario,
+               produtos: produtos.rows
+            });
+         }
+
+         return response.status(200).send(movimentacoes);
 
       } catch (error) {
          console.error(error);

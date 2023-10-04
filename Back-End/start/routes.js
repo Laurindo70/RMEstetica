@@ -22,6 +22,7 @@ Route.delete('/usuario/:id', 'UsuarioController.delete');
 
 /// --------------- Estabelecimentos --------------- 
 Route.post('/estabelecimento', 'EstabelecimentoController.post');
+Route.post('/cadastro-estabelecimento', 'EstabelecimentoController.cadastroEmpresa').middleware('auth');
 Route.put('/estabelecimento/:id', 'EstabelecimentoController.put');
 Route.delete('/estabelecimento/:id', 'EstabelecimentoController.delete');
 Route.get('/estabelecimento/nome=:nome?', 'EstabelecimentoController.getAll').middleware('auth');
@@ -39,3 +40,4 @@ Route.get('/produto/:estabelecimentoId', 'ProdutoController.getAll');
 
 /// --------------- movimentação --------------- 
 Route.post('/movimentacao', 'MovimentacaoController.post');
+Route.get('/movimentacao/estabelecimento-id=:estabelecimentoId/data-inicio=:dataInicio/data-fim=:dataFim', 'MovimentacaoController.getAll');

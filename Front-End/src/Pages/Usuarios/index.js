@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message } from 'antd';
+import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message, notification } from 'antd';
 import './syle.css';
 import { cpfMask } from '../../Utils/mascaras';
 import api from '../../Utils/api';
@@ -12,6 +12,7 @@ function Usuarios() {
    const token = localStorage.getItem('TokenRm');
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [messageApi, contextHolder] = message.useMessage();
+   const [apiNot, contextHolderNot] = notification.useNotification();
 
    const [nome, setNome] = useState('');
    const [email, setEmail] = useState('');
@@ -100,8 +101,11 @@ function Usuarios() {
          )
 
       } catch (error) {
-         console.log(error.data);
-         alert('Erro no cadastro')
+         apiNot.error({
+            message: `Não foi possível realizar o cadastro.`,
+            description: error.response.data.mensagem[0].message,
+            placement: 'top',
+         });
       }
    }
 
@@ -113,7 +117,7 @@ function Usuarios() {
             }
          }).then(
             (Response) => {
-               setIsModalOpen(false);
+               carregarDados();
                messageApi.open({
                   type: 'success',
                   content: 'Inativado com sucesso.',
@@ -121,13 +125,16 @@ function Usuarios() {
             }
          )
       } catch (error) {
-         console.log(error.response.data.mensagem);
+         messageApi.open({
+            type: 'error',
+            content: error.response.data.mensagem,
+         });
       }
 
    }
 
-   useEffect(() => {
-      api.get(`/usuario/${filtro}`, {
+   async function carregarDados() {
+      await api.get(`/usuario/${filtro}`, {
          headers: {
             Authorization: token
          }
@@ -136,7 +143,7 @@ function Usuarios() {
             console.log(Response.data);
             let usuarioss = [];
 
-            for(let i = 0; i < Response.data.length; i++){
+            for (let i = 0; i < Response.data.length; i++) {
                usuarioss.push({
                   nome_usuario: Response.data[i].nome_usuario,
                   permissao: Response.data[i].permissao,
@@ -148,6 +155,10 @@ function Usuarios() {
             setUsuarios(usuarioss);
          }
       );
+   }
+
+   useEffect(() => {
+      carregarDados();
    }, [filtro, isModalOpen]);
 
    useEffect(() => {
@@ -172,6 +183,7 @@ function Usuarios() {
    return (
       <div className='container-usuarios'>
          {contextHolder}
+         {contextHolderNot}
          <Modal title={<Title level={3}>Cadastro de Usuários</Title>} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={[]}>
             <form onSubmit={salvar}>
                <Row justify="start">

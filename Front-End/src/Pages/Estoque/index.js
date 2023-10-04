@@ -3,6 +3,7 @@ import './style.css';
 import { PlusCircleOutlined, SyncOutlined, PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message } from 'antd';
 import api from '../../Utils/api';
+import ListMov from '../ListMovs';
 import { moneyMask } from '../../Utils/mascaras';
 const { Title } = Typography;
 
@@ -13,6 +14,7 @@ function Estoque() {
    const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
    const [isModalCadastro, setIsModalCadastro] = useState(false);
    const [isModalMovimentacao, setIsModalMovimentacao] = useState(false);
+   const [isModalListMov, setIsModalListMov] = useState(false);
 
    const [messageApi, contextHolder] = message.useMessage();
    const [produtos, setProdutos] = useState([]);
@@ -142,7 +144,7 @@ function Estoque() {
       setProdutosSelecMov(produtosSelecMov.filter((produtoMov) => produtoMov.produto_id !== id));
    }
 
-   async function salvarMovi(e){
+   async function salvarMovi(e) {
       e.preventDefault();
 
       const dados = {
@@ -305,13 +307,13 @@ function Estoque() {
                      <th>Quantidade</th>
                      <th>Remover</th>
                   </tr>
-                  
+
                   {produtosSelecMov.map((produtoMovSel) => (
-                   <tr>
-                     <td>{produtoMovSel.nome_produto}</td>
-                     <td>{produtoMovSel.quantidade}</td>
-                     <td><Button type="primary" onClick={() => { removerProduto(produtoMovSel.produto_id) }} danger><DeleteOutlined /></Button></td>
-                  </tr>
+                     <tr>
+                        <td>{produtoMovSel.nome_produto}</td>
+                        <td>{produtoMovSel.quantidade}</td>
+                        <td><Button type="primary" onClick={() => { removerProduto(produtoMovSel.produto_id) }} danger><DeleteOutlined /></Button></td>
+                     </tr>
                   ))}
                </table>
                <Divider />
@@ -322,20 +324,38 @@ function Estoque() {
             </form>
          </Modal>
 
+         <Modal
+            title="Lista de movimentações"
+            style={{
+               top: 20,
+            }}
+            open={isModalListMov}
+            onOk={() => setIsModalListMov(false)}
+            onCancel={() => setIsModalListMov(false)}
+            width={1300}
+            footer={[
+               <Button key="back" onClick={() => { setIsModalListMov(false) }} danger>
+                  Fechar
+               </Button>
+            ]}
+         >
+            <ListMov estabelecimento_id={estabelecimentoSelecionado} />
+         </Modal>
+
          <Title level={3}>Estoque</Title>
          <Divider />
          <Row justify="end" className='opcoes-usuarios'>
             <Col span={5}>
                <Button icon={<SyncOutlined />} className='botao' onClick={handleModal}>Trocar Estabelecimento</Button>
             </Col>
+            <Col span={5}>
+               <Button icon={<SyncOutlined />} className='botao' onClick={() => { setIsModalListMov(true) }}>Lista Movimentações</Button>
+            </Col>
             <Col span={4}>
                <Button icon={<PlusCircleOutlined />} className='botao' onClick={handleModalCadastro}>Novo Produto</Button>
             </Col>
             <Col span={5}>
                <Button icon={<PlusOutlined />} className='botao' onClick={handleModalMovimentacao}>Realizar Movimentação</Button>
-            </Col>
-            <Col span={4}>
-               <Button icon={<MinusOutlined />} className='botao' onClick={handleModalCadastro}>Saida Produto</Button>
             </Col>
          </Row>
          <Divider />

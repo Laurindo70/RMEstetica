@@ -2,12 +2,18 @@
    width: 100%;
 }
 
-td, th {
+ td, th {
    border: 1px solid #FE9CCC;
    text-align: left;
-   padding: 8px;
+   font-weight: bold;
  }
  
  tr:nth-child(even) {
    background-color: #FE9CCC;
+   color: #fff;
+   font-weight: bold;
+ }
+
+ .header-movs{
+  margin-bottom: 5%;
  }

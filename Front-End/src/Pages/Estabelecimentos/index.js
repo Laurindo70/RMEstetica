@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Switch, message } from 'antd';
+import cep from 'cep-promise';
+import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Switch, message, notification } from 'antd';
 import './style.css';
 import api from '../../Utils/api';
 import { cepMask } from '../../Utils/mascaras';
@@ -11,6 +12,7 @@ const { TextArea } = Input;
 function Estabelecimentos() {
    const token = localStorage.getItem('TokenRm');
    const [messageApi, contextHolder] = message.useMessage();
+   const [apiNot, contextHolderNot] = notification.useNotification();
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [tab, setTab] = useState(0);
 
@@ -20,13 +22,13 @@ function Estabelecimentos() {
    const [enderecoLogradouro, setEnderecoLogradouro] = useState('');
    const [enderecoNomeLogradouro, setEnderecoNomeLogradouro] = useState('');
    const [enderecoCidade, setEnderecoCidade] = useState('');
-   const [enderecoEstado, setEnderecoEstado] = useState('');
-   const [enderecoCep, setEnderecoCep] = useState('');
+   const [enderecoEstado, setEnderecoEstado] = useState(null);
+   const [enderecoCep, setEnderecoCep] = useState(null);
    const [visivelAgendamento, setVisivelAgendamento] = useState(true);
    const [horarioAbertura, setHorarioAbertura] = useState('');
    const [horarioFechamento, setHorarioFechamento] = useState('');
    const [fechamentoAlmoco, setFechamentoAlmoco] = useState(true);
-   const [enderecoComplemento, setEnderecoComplemento] = useState('');
+   const [enderecoComplemento, setEnderecoComplemento] = useState(' ');
    const [horarioFechamentoAlmoco, setHorarioFechamentoAlmoco] = useState('');
    const [horarioVoltaAlmoco, setHorarioVoltaAlmoco] = useState('');
    const [estabelecimentoId, setEstabelecimentoId] = useState(null);
@@ -105,11 +107,11 @@ function Estabelecimentos() {
       if (estabelecimentoId == null) {
 
          try {
-            await api.post('/estabelecimento', {
+            await api.post('/cadastro-estabelecimento', dados, {
                headers: {
                   Authorization: token
                }
-            }, dados).then(
+            }).then(
                (Response) => {
                   setIsModalOpen(false);
                   messageApi.open({
@@ -119,7 +121,11 @@ function Estabelecimentos() {
                }
             )
          } catch (error) {
-            console.log(error.response.data.mensagem);
+            apiNot.error({
+               message: `Não foi possível realizar o cadastro.`,
+               description: error.response.data.mensagem[0].message,
+               placement: 'top',
+            });
          }
       } else {
          try {
@@ -137,7 +143,11 @@ function Estabelecimentos() {
                }
             )
          } catch (error) {
-            console.log(error.response.data.mensagem);
+            apiNot.error({
+               message: `Não foi possível atualizar o cadastro.`,
+               description: error.response.data.mensagem[0].message,
+               placement: 'top',
+            });
          }
       }
    }
@@ -188,7 +198,6 @@ function Estabelecimentos() {
             setEnderecoComplemento(response.data[0].endereco_complemento);
             setHorarioFechamentoAlmoco(response.data[0].horario_fechamento_almoco);
             setHorarioVoltaAlmoco(response.data[0].horario_volta_almoco);
-            console.log(response.data);
          }
       )
    }
@@ -214,9 +223,23 @@ function Estabelecimentos() {
       );
    }, [filtro, isModalOpen]);
 
+   useEffect(() => {
+      if (enderecoCep !== null && enderecoCep.length == 9) {
+         cep(enderecoCep.replace(/[^a-zA-Z0-9]/g, ""))
+         .then(
+            (response) => {
+               setEnderecoCidade(response.city);
+               setEnderecoEstado(response.state);
+               setEnderecoBairro(response.neighborhood);
+            }
+         )
+      }
+   }, [enderecoCep])
+
    return (
       <div className='container-usuarios'>
          {contextHolder}
+         {contextHolderNot}
          <Modal title={<Title level={3}>Cadastro de Usuários</Title>} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={[]}>
             <div className='main-card-buttons'>
                <button onClick={alteracaoTab} className={`esquerda ${tab === 0 ? 'selecionado' : ''}`}>Informações</button>
@@ -280,14 +303,8 @@ function Estabelecimentos() {
                      <Col span={4} push={16}><label className='label-cadastro'>Numero</label></Col>
                   </Row>
                   <Row justify="start">
-                     <Col span={16}><Input className='input-cadastro' onChange={e => setEnderecoBairro(e.target.value)} value={enderecoBairro} /></Col>
+                     <Col span={16}><Input className='input-cadastro' onChange={e => setEnderecoBairro(e.target.value)} value={enderecoBairro} disabled={true} /></Col>
                      <Col span={4} push={4}><Input className='input-cadastro' onChange={e => setEnderecoNumero(e.target.value)} value={enderecoNumero} /></Col>
-                  </Row>
-                  <Row justify="start">
-                     <label className='label-cadastro'>Cidade</label>
-                  </Row>
-                  <Row justify="start">
-                     <Input className='input-cadastro' onChange={e => setEnderecoCidade(e.target.value)} value={enderecoCidade} />
                   </Row>
                   <Row justify="start">
                      <label className='label-cadastro'>Cep</label>
@@ -299,7 +316,13 @@ function Estabelecimentos() {
                      <label className='label-cadastro'>Estado</label>
                   </Row>
                   <Row justify="start">
-                     <Input className='input-cadastro' onChange={e => setEnderecoEstado(e.target.value)} value={enderecoEstado} />
+                     <Input className='input-cadastro' onChange={e => setEnderecoEstado(e.target.value)} value={enderecoEstado} disabled={true} />
+                  </Row>
+                  <Row justify="start">
+                     <label className='label-cadastro'>Cidade</label>
+                  </Row>
+                  <Row justify="start">
+                     <Input className='input-cadastro' onChange={e => setEnderecoCidade(e.target.value)} value={enderecoCidade} disabled={true} />
                   </Row>
                   <Row justify="start">
                      <label className='label-cadastro'>Complemento</label>

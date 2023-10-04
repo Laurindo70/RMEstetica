@@ -152,7 +152,6 @@ class UsuarioController {
       }
    }
 
-
    async put({ request, response, params }) {
       try {
 
@@ -206,13 +205,13 @@ class UsuarioController {
 
          const usuario = await Database
             .table('usuario')
-            .where('id', params.id)
+            .where('id', params.id);
 
          const usuarioAtualizado = await Database
             .table('usuario')
             .where('id', params.id)
             .update({
-               ativo: !usuario.ativo,
+               ativo: !usuario[0].ativo,
                atualizado_em: new Date()
             });
 
