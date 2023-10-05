@@ -4,9 +4,8 @@ CREATE TABLE nivel_permissao(
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now()
 );
-
-INSERT INTO nivel_permissao (nome_nivel) values ('Administrador');
-
+INSERT INTO nivel_permissao (nome_nivel)
+values ('Administrador');
 CREATE TABLE usuario(
    id SERIAL PRIMARY KEY,
    nivel_permissao_id INTEGER NOT NULL,
@@ -20,7 +19,6 @@ CREATE TABLE usuario(
    atualizado_em timestamp without time zone DEFAULT now(),
    FOREIGN KEY(nivel_permissao_id) REFERENCES nivel_permissao(id)
 );
-
 CREATE TABLE estabelecimento(
    id SERIAL PRIMARY KEY,
    nome_estabelecimento VARCHAR(150) NOT NULL,
@@ -42,14 +40,12 @@ CREATE TABLE estabelecimento(
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now()
 );
-
 CREATE TABLE estabelecimento_has_usuario(
    estabelecimento_id INTEGER NOT NULL,
    usuario_id INTEGER NOT NULL,
    FOREIGN KEY(usuario_id) REFERENCES usuario(id),
    FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
 );
-
 CREATE TABLE produtos(
    id SERIAL PRIMARY KEY,
    estabelecimento_id INTEGER NOT NULL,
@@ -61,7 +57,6 @@ CREATE TABLE produtos(
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now()
 );
-
 CREATE TABLE despesas(
    id SERIAL PRIMARY KEY,
    estabelecimento_id INTEGER NOT NULL,
@@ -75,24 +70,56 @@ CREATE TABLE despesas(
    FOREIGN KEY(usuario_id) REFERENCES usuario(id),
    FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
 );
-
 CREATE TABLE movimentacao_estoque(
-	id SERIAL PRIMARY KEY,
-	agendamento_id INTEGER,
-	usuario_id INTEGER NOT NULL,
-	estabelecimento_id INTEGER NOT NULL,
-	data_movimentacao TIMESTAMP DEFAULT NOW(),
+   id SERIAL PRIMARY KEY,
+   agendamento_id INTEGER,
+   usuario_id INTEGER NOT NULL,
+   estabelecimento_id INTEGER NOT NULL,
+   data_movimentacao TIMESTAMP DEFAULT NOW(),
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),
-	entrada BOOLEAN DEFAULT TRUE,
+   entrada BOOLEAN DEFAULT TRUE,
    FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id),
    FOREIGN KEY(usuario_id) REFERENCES usuario(id)
 );
-
 CREATE TABLE movimentacao_estoque_has_produtos(
    movimentacao_estoque_id INTEGER NOT NULL,
    produto_id INTEGER NOT NULL,
    quantidade INTEGER NOT NULL,
    FOREIGN KEY(movimentacao_estoque_id) REFERENCES movimentacao_estoque(id),
    FOREIGN KEY(produto_id) REFERENCES produtos(id)
+);
+CREATE TABLE profissionais(
+   id SERIAL PRIMARY KEY,
+   nome_profissional VARCHAR(150) NOT NULL,
+   horario_inicial_atendimento TIME NOT NULL,
+   horario_final_atendimento TIME NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now()
+);
+CREATE TABLE procedimento(
+   id SERIAL PRIMARY KEY,
+   estabelecimento_id INTEGER NOT NULL,
+   nome_procedimento VARCHAR(150) NOT NULL,
+   duracao_procedimento TIME NOT NULL,
+   ativo BOOLEAN DEFAULT TRUE,
+   valor_procedimento DOUBLE PRECISION NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+);
+CREATE TABLE procedimento_has_produtos(
+   produto_id INTEGER NOT NULL,
+   procedimento_id INTEGER NOT NULL,
+   quantidade INTEGER NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(produto_id) REFERENCES produtos(id),
+   FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
+);
+CREATE TABLE procedimento_has_profissional(
+	profissional_id INTEGER NOT NULL,
+   	procedimento_id INTEGER NOT NULL,
+   	criado_em timestamp without time zone DEFAULT now(),
+   	FOREIGN KEY(profissional_id) REFERENCES profissionais(id),
+   	FOREIGN KEY(procedimento_id) REFERENCES procedimento(id) 
 );

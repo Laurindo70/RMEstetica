@@ -240,7 +240,7 @@ function Estabelecimentos() {
       <div className='container-usuarios'>
          {contextHolder}
          {contextHolderNot}
-         <Modal title={<Title level={3}>Cadastro de Usuários</Title>} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={[]}>
+         <Modal title={<Title level={3}>Cadastro de Estabelecimento</Title>} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} footer={[]}>
             <div className='main-card-buttons'>
                <button onClick={alteracaoTab} className={`esquerda ${tab === 0 ? 'selecionado' : ''}`}>Informações</button>
                <button onClick={alteracaoTab} className={`direita ${tab === 1 ? 'selecionado' : ''}`}>Endereço</button>

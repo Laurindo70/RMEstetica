@@ -41,3 +41,7 @@ Route.get('/produto/:estabelecimentoId', 'ProdutoController.getAll');
 /// --------------- movimentação --------------- 
 Route.post('/movimentacao', 'MovimentacaoController.post');
 Route.get('/movimentacao/estabelecimento-id=:estabelecimentoId/data-inicio=:dataInicio/data-fim=:dataFim', 'MovimentacaoController.getAll');
+
+/// --------------- procedimento ---------------
+Route.post('/procedimento', 'ProcedimentoController.post'); 
+Route.get('/procedimento/:id', 'ProcedimentoController.getAll'); 

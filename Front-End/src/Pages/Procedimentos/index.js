@@ -1,14 +1,44 @@
-import React from "react";
-import { Col, Input, Row, Dropdown, Table, Button, DatePicker, Collapse, notification, Collapse  } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Col, Input, Row, Table, Button, DatePicker, Select, Typography, List, Modal } from 'antd';
+import { SearchOutlined, SyncOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import api from '../../Utils/api';
+import RegisterProcedimento from './components/Register';
+
+const { Title } = Typography;
 
 function Procedimentos() {
+   const token = localStorage.getItem('TokenRm');
+
+   const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
+   const [isModalCadastro, setIsModalCadastro] = useState(false);
+
+   const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
+   const [estabelecimentos, setEstabelecimentos] = useState();
+
+   const [produtos, setProdutos] = useState([]);
+   const [procedimentos, setProcedimentos] = useState([]);
+
+   const [filtro, setFiltro] = useState(null);
+
+   const handleModalEstab = () => {
+      setIsModalSelecEstab(!isModalSelecEstab);
+   }
+
+   const handleModalCad = () => {
+      setIsModalCadastro(!isModalCadastro);
+   }
 
    const colunas = [
       {
          title: 'Nome',
          dataIndex: 'nome_procedimento',
          key: 'nome_procedimento'
+      },
+      {
+         title: 'Valor',
+         dataIndex: 'valor',
+         key: 'valor',
+         render: (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       },
       {
          title: 'Tempo',
@@ -19,14 +49,15 @@ function Procedimentos() {
          title: 'Profissionais',
          dataIndex: 'profissionais',
          key: 'profissionais',
-         render: (prof) => <Dropdown
-            menu={{
-               items,
-            }}
-            placement="bottomLeft"
-         >
-            <Button>mostrar</Button>
-         </Dropdown>
+         render: (prof) => <List
+            bordered
+            dataSource={prof}
+            renderItem={(item) => (
+               <List.Item>
+                  {item.nome_profissional}
+               </List.Item>
+            )}
+         />
       },
       {
          title: 'Situação',
@@ -35,69 +66,139 @@ function Procedimentos() {
          render: (sit) => sit[1] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Desativar</Button> : <Button type="primary" onClick={() => { inativar(sit[1]) }}>Ativar</Button>
       },
       {
-         title: 'Estabelecimentos',
-         dataIndex: 'estabelecimentos',
-         key: 'estabelecimentos',
-         render: (est) => est[0].nome
+         title: 'Produtos',
+         dataIndex: 'produtos',
+         key: 'produtos',
+         render: (est) => <List
+            bordered
+            dataSource={est}
+            renderItem={(item) => (
+               <List.Item>
+                  {item.nome_produto} - {item.quantidade}
+               </List.Item>
+            )}
+         />
       }
    ]
-
-   const items = [
-      {
-         key: '1',
-         label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-               1st menu item
-            </a>
-         ),
-      },
-      {
-         key: '2',
-         label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-               2nd menu item
-            </a>
-         ),
-      },
-      {
-         key: '3',
-         label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
-               3rd menu item
-            </a>
-         ),
-      },
-   ];
 
    async function inativar(id) {
       console.log(id);
    }
 
-   const dados = [
-      {
-         key: 1,
-         nome_procedimento: 'Procedimento 01',
-         tempo: '00:30',
-         profissionais: [{ key: 1, label: 'Teste 01' }, { id: 1, nome: 'Teste 02' }],
-         situacao: [1, false],
-         estabelecimentos: [{ id: 1, nome: 'Estabelecimento 01' }]
+   async function carregarDados() {
+
+      try {
+         await api.get(`/procedimento/${estabelecimentoSelecionado}`, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
+            (Response) => {
+               let dadosProcedimentos = [];
+
+               for (let i = 0; i < Response.data.length; i++) {
+                  dadosProcedimentos.push({
+                     id: Response.data[i].id,
+                     nome_procedimento: Response.data[i].nome_procedimento,
+                     tempo: Response.data[i].tempo,
+                     valor: Response.data[i].valor,
+                     situacao: [Response.data[i].ativo, Response.data[i].id],
+                     produtos: Response.data[i].produtos,
+                     profissionais: Response.data[i].profissionais
+                  })
+               }
+
+               setProcedimentos(dadosProcedimentos);
+            }
+         )
+      } catch (error) {
+         console.log(error.data);
+         alert('Erro no cadastro')
       }
-   ]
+
+   }
+
+   useEffect(() => {
+      if (estabelecimentoSelecionado !== null) {
+         carregarDados();
+
+         api.get(`/produto/${estabelecimentoSelecionado}`, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
+            (Response) => {
+               let dadosProdutos = [];
+
+               for (let i = 0; i < Response.data.length; i++) {
+                  dadosProdutos.push({
+                     id: Response.data[i].id,
+                     label: Response.data[i].nome_produto,
+                     value: i
+                  })
+               }
+
+               setProdutos(dadosProdutos);
+            }
+         )
+      }
+   }, [isModalSelecEstab, isModalCadastro]);
+
+   useEffect(() => {
+      api.get(`/estabelecimento/nome=`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
+         (Response) => {
+            let data = [];
+            for (let i = 0; i < Response.data.length; i++) {
+               data.push({
+                  label: Response.data[i].nome_estabelecimento,
+                  value: Response.data[i].id
+               });
+            }
+            setEstabelecimentos(data);
+         }
+      );
+   }, []);
 
    return (
       <>
+         <Modal title={<Title level={3}>Selecione o Estabelecimento</Title>} open={isModalSelecEstab} onOk={handleModalEstab} onCancel={handleModalEstab}>
+            <Row justify="start">
+               <label className='label-cadastro'>Estabelecimento</label>
+               <Select
+                  style={{
+                     width: '100%',
+                     border: 'solid 1px #A9335D',
+                     borderRadius: '5px',
+                  }}
+                  options={estabelecimentos}
+                  onChange={(value) => { setEstabelecimentoSelecionado(value) }}
+               />
+            </Row>
+         </Modal>
+
+         <Modal title={<Title level={3}>Cadastro de estabelecimento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
+            <RegisterProcedimento estabelecimento_id={estabelecimentoSelecionado} produtos={produtos} fecharModal={handleModalCad} />
+         </Modal>
+
          <Row justify="end" className='opcoes-usuarios header-movs'>
-            <Col span={3}>
-               <Button icon={<SearchOutlined />} className='botao'>Novo Procedimento</Button>
+            <Col span={20}>
+               <Button icon={<SyncOutlined />} onClick={handleModalEstab} className='botao'>Trocar Estabelecimento</Button>
             </Col>
-            <Col span={2}>
-               <Button icon={<SearchOutlined />} className='botao'>Filtrar</Button>
+            <Col span={3}>
+               <Button icon={<PlusCircleOutlined />} onClick={handleModalCad} className='botao'>Novo Procedimento</Button>
+            </Col>
+            {/* <Col span={2}>
+               <Button onClick={carregarDados} icon={<SearchOutlined />} className='botao'>Filtrar</Button>
             </Col>
             <Col span={5}>
-               <Input className='input-filtro' placeholder="Digite o nome do procedimento" />
-            </Col>
+               <Input value={filtro} onChange={e => setFiltro(e.target.value)} className='input-filtro' placeholder="Digite o nome do procedimento" />
+            </Col> */}
          </Row>
-         <Table dataSource={dados} columns={colunas} pagination={false} />
+         <Table dataSource={procedimentos} columns={colunas} pagination={false} />
       </>
    );
 }
