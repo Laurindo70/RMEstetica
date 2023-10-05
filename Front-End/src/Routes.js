@@ -12,6 +12,7 @@ import Despesas from './Pages/Despesas';
 import Estoque from './Pages/Estoque';
 import Agendamentos from './Pages/Agendamentos';
 import Procedimentos from './Pages/Procedimentos';
+import Profissionais from './Pages/Profissionais';
 
 function Rotas() {
    return (
@@ -35,6 +36,7 @@ function Rotas() {
                   <Route path='estoque' element={<Estoque />} />
                   <Route path='agendamento' element={<Agendamentos />} />
                   <Route path='procedimento' element={<Procedimentos />} />
+                  <Route path='profissionais' element={<Profissionais />} />
                </Route>
             </Routes>
          </Router>

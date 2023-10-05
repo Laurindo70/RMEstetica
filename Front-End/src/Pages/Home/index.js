@@ -10,7 +10,8 @@ import {
    DollarOutlined,
    ShoppingCartOutlined,
    AuditOutlined,
-   CalendarOutlined
+   CalendarOutlined,
+   UsergroupAddOutlined
 } from '@ant-design/icons';
 import { BsFillClipboard2PlusFill } from "react-icons/bs";
 import { Layout, Menu, Button, Dropdown, Modal } from 'antd';
@@ -116,6 +117,11 @@ function Home() {
             key: 'procedimento',
             icon: <BsFillClipboard2PlusFill />,
             label: 'Procedimentos'
+         },
+         {
+            key: 'profissionais',
+            icon: <UsergroupAddOutlined />,
+            label: 'Profissionais'
          }
       ]);
       console.log(location)
