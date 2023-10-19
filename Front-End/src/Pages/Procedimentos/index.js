@@ -14,6 +14,7 @@ function Procedimentos() {
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
    const [estabelecimentos, setEstabelecimentos] = useState();
+   const [profissionais, setProfissionais] = useState();
 
    const [produtos, setProdutos] = useState([]);
    const [procedimentos, setProcedimentos] = useState([]);
@@ -111,9 +112,30 @@ function Procedimentos() {
                setProcedimentos(dadosProcedimentos);
             }
          )
+
+         await api.get(`/profissional/${estabelecimentoSelecionado}`, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
+            (Response) => {
+               let dadosProfissionais = [];
+
+               for (let i = 0; i < Response.data.length; i++) {
+                  dadosProfissionais.push({
+                     label: Response.data[i].nome_profissional,
+                     value: Response.data[i].id
+                  })
+               }
+
+               console.log(dadosProfissionais);
+
+               setProfissionais(dadosProfissionais);
+            }
+         )
       } catch (error) {
          console.log(error.data);
-         alert('Erro no cadastro')
+         alert('Erro ao carregar dados.')
       }
 
    }
@@ -181,7 +203,7 @@ function Procedimentos() {
          </Modal>
 
          <Modal title={<Title level={3}>Cadastro de estabelecimento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
-            <RegisterProcedimento estabelecimento_id={estabelecimentoSelecionado} produtos={produtos} fecharModal={handleModalCad} />
+            <RegisterProcedimento estabelecimento_id={estabelecimentoSelecionado} produtos={produtos} fecharModal={handleModalCad} listaProfissionais={profissionais} />
          </Modal>
 
          <Row justify="end" className='opcoes-usuarios header-movs'>

@@ -40,6 +40,13 @@ class ProcedimentoController {
             }, transacao);
          }
 
+         for(let i = 0; i < profissionais.length; i++){
+            await ProcedimentoProfissional.create({
+               procedimento_id: procedimento.$attributes.id,
+               profissional_id: profissionais[i],
+            }, transacao);
+         }
+
          await transacao.commit();
          return response.status(201).send(procedimento);
 
@@ -64,9 +71,9 @@ class ProcedimentoController {
             const produtos = await Database.raw(`select produtos.id, produtos.nome_produto, procedimento_has_produtos.quantidade from procedimento_has_produtos
             inner join produtos on procedimento_has_produtos.produto_id=produtos.id
             where procedimento_has_produtos.procedimento_id = ${consultaProcedimentos.rows[i].id};`);
-            const profissionais = await Database.raw(`select profissionais.id, profissionais.nome_profissional from procedimento_has_profissional 
-            inner join profissionais on profissionais.id = procedimento_has_profissional.profissional_id
-            where procedimento_has_profissional.procedimento_id = ${consultaProcedimentos.rows[i].id};`)
+            const profissionais = await Database.raw(`select profissional.id, profissional.nome_profissional from procedimento_has_proficional 
+            inner join profissional on profissional.id = procedimento_has_proficional.profissional_id
+            where procedimento_has_proficional.procedimento_id = ${consultaProcedimentos.rows[i].id};`)
 
             procedimentos.push({
                id: consultaProcedimentos.rows[i].id,

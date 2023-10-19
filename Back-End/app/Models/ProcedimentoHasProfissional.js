@@ -5,7 +5,7 @@ const Model = use('Model')
 
 class ProcedimentoHasProfissional extends Model {
    static get table() {
-      return 'procedimento_has_profissional'
+      return 'procedimento_has_proficional'
    }
 
    static get createdAtColumn() {

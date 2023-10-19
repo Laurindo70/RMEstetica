@@ -5,7 +5,8 @@ CREATE TABLE nivel_permissao(
    atualizado_em timestamp without time zone DEFAULT now()
 );
 INSERT INTO nivel_permissao (nome_nivel)
-values ('Administrador');
+values ('Administrador'), ('Usuário Comum')
+;
 CREATE TABLE usuario(
    id SERIAL PRIMARY KEY,
    nivel_permissao_id INTEGER NOT NULL,
@@ -49,7 +50,7 @@ CREATE TABLE estabelecimento_has_usuario(
 CREATE TABLE produtos(
    id SERIAL PRIMARY KEY,
    estabelecimento_id INTEGER NOT NULL,
-   nome_produto VARCHAR(150) UNIQUE NOT NULL,
+   nome_produto VARCHAR(150) NOT NULL,
    quantidade INTEGER DEFAULT 0,
    valor_produto DOUBLE PRECISION NOT NULL,
    ativo BOOLEAN DEFAULT TRUE,
@@ -89,7 +90,7 @@ CREATE TABLE movimentacao_estoque_has_produtos(
    FOREIGN KEY(movimentacao_estoque_id) REFERENCES movimentacao_estoque(id),
    FOREIGN KEY(produto_id) REFERENCES produtos(id)
 );
-CREATE TABLE profissionais(
+CREATE TABLE profissional(
    id SERIAL PRIMARY KEY,
    nome_profissional VARCHAR(150) NOT NULL,
    horario_inicial_atendimento TIME NOT NULL,
@@ -116,10 +117,10 @@ CREATE TABLE procedimento_has_produtos(
    FOREIGN KEY(produto_id) REFERENCES produtos(id),
    FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
 );
-CREATE TABLE procedimento_has_profissional(
+CREATE TABLE procedimento_has_proficional(
 	profissional_id INTEGER NOT NULL,
    	procedimento_id INTEGER NOT NULL,
    	criado_em timestamp without time zone DEFAULT now(),
-   	FOREIGN KEY(profissional_id) REFERENCES profissionais(id),
+   	FOREIGN KEY(profissional_id) REFERENCES profissional(id),
    	FOREIGN KEY(procedimento_id) REFERENCES procedimento(id) 
 );

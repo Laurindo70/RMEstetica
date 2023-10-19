@@ -9,7 +9,7 @@ class MovimentacaoEstoqueHasProduto extends Model {
    }
 
    static get createdAtColumn() {
-      return 'criado_em'
+      return false
    }
 
    static get updatedAtColumn() {

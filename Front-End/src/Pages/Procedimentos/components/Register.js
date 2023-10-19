@@ -4,7 +4,7 @@ import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, mes
 import { PlusCircleOutlined, SyncOutlined, PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { moneyMask } from '../../../Utils/mascaras';
 
-export default function RegisterProcedimento({ estabelecimento_id, produtos, fecharModal }) {
+export default function RegisterProcedimento({ estabelecimento_id, produtos, fecharModal, listaProfissionais }) {
    const [messageApi, contextHolder] = message.useMessage();
    const token = localStorage.getItem('TokenRm');
 
@@ -27,7 +27,8 @@ export default function RegisterProcedimento({ estabelecimento_id, produtos, fec
          "estabelecimento_id": estabelecimento_id,
          "profissionais": [],
          "produtos": produtosCadastro,
-         "valor_procedimento": valorProcedimento
+         "valor_procedimento": valorProcedimento,
+         "profissionais": profissionais
       }
 
       try {
@@ -99,6 +100,21 @@ export default function RegisterProcedimento({ estabelecimento_id, produtos, fec
             </Row>
             <Row justify="start">
                <input onChange={e => setDuracaoProcedimento(e.target.value)} value={duracaoProcedimento} className='input-time' type="time" required />
+            </Row>
+            <Row justify="start">
+               <label className='label-cadastro'>Selecione os profissionais</label>
+               <Select
+                  mode="multiple"
+                  allowClear
+                  style={{
+                     width: '100%',
+                     border: 'solid 1px #A9335D',
+                     borderRadius: '5px',
+                  }}
+                  placeholder="Please select"
+                  onChange={e => setProfissionais(e)}
+                  options={listaProfissionais}
+               />
             </Row>
 
             <Divider />
