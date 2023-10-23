@@ -10,6 +10,7 @@ const { Title } = Typography;
 
 function Usuarios() {
    const token = localStorage.getItem('TokenRm');
+   const tipoUser = localStorage.getItem('TiponRm');
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [messageApi, contextHolder] = message.useMessage();
    const [apiNot, contextHolderNot] = notification.useNotification();
@@ -240,11 +241,14 @@ function Usuarios() {
 
          <Title level={3}>Usuários</Title>
          <Divider />
-         <Row justify="end" className='opcoes-usuarios'>
-            <Col span={5}><Button icon={<PlusCircleOutlined />} className='botao' onClick={showModal}>Novo Usuário</Button></Col>
-            <Col span={3}><Button icon={<SearchOutlined />} className='botao'>Filtrar</Button></Col>
-            <Col span={8}><Input onChange={e => setFiltro(e.target.value)} value={filtro} className='input-filtro' placeholder="Digite o nome do Usuário" /></Col>
-         </Row>
+         {tipoUser === '1' ?
+            <Row justify="end" className='opcoes-usuarios'>
+               <Col span={5}><Button icon={<PlusCircleOutlined />} className='botao' onClick={showModal}>Novo Usuário</Button></Col>
+               <Col span={3}><Button icon={<SearchOutlined />} className='botao'>Filtrar</Button></Col>
+               <Col span={8}><Input onChange={e => setFiltro(e.target.value)} value={filtro} className='input-filtro' placeholder="Digite o nome do Usuário" /></Col>
+            </Row>
+            : null
+         }
          <Divider />
          <Table dataSource={usuarios} columns={colunas} pagination={false} />
       </div>

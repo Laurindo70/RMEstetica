@@ -19,6 +19,8 @@ function RegisterUser() {
    const [confSenha, setConfSenha] = useState('');
    const [cpf, setCpf] = useState(null);
 
+   console.log(estabelecimentoId);
+
    async function salvar(e) {
       e.preventDefault();
       messageApi.open({
@@ -38,7 +40,7 @@ function RegisterUser() {
 
          await api.post('/usuario-register', {
             nome_usuario: nome,
-            nivel_permissao_id: 1,
+            nivel_permissao_id: (estabelecimentoId === undefined ? 2 : 1 ),
             senha: senha,
             email_usuario: email,
             cpf: cpf,

@@ -1,0 +1,10 @@
+.container-inicio{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.container-inicio img{
+   height: 70vh;
+   width: 50%;
+}

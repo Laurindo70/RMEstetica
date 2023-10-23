@@ -5,8 +5,8 @@ CREATE TABLE nivel_permissao(
    atualizado_em timestamp without time zone DEFAULT now()
 );
 INSERT INTO nivel_permissao (nome_nivel)
-values ('Administrador'), ('Usuário Comum')
-;
+values ('Administrador'),
+   ('Usuário Comum');
 CREATE TABLE usuario(
    id SERIAL PRIMARY KEY,
    nivel_permissao_id INTEGER NOT NULL,
@@ -118,9 +118,61 @@ CREATE TABLE procedimento_has_produtos(
    FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
 );
 CREATE TABLE procedimento_has_proficional(
-	profissional_id INTEGER NOT NULL,
-   	procedimento_id INTEGER NOT NULL,
+   profissional_id INTEGER NOT NULL,
+   procedimento_id INTEGER NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(profissional_id) REFERENCES profissional(id),
+   FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
+);
+CREATE TABLE formas_pagamento(
+   id SERIAL PRIMARY KEY,
+   nome_forma_pagamento VARCHAR(150) NOT NULL,
+   estabelecimento_id INTEGER NOT NULL,
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+);
+CREATE TABLE agendamento(
+   id SERIAL PRIMARY KEY,
+   profissional_id INTEGER NOT NULL,
+   procedimento_id INTEGER NOT NULL,
+   data_agendamento TIMESTAMP NOT NULL,
+   valor DOUBLE PRECISION NOT NULL,
+   desconto DOUBLE PRECISION NOT NULL,
+   cliente_id INTEGER,
+   nome_cliente VARCHAR(150) NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(profissional_id) REFERENCES profissional(id),
+   FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
+);
+CREATE TABLE agendamento(
+   id SERIAL PRIMARY KEY,
+   profissional_id INTEGER NOT NULL,
+   procedimento_id INTEGER NOT NULL,
+   data_agendamento TIMESTAMP NOT NULL,
+   valor DOUBLE PRECISION NOT NULL,
+   cliente_id INTEGER,
+   nome_cliente VARCHAR(150) NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(profissional_id) REFERENCES profissional(id),
+   FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
+);
+CREATE TABLE pagamentos(
+   id SERIAL PRIMARY KEY,
+   agendamento_id INTEGER NOT NULL,
+   formas_pagamento_id INTEGER NOT NULL,
+   valor DOUBLE PRECISION NOT NULL,
+   data_pagamento TIMESTAMP NOT NULL,
+   desconto DOUBLE PRECISION NOT NULL,
+   criado_em timestamp without time zone DEFAULT now(),
+   atualizado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(agendamento_id) REFERENCES agendamento(id),
+   FOREIGN KEY(formas_pagamento_id) REFERENCES formas_pagamento(id)
+);
+CREATE TABLE feedbacks(
+	id SERIAL PRIMARY KEY,
+	feedback TEXT NOT NULL,
+	usuario_id INTEGER NOT NULL,
    	criado_em timestamp without time zone DEFAULT now(),
-   	FOREIGN KEY(profissional_id) REFERENCES profissional(id),
-   	FOREIGN KEY(procedimento_id) REFERENCES procedimento(id) 
+   	FOREIGN KEY(usuario_id) REFERENCES usuario(id)
 );

@@ -36,6 +36,7 @@ function Login() {
                console.log(response.data);
                localStorage.setItem('TokenRm', `bearer ${response.data.token}`);
                localStorage.setItem('NomeRm', `${response.data.permissao.nome_usuario}`);
+               localStorage.setItem('TipoRm', `${response.data.permissao.nivel_permissao_id}`);
                messageApi.destroy();
                navigate("/home");
             }

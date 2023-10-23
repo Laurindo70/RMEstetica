@@ -26,7 +26,7 @@ function Home() {
    const navigate = useNavigate();
 
    const [collapsed, setCollapsed] = useState(false);
-   const [ itens, setItens ] = useState([]);
+   const [itens, setItens] = useState([]);
 
    const sair = () => {
       confirm({
@@ -76,54 +76,75 @@ function Home() {
       },
    ];
 
-   function mudarPagina(value){
+   function mudarPagina(value) {
       setCollapsed(true)
       navigate(`${value.key}`);
    }
 
    useEffect(() => {
-      setItens([
-         {
-            key: '',
-            icon: <HomeOutlined />,
-            label: 'Home',
-         },
-         {
-            key: 'usuarios',
-            icon: <UserOutlined />,
-            label: 'Usuários',
-         },
-         {
-            key: 'estabelecimentos',
-            icon: <BankOutlined />,
-            label: 'Estabelecimentos',
-         },
-         {
-            key: 'despesas',
-            icon: <DollarOutlined />,
-            label: 'Despesas'
-         },
-         {
-            key: 'estoque',
-            icon: <ShoppingCartOutlined />,
-            label: 'Estoque'
-         },
-         {
-            key: 'agendamento',
-            icon: <CalendarOutlined />,
-            label: 'Agendamentos'
-         },
-         {
-            key: 'procedimento',
-            icon: <BsFillClipboard2PlusFill />,
-            label: 'Procedimentos'
-         },
-         {
-            key: 'profissionais',
-            icon: <UsergroupAddOutlined />,
-            label: 'Profissionais'
-         }
-      ]);
+      const permissao = localStorage.getItem('TipoRm');
+      if (permissao === '1') {
+         setItens([
+            {
+               key: '',
+               icon: <HomeOutlined />,
+               label: 'Home',
+            },
+            {
+               key: 'usuarios',
+               icon: <UserOutlined />,
+               label: 'Usuários',
+            },
+            {
+               key: 'estabelecimentos',
+               icon: <BankOutlined />,
+               label: 'Estabelecimentos',
+            },
+            {
+               key: 'despesas',
+               icon: <DollarOutlined />,
+               label: 'Despesas'
+            },
+            {
+               key: 'estoque',
+               icon: <ShoppingCartOutlined />,
+               label: 'Estoque'
+            },
+            {
+               key: 'agendamento',
+               icon: <CalendarOutlined />,
+               label: 'Agendamentos'
+            },
+            {
+               key: 'procedimento',
+               icon: <BsFillClipboard2PlusFill />,
+               label: 'Procedimentos'
+            },
+            {
+               key: 'profissionais',
+               icon: <UsergroupAddOutlined />,
+               label: 'Profissionais'
+            }
+         ]);
+      } else {
+         setItens([
+            {
+               key: '',
+               icon: <HomeOutlined />,
+               label: 'Home',
+            },
+            {
+               key: 'usuarios',
+               icon: <UserOutlined />,
+               label: 'Usuário',
+            },
+            {
+               key: 'agendamento',
+               icon: <CalendarOutlined />,
+               label: 'Agendamentos'
+            }
+         ]);
+      }
       console.log(location)
       console.log();
    }, [location])
