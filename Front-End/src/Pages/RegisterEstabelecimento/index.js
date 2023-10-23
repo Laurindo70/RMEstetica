@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Switch } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Switch, Input } from 'antd';
 import './style.css';
+import cep from 'cep-promise';
 import imagemInicio from '../../Images/Spring flower-pana.svg';
 import { useNavigate } from 'react-router-dom';
 import api from '../../Utils/api';
@@ -69,6 +70,21 @@ function RegisterEstabelecimento() {
       }
    }
 
+   useEffect(() => {
+      if (enderecoCep !== null && enderecoCep.length == 9) {
+         cep(enderecoCep.replace(/[^a-zA-Z0-9]/g, ""))
+            .then(
+               (response) => {
+                  console.log(response);
+                  setEnderecoCidade(response.city);
+                  setEnderecoEstado(response.state);
+                  setEnderecoBairro(response.neighborhood);
+                  setEnderecoNomeLogradouro(response.street);
+               }
+            )
+      }
+   }, [enderecoCep])
+
    return (
       <div className="main">
          <div className="card-login">
@@ -104,25 +120,24 @@ function RegisterEstabelecimento() {
                      </form>
                      :
                      <form onSubmit={salvar}>
+                        <label>Cep</label>
+                        <Input onChange={e => setEnderecoCep(cepMask(e.target.value))} value={enderecoCep} type="text" required />
                         <p>
                            <p><label>Logradouro</label> <label className='nome_logradouro_label'>Nome Logradouro</label></p>
                            <input onChange={e => setEnderecoLogradouro(e.target.value)} value={enderecoLogradouro} className='logradouro' type="text" required />
-                           <input onChange={e => setEnderecoNomeLogradouro(e.target.value)} value={enderecoNomeLogradouro} className='nome_logradouro' type="text" required />
+                           <input Input disabled={true} onChange={e => setEnderecoNomeLogradouro(e.target.value)} value={enderecoNomeLogradouro} className='nome_logradouro' type="text" required />
                         </p>
 
                         <p>
                            <p><label>Bairro</label> <label className='numero_label'>Numero</label></p>
-                           <input onChange={e => setEnderecoBairro(e.target.value)} value={enderecoBairro} type="text" required className='bairro' /> <input onChange={e => setEnderecoNumero(e.target.value)} value={enderecoNumero} type="number" required className='numero' />
+                           <Input disabled={true} onChange={e => setEnderecoBairro(e.target.value)} value={enderecoBairro} type="text" className='bairro' /> <Input onChange={e => setEnderecoNumero(e.target.value)} value={enderecoNumero} type="number" required className='numero' />
                         </p>
 
                         <label>Cidade</label>
-                        <input onChange={e => setEnderecoCidade(e.target.value)} value={enderecoCidade} type="text" required />
-
-                        <label>Cep</label>
-                        <input onChange={e => setEnderecoCep(cepMask(e.target.value))} value={enderecoCep} type="text" required />
+                        <Input disabled={true} onChange={e => setEnderecoCidade(e.target.value)} value={enderecoCidade} type="text" />
 
                         <label>Estado</label>
-                        <input onChange={e => setEnderecoEstado(e.target.value)} value={enderecoEstado} type="text" required />
+                        <Input disabled={true} onChange={e => setEnderecoEstado(e.target.value)} value={enderecoEstado} type="text" />
 
                         <label>Complemento</label>
                         <textarea onChange={e => setEnderecoComplemento(e.target.value)} value={enderecoComplemento} type="textarea"></textarea>
