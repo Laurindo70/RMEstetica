@@ -5,8 +5,8 @@ const Database = use("Database");
 const Agendamento = use("App/Models/Agendamento");
 const Pagamento = use("App/Models/Pagamento");
 
-const { msgCadastro } = require("../../../Utils/Validator/Messages/Agendamento");
-const { camposCadastro } = require("../../../Utils/Validator/fields/Agendamento");
+const { msgCadastro, msgCadastroPagamento } = require("../../../Utils/Validator/Messages/Agendamento");
+const { camposCadastro, camposPagamento } = require("../../../Utils/Validator/fields/Agendamento");
 
 class AgendamentoController {
 
@@ -149,6 +149,69 @@ class AgendamentoController {
          group by data_agendamento`)
 
          return response.status(200).send(datas.rows);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
+   async pagamentoAgendamento({ request, response, params }){
+      const transacao = await Database.beginTransaction();
+      try {
+
+         const validacao = await validateAll(request.all(), camposPagamento, msgCadastroPagamento);
+
+         if (validacao.fails()) {
+            return response.status(417).send({ mensagem: validacao.messages() });
+         }
+
+         const { formas_pagamento_id, data_pagamento, desconto } = request.all();
+
+         const agendamento = await Database.raw(`select * from agendamento where id = ${params.id} `);
+
+         const pagamento = await Pagamento.create({ 
+            agendamento_id: params.id,
+            formas_pagamento_id,
+            valor: (+agendamento.rows[0].valor - (+desconto)),
+            data_pagamento,
+            desconto
+         }, transacao);
+
+         await transacao
+            .table('agendamento')
+            .where('id', params.id)
+            .update({
+               is_pago: true,
+               atualizado_em: new Date()
+            });
+
+         await transacao.commit();
+         return response.status(201).send(pagamento);
+
+      } catch (error) {
+         await transacao.rollback();
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
+   async formasPagamento({ request, response }){
+      try {
+
+         const formas = await Database.raw(`select * from formas_pagamento`)
+
+         return response.status(200).send(formas.rows);
 
       } catch (error) {
          console.log(error);

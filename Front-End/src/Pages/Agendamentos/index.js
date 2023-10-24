@@ -175,7 +175,6 @@ function Agendamentos() {
                   financeiro: [Response.data[i].is_pago, Response.data[i].id, Response.data[i].is_cancelado]
                })
             }
-            console.log(data);
             setAgendamentos(data);
          }
       );
@@ -184,7 +183,7 @@ function Agendamentos() {
    useEffect(() => {
       if (estabelecimentoSelecionado !== null && datasInicio !== null && datasFim !== null)
          carregarDados();
-   }, [estabelecimentoSelecionado, datasFim, datasInicio, isModalCadastro]);
+   }, [estabelecimentoSelecionado, datasFim, datasInicio, isModalCadastro, isModalPagamento]);
 
    return (
       <>

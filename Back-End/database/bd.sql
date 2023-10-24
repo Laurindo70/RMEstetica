@@ -154,7 +154,7 @@ CREATE TABLE pagamentos(
    agendamento_id INTEGER NOT NULL,
    formas_pagamento_id INTEGER NOT NULL,
    valor DOUBLE PRECISION NOT NULL,
-   data_pagamento TIMESTAMP NOT NULL,
+   data_pagamento DATE NOT NULL,
    desconto DOUBLE PRECISION NOT NULL,
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),

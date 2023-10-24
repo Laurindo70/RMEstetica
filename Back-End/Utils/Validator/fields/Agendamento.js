@@ -4,4 +4,10 @@ const camposCadastro = {
    procedimento_id: 'required'
 };
 
-module.exports = { camposCadastro };
+const camposPagamento = {
+   formas_pagamento_id: 'required',
+   data_pagamento: 'required',
+   desconto: 'required'
+}
+
+module.exports = { camposCadastro, camposPagamento };
