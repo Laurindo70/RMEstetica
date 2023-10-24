@@ -5,6 +5,9 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
+    "@fullcalendar/core": "^6.1.9",
+    "@fullcalendar/daygrid": "^6.1.9",
+    "@fullcalendar/react": "^6.1.9",
     "@mui/material": "^5.14.12",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",

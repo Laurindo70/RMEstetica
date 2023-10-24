@@ -49,7 +49,26 @@ class ProfissionalController {
          return response.status(200).send(profissionais.rows);
 
       } catch (error) {
-         onsole.error(error);
+         console.error(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
+   async getAllProcedimento({ request, response, params }){
+      try {
+         
+         const profissionais = await Database.raw(`select profissional.* from profissional inner join procedimento_has_proficional on profissional.id=procedimento_has_proficional.profissional_id
+         where procedimento_has_proficional.procedimento_id = ${params.id};`);
+
+         return response.status(200).send(profissionais.rows);
+
+      } catch (error) {
+         console.error(error);
          return response.status(500).send(
             {
                erro: error.message.toString(),

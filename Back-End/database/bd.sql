@@ -92,11 +92,13 @@ CREATE TABLE movimentacao_estoque_has_produtos(
 );
 CREATE TABLE profissional(
    id SERIAL PRIMARY KEY,
+   estabelecimento_id INTEGER NOT NULL,
    nome_profissional VARCHAR(150) NOT NULL,
    horario_inicial_atendimento TIME NOT NULL,
    horario_final_atendimento TIME NOT NULL,
    criado_em timestamp without time zone DEFAULT now(),
-   atualizado_em timestamp without time zone DEFAULT now()
+   atualizado_em timestamp without time zone DEFAULT now(),
+   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
 );
 CREATE TABLE procedimento(
    id SERIAL PRIMARY KEY,
@@ -139,19 +141,9 @@ CREATE TABLE agendamento(
    desconto DOUBLE PRECISION NOT NULL,
    cliente_id INTEGER,
    nome_cliente VARCHAR(150) NOT NULL,
-   criado_em timestamp without time zone DEFAULT now(),
-   atualizado_em timestamp without time zone DEFAULT now(),
-   FOREIGN KEY(profissional_id) REFERENCES profissional(id),
-   FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
-);
-CREATE TABLE agendamento(
-   id SERIAL PRIMARY KEY,
-   profissional_id INTEGER NOT NULL,
-   procedimento_id INTEGER NOT NULL,
-   data_agendamento TIMESTAMP NOT NULL,
-   valor DOUBLE PRECISION NOT NULL,
-   cliente_id INTEGER,
-   nome_cliente VARCHAR(150) NOT NULL,
+   is_finalizado BOOLEAN default false,
+   is_pago BOOLEAN default false,
+   is_cancelado BOOLEAN default false,
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),
    FOREIGN KEY(profissional_id) REFERENCES profissional(id),

@@ -1,4 +1,4 @@
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useState } from 'react';
 import api from '../../../Utils/api';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message } from 'antd';
 
