@@ -28,8 +28,8 @@ class AgendamentoController {
 
          const verificacao = await Database.raw(`select * from agendamento 
          where is_cancelado = false 
-         and profissional_id = 2 and data_agendamento BETWEEN '${data_agendamento} ${hora_agendamento}' and (cast (CONCAT('${data_agendamento} ', (INTERVAL'${hora_agendamento}' + INTERVAL'${dadosProcedimento.rows[0].duracao_procedimento}')) as timestamp));`);
-
+         and profissional_id = ${profissional_id} and data_agendamento BETWEEN '${data_agendamento} ${hora_agendamento}' and (cast (CONCAT('${data_agendamento} ', (INTERVAL'${hora_agendamento}' + INTERVAL'${dadosProcedimento.rows[0].duracao_procedimento}')) as timestamp));`);
+         
          if (verificacao.rows.length > 0) {
             return response.status(401).send({ mensagem: "Esse profissional já possui agendamento para esse horário." });
          }

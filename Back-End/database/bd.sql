@@ -128,17 +128,19 @@ CREATE TABLE procedimento_has_proficional(
 );
 CREATE TABLE formas_pagamento(
    id SERIAL PRIMARY KEY,
-   nome_forma_pagamento VARCHAR(150) NOT NULL,
-   estabelecimento_id INTEGER NOT NULL,
-   FOREIGN KEY(estabelecimento_id) REFERENCES estabelecimento(id)
+   nome_forma_pagamento VARCHAR(150) NOT NULL
 );
+INSERT INTO formas_pagamento (nome_forma_pagamento)
+values ('Cartão Crédito'),
+   ('Cartão Débito'),
+   ('Dinheiro'),
+   ('Pix');
 CREATE TABLE agendamento(
    id SERIAL PRIMARY KEY,
    profissional_id INTEGER NOT NULL,
    procedimento_id INTEGER NOT NULL,
    data_agendamento TIMESTAMP NOT NULL,
    valor DOUBLE PRECISION NOT NULL,
-   desconto DOUBLE PRECISION NOT NULL,
    cliente_id INTEGER,
    nome_cliente VARCHAR(150) NOT NULL,
    is_finalizado BOOLEAN default false,
