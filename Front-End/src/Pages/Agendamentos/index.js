@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 import { PlusCircleOutlined, ExclamationCircleFilled } from '@ant-design/icons';
-import { Divider, Modal, Typography, Select, Row, Button, Table, Col, DatePicker, notification } from 'antd';
+import { Divider, Modal, Typography, Row, Button, Table, Col, DatePicker, notification } from 'antd';
 import api from '../../Utils/api';
 import RegisterAgendamento from './components/register';
 import PagarAgendamento from './components/pagamento';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 function Agendamentos() {
    const [apiNot, contextHolder] = notification.useNotification();
@@ -24,11 +24,6 @@ function Agendamentos() {
    const [agendadamentos, setAgendamentos] = useState([])
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
-   const [estabelecimentos, setEstabelecimentos] = useState();
-
-   const handleModalEstab = () => {
-      setIsModalSelecEstab(!isModalSelecEstab);
-   }
 
    const handleModalCad = () => {
       setIsModalCadastro(!isModalCadastro);
@@ -63,19 +58,19 @@ function Agendamentos() {
          title: 'Finalizar',
          dataIndex: 'finalizar',
          key: 'finalizar',
-         render: (sit) => !sit[2] ? (sit[0] ? 'Agendamento Finalizado' : <Button type="primary" onClick={() => { finalizar(sit[1]) }} >Finalizar</Button>) : 'Cancelado'
+         render: (sit) => !sit[2] ? (sit[0] ? <Text style={{ fontWeight: 'bold' }} type="success">AGENDAMENTO FINALIZADO</Text> : <Button type="primary" onClick={() => { finalizar(sit[1]) }} >Finalizar</Button>) : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>
       },
       {
          title: 'Situação',
          dataIndex: 'ativo',
          key: 'ativo',
-         render: (sit) => !sit[0] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Cancelar</Button> : 'Cancelado'
+         render: (sit) => sit[2] ? <Text style={{ fontWeight: 'bold' }} type="success">AGENDAMENTO FINALIZADO</Text> :  (!sit[0] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Cancelar</Button> : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>)
       },
       {
          title: 'Financeiro',
          dataIndex: 'financeiro',
          key: 'financeiro',
-         render: (sit) => !sit[2] ? (!sit[0] ? <Button type="primary" onClick={() => { pagar(sit[1]) }}>Pagar</Button> : 'Pago') : 'Cancelado'
+         render: (sit) => !sit[2] ? (!sit[0] ? <Text style={{ fontWeight: 'bold' }} type="danger">PENDENTE</Text> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>) : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>
       }
    ];
 
@@ -136,25 +131,6 @@ function Agendamentos() {
       });
    }
 
-   useEffect(() => {
-      api.get(`/estabelecimento/nome=`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
-         (Response) => {
-            let data = [];
-            for (let i = 0; i < Response.data.length; i++) {
-               data.push({
-                  label: Response.data[i].nome_estabelecimento,
-                  value: Response.data[i].id
-               });
-            }
-            setEstabelecimentos(data);
-         }
-      );
-   }, []);
-
    async function carregarDados(){
       const estab = localStorage.getItem('EstabelecimentonRm');
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
@@ -173,7 +149,7 @@ function Agendamentos() {
                   nome_procedimento: Response.data[i].nome_procedimento,
                   data: Response.data[i].data,
                   finalizar: [Response.data[i].is_finalizado, Response.data[i].id, Response.data[i].is_cancelado],
-                  ativo: [Response.data[i].is_cancelado, Response.data[i].id],
+                  ativo: [Response.data[i].is_cancelado, Response.data[i].id, Response.data[i].is_finalizado],
                   financeiro: [Response.data[i].is_pago, Response.data[i].id, Response.data[i].is_cancelado]
                })
             }

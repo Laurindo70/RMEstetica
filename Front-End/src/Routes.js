@@ -15,6 +15,7 @@ import Procedimentos from './Pages/Procedimentos';
 import Profissionais from './Pages/Profissionais';
 import Financeiro from './Pages/Financeiro';
 import Feedbacks from './Pages/Feedbacks';
+import Pagamentos from './Pages/Pagamentos';
 
 function Rotas() {
    return (
@@ -41,6 +42,7 @@ function Rotas() {
                   <Route path='profissionais' element={<Profissionais />} />
                   <Route path='financeiro' element={<Financeiro />} />
                   <Route path='feedbacks' element={<Feedbacks />} />
+                  <Route path='pagamentos' element={<Pagamentos />} />
                </Route>
             </Routes>
          </Router>

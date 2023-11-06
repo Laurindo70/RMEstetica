@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Row, Table, Button, Typography, Modal, message } from 'antd';
+import { Col, Row, Table, Button, Typography, Modal } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import api from '../../Utils/api';
 import RegisterProfissional from './components/Register';
@@ -9,14 +9,11 @@ const { Title } = Typography;
 function Profissionais() {
    const token = localStorage.getItem('TokenRm');
 
-   const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
    const [isModalCadastro, setIsModalCadastro] = useState(false);
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
 
    const [profissionais, setProfissionais] = useState([]);
-
-   const [messageApi, contextHolder] = message.useMessage();
 
    const handleModalCad = () => {
       setIsModalCadastro(!isModalCadastro);
@@ -53,11 +50,10 @@ function Profissionais() {
          }
       )
 
-   }, [isModalCadastro, isModalSelecEstab])
+   }, [isModalCadastro])
 
    return (
       <>
-         {contextHolder}
          <Modal title={<Title level={3}>Cadastro de Profissional</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
             <RegisterProfissional estabelecimento_id={estabelecimentoSelecionado} fecharModal={handleModalCad} />
          </Modal>

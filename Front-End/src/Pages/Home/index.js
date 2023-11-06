@@ -9,11 +9,10 @@ import {
    BankOutlined,
    DollarOutlined,
    ShoppingCartOutlined,
-   AuditOutlined,
    CalendarOutlined,
    UsergroupAddOutlined
 } from '@ant-design/icons';
-import { BsFillClipboard2PlusFill } from "react-icons/bs";
+import { BsFillClipboard2PlusFill, BsTable, BsFillPiggyBankFill } from "react-icons/bs";
 import { Layout, Menu, Button, Dropdown, Modal, Select, Row } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import api from '../../Utils/api';
@@ -117,7 +116,7 @@ function Home() {
             },
             {
                key: 'agendamento',
-               icon: <CalendarOutlined />,
+               icon: <BsTable />,
                label: 'Agendamentos'
             },
             {
@@ -129,6 +128,11 @@ function Home() {
                key: 'profissionais',
                icon: <UsergroupAddOutlined />,
                label: 'Profissionais'
+            },
+            {
+               key: 'pagamentos',
+               icon: <BsFillPiggyBankFill />,
+               label: 'Pagamentos'
             }
          ]);
       } else {
