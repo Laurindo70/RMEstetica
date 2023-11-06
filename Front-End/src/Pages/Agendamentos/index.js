@@ -156,7 +156,9 @@ function Agendamentos() {
    }, []);
 
    async function carregarDados(){
-      await api.get(`/agendadamentos/estabelecimento=${estabelecimentoSelecionado}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
+      const estab = localStorage.getItem('EstabelecimentonRm');
+      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
          headers: {
             Authorization: token
          }
@@ -181,28 +183,13 @@ function Agendamentos() {
    }
 
    useEffect(() => {
-      if (estabelecimentoSelecionado !== null && datasInicio !== null && datasFim !== null)
+      if (datasInicio !== null && datasFim !== null)
          carregarDados();
    }, [estabelecimentoSelecionado, datasFim, datasInicio, isModalCadastro, isModalPagamento]);
 
    return (
       <>
          {contextHolder}
-         <Modal title={<Title level={3}>Selecione o Estabelecimento</Title>} open={isModalSelecEstab} onOk={handleModalEstab} onCancel={handleModalEstab}>
-            <Row justify="start">
-               <label className='label-cadastro'>Estabelecimento</label>
-               <Select
-                  style={{
-                     width: '100%',
-                     border: 'solid 1px #A9335D',
-                     borderRadius: '5px',
-                  }}
-                  options={estabelecimentos}
-                  onChange={(value) => { setEstabelecimentoSelecionado(value) }}
-               />
-            </Row>
-         </Modal>
-
          <Modal title={<Title level={3}>Cadastro de Agendamento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
             <RegisterAgendamento estabelecimento_id={estabelecimentoSelecionado} fecharModal={handleModalCad} ></RegisterAgendamento>
          </Modal>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import './style.css';
 import {
    HomeOutlined,
@@ -28,7 +28,7 @@ function Home() {
    const navigate = useNavigate();
 
    const [collapsed, setCollapsed] = useState(false);
-   const [estabelecimentos, setEstabelecimentos] = useState();
+   const [estabelecimentos, setEstabelecimentos] = useState(null);
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
    const [itens, setItens] = useState([]);
 
@@ -154,7 +154,7 @@ function Home() {
       console.log();
    }, [location]);
 
-   useEffect(() => {
+   useLayoutEffect(() => {
       api.get(`/estabelecimento/nome=`, {
          headers: {
             Authorization: token
@@ -165,14 +165,19 @@ function Home() {
             for (let i = 0; i < Response.data.length; i++) {
                data.push({
                   label: Response.data[i].nome_estabelecimento,
-                  value: Response.data[i].id
+                  value: i,
+                  id: Response.data[i].id
                });
             }
             console.log(data);
             let est = localStorage.getItem('EstabelecimentonRm');
             if (est) {
                console.log(est);
-               setEstabelecimentoSelecionado(est);
+               for (let i = 0; i < Response.data.length; i++) {
+                  if(Response.data[i].id == est){
+                     setEstabelecimentoSelecionado(i);
+                  }
+               }
             } else {
                setEstabelecimentoSelecionado(+data[0].value);
                localStorage.setItem('EstabelecimentonRm', data[0].value);
@@ -208,28 +213,29 @@ function Home() {
                   }}
                />
                <div className='opcao-sair'>
-                  <Row>
-                     <p>Estabelecimento:</p>
-                  </Row>
-                  <Row justify="start">
-                     <Select
-                        style={{
-                           width: '200px',
-                           border: 'solid 1px #A9335D',
-                           borderRadius: '5px',
-                           marginRight: '10px'
-                        }}
-                        defaultValue={estabelecimentoSelecionado}
-                        options={estabelecimentos}
-                        onChange={(value) => {
-                           if (value != estabelecimentoSelecionado) {
-                              setEstabelecimentoSelecionado(value);
-                              localStorage.setItem('EstabelecimentonRm', value);
-                              window.location.reload();
-                           }
-                        }}
-                     />
-                  </Row>
+                  {localStorage.getItem('TipoRm') == 1 ? <>
+                     <Row>
+                        <p>Estabelecimento:</p>
+                     </Row>
+                     <Row justify="start">
+                        <Select
+                           style={{
+                              width: '200px',
+                              border: 'solid 1px #A9335D',
+                              borderRadius: '5px',
+                              marginRight: '10px'
+                           }}
+                           placeholder={estabelecimentos == null ? '' : estabelecimentos[estabelecimentoSelecionado].label}
+                           options={estabelecimentos}
+                           onChange={(value) => {
+                              if (value != estabelecimentoSelecionado) {
+                                 setEstabelecimentoSelecionado(value);
+                                 localStorage.setItem('EstabelecimentonRm', estabelecimentos[value].id);
+                                 window.location.reload();
+                              }
+                           }}
+                        />
+                     </Row> </> : null}
                   <Dropdown
                      style={{ display: 'inline', float: 'right' }}
                      menu={{

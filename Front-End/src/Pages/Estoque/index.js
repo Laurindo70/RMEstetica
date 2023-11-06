@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
-import { PlusCircleOutlined, SyncOutlined, PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, SyncOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message } from 'antd';
 import api from '../../Utils/api';
 import ListMov from '../ListMovs';

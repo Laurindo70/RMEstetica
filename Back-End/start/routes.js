@@ -44,12 +44,13 @@ Route.get('/movimentacao/estabelecimento-id=:estabelecimentoId/data-inicio=:data
 
 /// --------------- procedimento ---------------
 Route.post('/procedimento', 'ProcedimentoController.post'); 
-Route.get('/procedimento/:id', 'ProcedimentoController.getAll'); 
+Route.get('/procedimento/:id', 'ProcedimentoController.getAll');
+Route.delete('/procedimento/:id', 'ProcedimentoController.delete');
 
 /// --------------- profissional ---------------
 Route.post('/profissional', 'ProfissionalController.post'); 
 Route.get('/profissional/:id', 'ProfissionalController.getAll'); 
-Route.get('/profissional/procedimento/:id', 'ProfissionalController.getAllProcedimento')
+Route.get('/profissional/procedimento/:id', 'ProfissionalController.getAllProcedimento');
 
 /// --------------- Agendamento ---------------
 Route.post('/agendamento', 'AgendamentoController.post'); 

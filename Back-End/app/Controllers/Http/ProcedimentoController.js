@@ -100,6 +100,32 @@ class ProcedimentoController {
       }
    }
 
+   async delete({ request, response, params }) {
+      try {
+
+         const sitProced = await Database.raw(`select * from procedimento where id = ${params.id};`);
+
+         const procedimento = await Database
+            .table('procedimento')
+            .where('id', params.id)
+            .update({
+               ativo: !sitProced.rows[0].ativo,
+               atualizado_em: new Date()
+            });
+
+         return response.status(200).send(procedimento);
+
+      } catch (error) {
+         console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
 }
 
 module.exports = ProcedimentoController

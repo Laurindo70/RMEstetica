@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Input, Row, Table, Button, DatePicker, Select, Typography, List, Modal } from 'antd';
-import { SearchOutlined, SyncOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Col, Row, Table, Button, Typography, List, Modal, message } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import api from '../../Utils/api';
 import RegisterProcedimento from './components/Register';
 
@@ -9,21 +9,15 @@ const { Title } = Typography;
 function Procedimentos() {
    const token = localStorage.getItem('TokenRm');
 
-   const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
    const [isModalCadastro, setIsModalCadastro] = useState(false);
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
-   const [estabelecimentos, setEstabelecimentos] = useState();
    const [profissionais, setProfissionais] = useState();
 
    const [produtos, setProdutos] = useState([]);
    const [procedimentos, setProcedimentos] = useState([]);
 
-   const [filtro, setFiltro] = useState(null);
-
-   const handleModalEstab = () => {
-      setIsModalSelecEstab(!isModalSelecEstab);
-   }
+   const [messageApi, contextHolder] = message.useMessage();
 
    const handleModalCad = () => {
       setIsModalCadastro(!isModalCadastro);
@@ -64,7 +58,7 @@ function Procedimentos() {
          title: 'Situação',
          dataIndex: 'situacao',
          key: 'situacao',
-         render: (sit) => sit[1] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Desativar</Button> : <Button type="primary" onClick={() => { inativar(sit[1]) }}>Ativar</Button>
+         render: (sit) => sit[0] ? <Button type="primary" onClick={() => { inativar(sit) }} danger>Desativar</Button> : <Button type="primary" onClick={() => { inativar(sit) }}>Ativar</Button>
       },
       {
          title: 'Produtos',
@@ -84,12 +78,30 @@ function Procedimentos() {
 
    async function inativar(id) {
       console.log(id);
+      try {
+         await api.delete(`/procedimento/${id[1]}`, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
+            (Response) => {
+               messageApi.open({
+                  type: 'success',
+                  content: id[0] ? 'Inativado com sucesso.' : 'ativado com sucesso.',
+               });
+               window.location.reload();
+            }
+         )
+      } catch (error) {
+         console.log(error.response.data.mensagem);
+      }
    }
 
    async function carregarDados() {
+      const estab = localStorage.getItem('EstabelecimentonRm');
 
       try {
-         await api.get(`/procedimento/${estabelecimentoSelecionado}`, {
+         await api.get(`/procedimento/${estab}`, {
             headers: {
                Authorization: token
             }
@@ -113,7 +125,7 @@ function Procedimentos() {
             }
          )
 
-         await api.get(`/profissional/${estabelecimentoSelecionado}`, {
+         await api.get(`/profissional/${estab}`, {
             headers: {
                Authorization: token
             }
@@ -141,75 +153,39 @@ function Procedimentos() {
    }
 
    useEffect(() => {
-      if (estabelecimentoSelecionado !== null) {
-         carregarDados();
+      const estab = localStorage.getItem('EstabelecimentonRm');
+      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      carregarDados();
 
-         api.get(`/produto/${estabelecimentoSelecionado}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
-            (Response) => {
-               let dadosProdutos = [];
-
-               for (let i = 0; i < Response.data.length; i++) {
-                  dadosProdutos.push({
-                     id: Response.data[i].id,
-                     label: Response.data[i].nome_produto,
-                     value: i
-                  })
-               }
-
-               setProdutos(dadosProdutos);
-            }
-         )
-      }
-   }, [isModalSelecEstab, isModalCadastro]);
-
-   useEffect(() => {
-      api.get(`/estabelecimento/nome=`, {
+      api.get(`/produto/${estab}`, {
          headers: {
             Authorization: token
          }
       }).then(
          (Response) => {
-            let data = [];
+            let dadosProdutos = [];
+
             for (let i = 0; i < Response.data.length; i++) {
-               data.push({
-                  label: Response.data[i].nome_estabelecimento,
-                  value: Response.data[i].id
-               });
+               dadosProdutos.push({
+                  id: Response.data[i].id,
+                  label: Response.data[i].nome_produto,
+                  value: i
+               })
             }
-            setEstabelecimentos(data);
+
+            setProdutos(dadosProdutos);
          }
-      );
-   }, []);
+      )
+   }, [isModalCadastro]);
 
    return (
       <>
-         <Modal title={<Title level={3}>Selecione o Estabelecimento</Title>} open={isModalSelecEstab} onOk={handleModalEstab} onCancel={handleModalEstab}>
-            <Row justify="start">
-               <label className='label-cadastro'>Estabelecimento</label>
-               <Select
-                  style={{
-                     width: '100%',
-                     border: 'solid 1px #A9335D',
-                     borderRadius: '5px',
-                  }}
-                  options={estabelecimentos}
-                  onChange={(value) => { setEstabelecimentoSelecionado(value) }}
-               />
-            </Row>
-         </Modal>
-
-         <Modal title={<Title level={3}>Cadastro de estabelecimento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
+         {contextHolder}
+         <Modal title={<Title level={3}>Cadastro de Procedimento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
             <RegisterProcedimento estabelecimento_id={estabelecimentoSelecionado} produtos={produtos} fecharModal={handleModalCad} listaProfissionais={profissionais} />
          </Modal>
 
          <Row justify="end" className='opcoes-usuarios header-movs'>
-            <Col span={20}>
-               <Button icon={<SyncOutlined />} onClick={handleModalEstab} className='botao'>Trocar Estabelecimento</Button>
-            </Col>
             <Col span={3}>
                <Button icon={<PlusCircleOutlined />} onClick={handleModalCad} className='botao'>Novo Procedimento</Button>
             </Col>

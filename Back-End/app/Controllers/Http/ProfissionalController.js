@@ -78,6 +78,7 @@ class ProfissionalController {
       }
    }
 
+
 }
 
 module.exports = ProfissionalController
