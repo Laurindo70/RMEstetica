@@ -15,9 +15,12 @@
 }
 
 .opcao-sair {
+   margin-top: 0.5%;
    margin-right: 5%;
    display: inline;
    float: right;
+   display: flex;
+   align-items: center;
 }
 
 .opcoes {

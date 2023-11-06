@@ -8,7 +8,7 @@ import { moneyMask } from '../../Utils/mascaras';
 const { Title } = Typography;
 
 
-function Estoque() {
+function Estoque({ estabelecimento }) {
    const token = localStorage.getItem('TokenRm');
 
    const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
@@ -183,37 +183,37 @@ function Estoque() {
    }
 
    useEffect(() => {
-      if (estabelecimentoSelecionado !== null) {
-         api.get(`/produto/${estabelecimentoSelecionado}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
-            (Response) => {
-               let dadosProdutos = [];
-               let dadosMov = [];
+      const estab = localStorage.getItem('EstabelecimentonRm');
+      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      api.get(`/produto/${estab}`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
+         (Response) => {
+            let dadosProdutos = [];
+            let dadosMov = [];
 
-               for (let i = 0; i < Response.data.length; i++) {
-                  dadosProdutos.push({
-                     id: Response.data[i].id,
-                     nome_produto: Response.data[i].nome_produto,
-                     quantidade: Response.data[i].quantidade,
-                     valor_produto: Response.data[i].valor_produto,
-                     ativo: [Response.data[i].ativo, Response.data[i].id]
-                  });
-                  dadosMov.push({
-                     id: Response.data[i].id,
-                     label: Response.data[i].nome_produto,
-                     value: i
-                  })
-               }
-
-               setProdutos(dadosProdutos);
-               setProdutosMov(dadosMov);
+            for (let i = 0; i < Response.data.length; i++) {
+               dadosProdutos.push({
+                  id: Response.data[i].id,
+                  nome_produto: Response.data[i].nome_produto,
+                  quantidade: Response.data[i].quantidade,
+                  valor_produto: Response.data[i].valor_produto,
+                  ativo: [Response.data[i].ativo, Response.data[i].id]
+               });
+               dadosMov.push({
+                  id: Response.data[i].id,
+                  label: Response.data[i].nome_produto,
+                  value: i
+               })
             }
-         )
-      }
-   }, [isModalSelecEstab, isModalCadastro, isModalMovimentacao]);
+
+            setProdutos(dadosProdutos);
+            setProdutosMov(dadosMov);
+         }
+      )
+   }, [isModalSelecEstab, isModalCadastro, isModalMovimentacao, estabelecimento]);
 
    useEffect(() => {
       api.get(`/estabelecimento/nome=`, {
@@ -237,21 +237,6 @@ function Estoque() {
    return (
       <div className='container-estabelecimento'>
          {contextHolder}
-         <Modal title={<Title level={3}>Selecione o Estabelecimento</Title>} open={isModalSelecEstab} onOk={handleModal} onCancel={handleModal}>
-            <Row justify="start">
-               <label className='label-cadastro'>Estabelecimento</label>
-               <Select
-                  style={{
-                     width: '100%',
-                     border: 'solid 1px #A9335D',
-                     borderRadius: '5px',
-                  }}
-                  options={estabelecimentos}
-                  onChange={(value) => { setEstabelecimentoSelecionado(value) }}
-               />
-            </Row>
-         </Modal>
-
          <Modal title={<Title level={3}>Cadastro de novo Produto</Title>} open={isModalCadastro} onOk={handleModalCadastro} onCancel={handleModalCadastro} footer={[]}>
             <form onSubmit={salvar}>
                <Row justify="start">

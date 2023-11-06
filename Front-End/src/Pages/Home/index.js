@@ -14,18 +14,22 @@ import {
    UsergroupAddOutlined
 } from '@ant-design/icons';
 import { BsFillClipboard2PlusFill } from "react-icons/bs";
-import { Layout, Menu, Button, Dropdown, Modal } from 'antd';
+import { Layout, Menu, Button, Dropdown, Modal, Select, Row } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import api from '../../Utils/api';
 
 const { Header, Sider, Content } = Layout;
 const { confirm } = Modal;
 
 function Home() {
+   const token = localStorage.getItem('TokenRm');
    let location = useLocation();
    const nomeUsuario = localStorage.getItem('NomeRm');
    const navigate = useNavigate();
 
    const [collapsed, setCollapsed] = useState(false);
+   const [estabelecimentos, setEstabelecimentos] = useState();
+   const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
    const [itens, setItens] = useState([]);
 
    const sair = () => {
@@ -42,6 +46,7 @@ function Home() {
          onOk() {
             localStorage.setItem('TokenRm', ``);
             localStorage.setItem('NomeRm', ``);
+            localStorage.setItem('EstabelecimentonRm', ``);
             navigate("/");
          },
          onCancel() {
@@ -147,7 +152,35 @@ function Home() {
       }
       console.log(location)
       console.log();
-   }, [location])
+   }, [location]);
+
+   useEffect(() => {
+      api.get(`/estabelecimento/nome=`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
+         (Response) => {
+            let data = [];
+            for (let i = 0; i < Response.data.length; i++) {
+               data.push({
+                  label: Response.data[i].nome_estabelecimento,
+                  value: Response.data[i].id
+               });
+            }
+            console.log(data);
+            let est = localStorage.getItem('EstabelecimentonRm');
+            if (est) {
+               console.log(est);
+               setEstabelecimentoSelecionado(est);
+            } else {
+               setEstabelecimentoSelecionado(+data[0].value);
+               localStorage.setItem('EstabelecimentonRm', data[0].value);
+            }
+            setEstabelecimentos(data);
+         }
+      );
+   }, []);
 
    return (
       <Layout className="main-home">
@@ -175,6 +208,28 @@ function Home() {
                   }}
                />
                <div className='opcao-sair'>
+                  <Row>
+                     <p>Estabelecimento:</p>
+                  </Row>
+                  <Row justify="start">
+                     <Select
+                        style={{
+                           width: '200px',
+                           border: 'solid 1px #A9335D',
+                           borderRadius: '5px',
+                           marginRight: '10px'
+                        }}
+                        defaultValue={estabelecimentoSelecionado}
+                        options={estabelecimentos}
+                        onChange={(value) => {
+                           if (value != estabelecimentoSelecionado) {
+                              setEstabelecimentoSelecionado(value);
+                              localStorage.setItem('EstabelecimentonRm', value);
+                              window.location.reload();
+                           }
+                        }}
+                     />
+                  </Row>
                   <Dropdown
                      style={{ display: 'inline', float: 'right' }}
                      menu={{
