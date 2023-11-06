@@ -2,26 +2,23 @@ import React, { useState, useEffect } from 'react';
 import './style.css';
 import { PlusCircleOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { Divider, Modal, Typography, Row, Button, Table, Col, DatePicker, notification } from 'antd';
+import dayjs from 'dayjs';
 import api from '../../Utils/api';
 import RegisterAgendamento from './components/register';
-import PagarAgendamento from './components/pagamento';
 
 const { Title, Text } = Typography;
 
 function Agendamentos() {
    const [apiNot, contextHolder] = notification.useNotification();
    const token = localStorage.getItem('TokenRm');
+   const date = new Date();
 
    const { confirm } = Modal;
 
-   const [pagamentoId, setPagamentoId] = useState(null);
-
-   const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
    const [isModalCadastro, setIsModalCadastro] = useState(false);
-   const [isModalPagamento, setIsModalPagamento] = useState(false);
    const [datasInicio, setDataInicio] = useState(null);
    const [datasFim, setDatasFim] = useState(null);
-   const [agendadamentos, setAgendamentos] = useState([])
+   const [agendadamentos, setAgendamentos] = useState([]);
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
 
@@ -29,15 +26,17 @@ function Agendamentos() {
       setIsModalCadastro(!isModalCadastro);
    }
 
-   const handleModalPag = () => {
-      setIsModalPagamento(!isModalPagamento);
-   }
-
    const colunas = [
       {
          title: 'Nome Cliente',
          dataIndex: 'nome_cliente',
          key: 'nome_cliente',
+      },
+      {
+         title: 'Valor',
+         dataIndex: 'valor',
+         key: 'valor',
+         render: (valor) => valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
       },
       {
          title: 'Nome Profissional',
@@ -64,20 +63,15 @@ function Agendamentos() {
          title: 'Situação',
          dataIndex: 'ativo',
          key: 'ativo',
-         render: (sit) => sit[2] ? <Text style={{ fontWeight: 'bold' }} type="success">AGENDAMENTO FINALIZADO</Text> :  (!sit[0] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Cancelar</Button> : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>)
+         render: (sit) => sit[2] ? <Text style={{ fontWeight: 'bold' }} type="success">AGENDAMENTO FINALIZADO</Text> : (!sit[0] ? <Button type="primary" onClick={() => { inativar(sit[1]) }} danger>Cancelar</Button> : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>)
       },
       {
          title: 'Financeiro',
          dataIndex: 'financeiro',
          key: 'financeiro',
-         render: (sit) => !sit[2] ? (!sit[0] ? <Text style={{ fontWeight: 'bold' }} type="danger">PENDENTE</Text> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>) : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>
+         render: (sit) => !sit[2] ? (!sit[0] ? <Text style={{ fontWeight: 'bold' }} type="warning">PENDENTE</Text> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>) : <Text style={{ fontWeight: 'bold' }} type="danger">CANCELADO</Text>
       }
    ];
-
-   const pagar = async (id) => {
-      setPagamentoId(id);
-      handleModalPag();
-   }
 
    const inativar = async (id) => {
       await confirm({
@@ -96,11 +90,11 @@ function Agendamentos() {
                      message: `Sucesso`,
                      description: 'Cancelado com sucesso!!!',
                      placement: 'topRight',
-                   });
+                  });
                })
          },
          onCancel() {
-            
+
          },
       });
    }
@@ -122,29 +116,35 @@ function Agendamentos() {
                      message: `Sucesso`,
                      description: 'Salvo com sucesso!!!',
                      placement: 'topRight',
-                   });
+                  });
                })
          },
          onCancel() {
-            
+
          },
       });
    }
 
-   async function carregarDados(){
+   async function carregarDados() {
       const estab = localStorage.getItem('EstabelecimentonRm');
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      
+      console.log((datasFim));
+      console.log((datasInicio));
+
       await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
          headers: {
             Authorization: token
          }
       }).then(
          (Response) => {
+            console.log(Response.data)
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {
                data.push({
                   id: Response.data[i].id,
                   nome_cliente: Response.data[i].nome_cliente,
+                  valor: Response.data[i].valor,
                   nome_profissional: Response.data[i].nome_profissional,
                   nome_procedimento: Response.data[i].nome_procedimento,
                   data: Response.data[i].data,
@@ -159,19 +159,20 @@ function Agendamentos() {
    }
 
    useEffect(() => {
-      if (datasInicio !== null && datasFim !== null)
+      if (datasInicio && datasFim){
+         console.log(datasInicio);
          carregarDados();
-   }, [estabelecimentoSelecionado, datasFim, datasInicio, isModalCadastro, isModalPagamento]);
+      } else {
+         setDataInicio(`01-${date.getMonth() + 1}-${date.getFullYear()}`);
+         setDatasFim(`${String(date.getDate()).padStart(2, '0')}-${date.getMonth() + 1}-${date.getFullYear()}`);
+      }
+   }, [estabelecimentoSelecionado, datasFim, datasInicio, isModalCadastro]);
 
    return (
       <>
          {contextHolder}
          <Modal title={<Title level={3}>Cadastro de Agendamento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
             <RegisterAgendamento estabelecimento_id={estabelecimentoSelecionado} fecharModal={handleModalCad} ></RegisterAgendamento>
-         </Modal>
-
-         <Modal title={<Title level={3}>Pagar Agendamento</Title>} open={isModalPagamento} onCancel={handleModalPag} footer={[]}>
-            <PagarAgendamento agendamento={pagamentoId} fecharModal={handleModalPag} ></PagarAgendamento>
          </Modal>
 
          <Title level={2}>Agendamentos</Title>
@@ -181,8 +182,8 @@ function Agendamentos() {
                <Button icon={<PlusCircleOutlined />} className='botao' onClick={handleModalCad}>Novo Agendamento</Button>
             </Col>
             <Col>
-               Data Inicio:<DatePicker onChange={(date, dateString) => setDataInicio(dateString == undefined ? null : dateString)} />
-               Data Fim:<DatePicker onChange={(date, dateString) => setDatasFim(dateString == undefined ? null : dateString)} />
+               Data Inicio:<DatePicker defaultValue={dayjs(`01-${date.getMonth() + 1}-${date.getFullYear()}`, 'DD-MM-YYYY')} format={'DD-MM-YYYY'} onChange={(date, dateString) => setDataInicio(dateString == undefined ? null : dateString)} />
+               Data Fim:<DatePicker defaultValue={dayjs(dayjs(), 'DD-MM-YYYY')} format={'DD-MM-YYYY'} onChange={(date, dateString) => setDatasFim(dateString == undefined ? null : dateString)} />
             </Col>
          </Row>
          <Divider />

@@ -121,7 +121,7 @@ class AgendamentoController {
    async getByData({ request, response, params }) {
       try {
 
-         const datas = await Database.raw(`select agendamento.id, agendamento.nome_cliente, profissional.nome_profissional, TO_CHAR(data_agendamento, 'DD/MM/YYYY HH24:MI') as data, procedimento.nome_procedimento,
+         const datas = await Database.raw(`select agendamento.id, agendamento.valor, agendamento.nome_cliente, profissional.nome_profissional, TO_CHAR(data_agendamento, 'DD/MM/YYYY HH24:MI') as data, procedimento.nome_procedimento,
          agendamento.is_finalizado, agendamento.is_pago, agendamento.is_cancelado
          from agendamento 
          inner join profissional on profissional.id=agendamento.profissional_id

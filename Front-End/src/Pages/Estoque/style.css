@@ -3,12 +3,12 @@
 }
 
  td, th {
-   border: 1px solid #FE9CCC;
+   border: 1px solid #A9335D;
    text-align: left;
  }
  
  tr:nth-child(even) {
-   background-color: #FE9CCC;
+   background-color: #A9335D;
    color: #000;
  }
 
