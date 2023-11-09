@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircleOutlined, ExclamationCircleFilled } from '@ant-design/icons';
-import { Divider, Modal, Typography, Row, Button, Table, Col, DatePicker, Flex } from 'antd';
+import { Divider, Modal, Typography, Row, Button, Table, Col, DatePicker, Flex, Form, Input, Select } from 'antd';
 import dayjs from 'dayjs';
 import api from '../../Utils/api';
-
+import './style.css';
 const { Title, Text } = Typography;
+
+const layout = {
+   labelCol: {
+      span: 8,
+   },
+   wrapperCol: {
+      span: 10,
+   },
+};
+const tailLayout = {
+   wrapperCol: {
+      offset: 8,
+      span: 10,
+   },
+};
 
 function Pagamentos() {
    const token = localStorage.getItem('TokenRm');
@@ -16,6 +31,8 @@ function Pagamentos() {
 
    const [modalComplementacao, setModalComplementacao] = useState(false);
    const [dadosPagamento, setDadosPagamento] = useState(null);
+
+   const [formasPagamento, setFormasPagamento] = useState([]);
 
    const colunas = [
       {
@@ -107,6 +124,31 @@ function Pagamentos() {
       }
    }, [datasFim, datasInicio]);
 
+   useEffect(() => {
+      api.get(`/forma-pagamento`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
+         (Response) => {
+            let data = [];
+            for (let i = 0; i < Response.data.length; i++) {
+               data.push({
+                  value: Response.data[i].id,
+                  label: Response.data[i].nome_forma_pagamento
+               })
+            }
+            setFormasPagamento(data);
+         }
+      );
+   }, [])
+
+   const [form] = Form.useForm();
+
+   const onFinish = (values) => {
+      console.log(values);
+   };
+
    return (
       <>
          <Modal
@@ -118,12 +160,113 @@ function Pagamentos() {
             width={1000}
          >
             <Divider>Dados do Pagamento</Divider>
-            <Row><Title level={4}>Nome do cliente: {dadosPagamento == null ? '' : dadosPagamento[0].nome_cliente}</Title></Row>
-            <Row><Title level={4}>Valor Total: {dadosPagamento == null ? '' : dadosPagamento[0].valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Title></Row>
-            <Divider>Parcelas</Divider>
-            <Flex gap="middle" vertical>
-               <p>Teste 01</p>
-               <p>Teste 01</p>
+
+
+            <Flex>
+               <div className='dados-pagamentos' >
+                  <Row>
+                     <Title level={4}>Nome do cliente:</Title>
+                  </Row>
+                  <Row>
+                     <Title level={4}>{dadosPagamento == null ? '' : dadosPagamento[0].nome_cliente}</Title>
+                  </Row>
+                  <Divider />
+                  <Row>
+                     <Title level={4}>Valor Total: </Title>
+                  </Row>
+                  <Row>
+                     <Title level={4}>{dadosPagamento == null ? '' : dadosPagamento[0].valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Title>
+                  </Row>
+                  <Divider />
+                  <Row>
+                     <Title level={4}>Valor Restante: </Title>
+                  </Row>
+                  <Row>
+                     <Title level={4}>{dadosPagamento == null ? '' : dadosPagamento[0].valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Title>
+                  </Row>
+                  <Divider />
+               </div>
+               <div className='parcelas-pagamentos'>
+                  <Form
+                     {...layout}
+                     form={form}
+                     name="control-hooks"
+                     onFinish={onFinish}
+                     style={{
+                        width: '100%',
+                        padding: '10px',
+                        border: 'solid 1px #a9335d',
+                        borderRadius: '5px'
+                     }}
+                  >
+                     <Form.Item
+                        name="valor"
+                        label="Valor Parcela"
+                        rules={[
+                           {
+                              required: true,
+                           },
+                        ]}
+                     >
+                        <Input />
+                     </Form.Item>
+                     <Form.Item
+                        name="data"
+                        label="Data Pagamento"
+                        rules={[
+                           {
+                              required: true,
+                           },
+                        ]}
+                     >
+                        <DatePicker placeholder='Selecione a data' format={'DD-MM-YYYY'} />
+                     </Form.Item>
+                     <Form.Item
+                        name="forma"
+                        label="Forma Pagamento"
+                        rules={[
+                           {
+                              required: true,
+                           },
+                        ]}
+                     >
+                        <Select
+                           style={{
+                              width: '100%',
+                              border: 'solid 1px #A9335D',
+                              borderRadius: '5px',
+                           }}
+                           options={formasPagamento}
+                        />
+                     </Form.Item>
+                     <Form.Item
+                        noStyle
+                        shouldUpdate={(prevValues, currentValues) => prevValues.gender !== currentValues.gender}
+                     >
+                        {({ getFieldValue }) =>
+                           getFieldValue('gender') === 'other' ? (
+                              <Form.Item
+                                 name="customizeGender"
+                                 label="Customize Gender"
+                                 rules={[
+                                    {
+                                       required: true,
+                                    },
+                                 ]}
+                              >
+                                 <Input />
+                              </Form.Item>
+                           ) : null
+                        }
+                     </Form.Item>
+                     <Form.Item {...tailLayout}>
+                        <Button type="primary" htmlType="submit">
+                           Adicionar
+                        </Button>
+
+                     </Form.Item>
+                  </Form>
+               </div>
             </Flex>
          </Modal>
 

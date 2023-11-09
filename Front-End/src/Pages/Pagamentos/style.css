@@ -1,0 +1,13 @@
+.dados-pagamentos {
+   padding: 5px;
+   border-right: solid 1px #000;
+}
+
+.parcelas-pagamentos{
+   padding: 5px;
+   width: 100%;
+}
+#components-form-demo-control-hooks .ant-btn {
+   margin-right: 8px;
+ }
+ 
