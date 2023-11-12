@@ -3,11 +3,35 @@
    border-right: solid 1px #000;
 }
 
-.parcelas-pagamentos{
+.parcelas-pagamentos {
    padding: 5px;
    width: 100%;
 }
+
 #components-form-demo-control-hooks .ant-btn {
    margin-right: 8px;
- }
- 
+}
+
+.tabela-parcelas {
+   width: 100%;
+}
+
+.tabela-parcelas td, th {
+   border: 1px solid #A9335D;
+   text-align: left;
+}
+
+.tabela-parcelas tr:nth-child(even) {
+   background-color: rgba(254, 156, 204, 0.8);;
+   color: #000;
+}
+
+.tabela-parcelas button{
+   background-color: #A9335D!important;
+}
+
+.botao-deletar{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}

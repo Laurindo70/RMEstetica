@@ -128,9 +128,6 @@ function Agendamentos() {
    async function carregarDados() {
       const estab = localStorage.getItem('EstabelecimentonRm');
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
-      
-      console.log((datasFim));
-      console.log((datasInicio));
 
       await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
          headers: {

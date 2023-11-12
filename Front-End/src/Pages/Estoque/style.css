@@ -9,7 +9,8 @@
  
  tr:nth-child(even) {
    background-color: #A9335D;
-   color: #000;
+   color: #fff;
+   font-weight: bold;
  }
 
  .header-movs{
