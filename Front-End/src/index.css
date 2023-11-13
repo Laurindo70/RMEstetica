@@ -46,3 +46,19 @@ button {
   color: #fff;
   border-radius: 5px;
 }
+
+td, th {
+  border: 1px solid #A9335D;
+  text-align: left;
+  font-weight: bold;
+}
+
+tr:nth-child(even) {
+  background-color: #A9335D;
+  color: #fff;
+  font-weight: bold;
+}
+
+tr:hover{
+ color: #000;
+}

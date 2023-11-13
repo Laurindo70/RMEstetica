@@ -151,18 +151,22 @@ CREATE TABLE agendamento(
    FOREIGN KEY(profissional_id) REFERENCES profissional(id),
    FOREIGN KEY(procedimento_id) REFERENCES procedimento(id)
 );
+
 CREATE TABLE pagamentos(
    id SERIAL PRIMARY KEY,
    agendamento_id INTEGER NOT NULL,
    formas_pagamento_id INTEGER NOT NULL,
    valor DOUBLE PRECISION NOT NULL,
-   data_pagamento DATE NOT NULL,
+   data_pagamento DATE,
    desconto DOUBLE PRECISION NOT NULL,
+   is_pago BOOLEAN DEFAULT FALSE,
+   data_vencimento Date not NULL,
    criado_em timestamp without time zone DEFAULT now(),
    atualizado_em timestamp without time zone DEFAULT now(),
    FOREIGN KEY(agendamento_id) REFERENCES agendamento(id),
    FOREIGN KEY(formas_pagamento_id) REFERENCES formas_pagamento(id)
 );
+
 CREATE TABLE feedbacks(
 	id SERIAL PRIMARY KEY,
 	feedback TEXT NOT NULL,

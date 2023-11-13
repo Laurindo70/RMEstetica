@@ -5,9 +5,9 @@ const camposCadastro = {
 };
 
 const camposPagamento = {
-   formas_pagamento_id: 'required',
-   data_pagamento: 'required',
-   desconto: 'required'
+   formaPagamento: 'required',
+   data: 'required',
+   valor: 'required'
 }
 
 module.exports = { camposCadastro, camposPagamento };

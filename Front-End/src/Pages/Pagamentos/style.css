@@ -1,3 +1,8 @@
+.tabela-pagamentos tr:nth-child(even) {
+   background-color: rgba(254, 156, 204, 0.8);
+   color: #000;
+}
+
 .dados-pagamentos {
    padding: 5px;
    border-right: solid 1px #000;

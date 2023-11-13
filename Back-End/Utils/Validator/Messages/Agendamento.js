@@ -5,9 +5,9 @@ const msgCadastro = {
 };
 
 const msgCadastroPagamento = {
-   'formas_pagamento_id.required': 'É necessario selecionar a forma de pagamento',
-   'data_pagamento.required': 'É necessario selecionar a data do pagamento',
-   'desconto.required': 'É necessario colocar o desconto concedido.'
+   'formaPagamento.required': 'É necessario selecionar a forma de pagamento',
+   'data.required': 'É necessario selecionar a data do vencimento',
+   'valor.required': 'É necessario colocar o valor da parcela.'
 }
 
 module.exports = { msgCadastro, msgCadastroPagamento };

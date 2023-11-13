@@ -144,7 +144,7 @@ function Pagamentos() {
             </Form>
          </Row>
          <Divider />
-         <Table dataSource={agendadamentos} columns={colunas} pagination={false} />
+         <Table className='tabela-pagamentos' dataSource={agendadamentos} columns={colunas} pagination={false} />
       </>
    );
 }
