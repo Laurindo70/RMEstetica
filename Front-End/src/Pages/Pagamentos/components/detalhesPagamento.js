@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../../Utils/api';
 import { moneyMask } from '../../../Utils/mascaras';
-import { Divider, Row, Button, DatePicker, Flex, Form, Input, Select, Typography, notification } from 'antd';
+import { Divider, Row, Button, DatePicker, Flex, Form, Input, Select, Typography, notification, message } from 'antd';
 import { DeleteOutlined, CheckOutlined } from '@ant-design/icons';
 import { nanoid } from 'nanoid'
 const { Title, Text } = Typography;
@@ -21,7 +21,7 @@ const tailLayout = {
    },
 };
 
-export default function DetalhesPagemento({ fecharModal, pagamento }) {
+export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto }) {
    const [apiNot, contextHolder] = notification.useNotification();
    const token = localStorage.getItem('TokenRm');
    const [formasPagamento, setFormasPagamento] = useState([]);
@@ -81,30 +81,49 @@ export default function DetalhesPagemento({ fecharModal, pagamento }) {
          }
       }).then(
          (Response) => {
-            let data = [];
-            for (let i = 0; i < Response.data.length; i++) {
-               data.push({
-                  value: Response.data[i].id,
-                  label: Response.data[i].nome_forma_pagamento
-               })
-            }
-            setFormasPagamento(data);
-            setFormaPagamento(data[0].value);
+            fecharModal();
+            apiNot.success({
+               message: `Sucesso.`,
+               description: "Parcelas cadastradas com sucesso!!",
+               placement: 'top',
+            });
          }
       ).catch(
          (error) => {
             return notificacao(error.response.data.mensagem);
          }
       );
+   }
 
-      fecharModal();
+   async function baixarParcela(id, posicao) {
+      await api.put(`/baixar-parcela/${id}`, {
+         forma_pagamento: parcelasCad[posicao].forma_pagamento, 
+         agendamento_id: pagamento[0].id
+      }, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
+         (Response) => {
+            fecharModal();
+            apiNot.success({
+               message: `Sucesso.`,
+               description: "Parcelas baixada com sucesso!!",
+               placement: 'top',
+            });
+         }
+      ).catch(
+         (error) => {
+            return notificacao(error.response.data.mensagem);
+         }
+      );
    }
 
    function apagarParcela(id) {
       setParcelas(parcelas.filter((parcela) => parcela.id !== id));
    }
 
-   function selecaoFormaPagamento(value, posicao){
+   function selecaoFormaPagamento(value, posicao) {
       let parcel = parcelasCad;
       parcel[posicao].forma_pagamento = value;
       setParcelasCad(parcel);
@@ -138,7 +157,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento }) {
             setParcelasCad(Response.data);
          }
       );
-   }, [])
+   }, [parcelas, modalAberto])
 
    return (
       <>
@@ -172,9 +191,9 @@ export default function DetalhesPagemento({ fecharModal, pagamento }) {
                   </Row>
                   <Divider />
                </>}
-               <Row>
+               {parcelasCad.length > 0 ? null : <Row>
                   <Title level={4}><Button style={{ fontWeight: 'bold', textTransform: 'uppercase' }} onClick={finalizar} type='primary' >Finalizar</Button></Title>
-               </Row>
+               </Row>}
                <Divider />
             </div>
             <div className='parcelas-pagamentos'>
@@ -287,7 +306,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento }) {
                               options={formasPagamento}
                            /></td>
                            <td>{!parcela.is_pago ? <Text style={{ fontWeight: 'bold' }} type="danger">PENDENTE</Text> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>}</td>
-                           <td className='botao-deletar'>{!parcela.is_pago ? <Button type="primary"><CheckOutlined /></Button> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>}</td>
+                           <td className='botao-deletar'>{!parcela.is_pago ? <Button type="primary" onClick={() => {baixarParcela(parcela.id, posicao)}}><CheckOutlined /></Button> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>}</td>
                         </tr>
                      ))}
                   </table>

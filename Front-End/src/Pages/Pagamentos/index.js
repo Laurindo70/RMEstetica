@@ -125,7 +125,7 @@ function Pagamentos() {
                </Button>
             ]}
          >
-            <DetalhesPagemento fecharModal={handleModalOpen} pagamento={dadosPagamento} />
+            <DetalhesPagemento fecharModal={handleModalOpen} pagamento={dadosPagamento} modalAberto={modalComplementacao} />
          </Modal>
 
          <Title level={2}>Pagamentos</Title>

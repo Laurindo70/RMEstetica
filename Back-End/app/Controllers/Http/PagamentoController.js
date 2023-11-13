@@ -64,6 +64,8 @@ class PagamentoController {
          const parcelas = await Database.raw(`select pagamentos.id, formas_pagamento.nome_forma_pagamento as nome_forma_pagamento,formas_pagamento_id as forma_pagamento, valor, is_pago, to_char(data_vencimento, 'DD/MM/YYYY') as data_vencimento from pagamentos inner JOIN formas_pagamento on formas_pagamento.id = pagamentos.formas_pagamento_id
          where pagamentos.agendamento_id = ${params.id};`);
 
+         console.log(parcelas.rows);
+
          return response.status(200).send(parcelas.rows);
 
       } catch (error) {
@@ -89,10 +91,24 @@ class PagamentoController {
             .update({
                is_pago: true,
                atualizado_em: new Date(),
-               data_pagamento: new Date()
+               data_pagamento: new Date(),
+               formas_pagamento_id: forma_pagamento
             });
 
+         const agendamento = await transacao.raw(`select count(*) as total from pagamentos where agendamento_id = ${agendamento_id} and is_pago = false;`);
 
+         if (agendamento.rows[0].total == 0) {
+            await transacao
+               .table('agendamento')
+               .where('id', agendamento_id)
+               .update({
+                  is_pago: true,
+                  atualizado_em: new Date()
+               });
+         }
+
+         await transacao.commit();
+         return response.status(201).send({msg: 'Parcela baixa com sucesso!!'});
 
       } catch (error) {
          await transacao.rollback();
