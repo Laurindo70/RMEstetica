@@ -27,18 +27,29 @@ export default function CadastroAgendamento({ fecharModal, estabelecimento }) {
 
       try {
 
-         await api.post('/agendamento', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
-            (Response) => {
-               fecharModal();
-               Modal.success({
-                  content: 'Cadastrado com sucesso.',
-               });
-            }
-         )
+         if (token) {
+            await api.post('/agendamento', dados, {
+               headers: {
+                  Authorization: token
+               }
+            }).then(
+               (Response) => {
+                  fecharModal();
+                  Modal.success({
+                     content: 'Cadastrado com sucesso.',
+                  });
+               }
+            )
+         } else {
+            await api.post('/cadastro-agendamento', dados).then(
+               (Response) => {
+                  fecharModal();
+                  Modal.success({
+                     content: 'Cadastrado com sucesso.',
+                  });
+               }
+            )
+         }
 
       } catch (error) {
          Modal.error({

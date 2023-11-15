@@ -54,6 +54,7 @@ Route.get('/profissional/procedimento/:id', 'ProfissionalController.getAllProced
 
 /// --------------- Agendamento ---------------
 Route.post('/agendamento', 'AgendamentoController.post'); 
+Route.post('/cadastro-agendamento', 'AgendamentoController.cadastroAgendamento'); 
 Route.put('/finalizar-agendamento/:id', 'AgendamentoController.finalizarAtendimento'); 
 Route.put('/cancelar-agendamento/:id', 'AgendamentoController.cancelarAtendimento'); 
 Route.get('/datas-agendadas/:id', 'AgendamentoController.datasAgenda'); 

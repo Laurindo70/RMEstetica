@@ -25,7 +25,8 @@ function AgendamentosSemLogin() {
 
    const [estabelecimentos, setEstabelecimentos] = useState([]);
    const [estabelecimentoId, setEstabelecimentoId] = useState(0);
-   const [histotico, setHistotico] = useState([]);
+   const [historico, setHistorico] = useState([]);
+   const [tela, setTela] = useState('estabelecimentos');
 
    const handleModalOpen = () => {
       setModalCadastro(!modalCadastro);
@@ -81,7 +82,10 @@ function AgendamentosSemLogin() {
    ];
 
    function mudarPagina(value) {
-      navigate(`${value.key}`);
+      console.log(value);
+      if (value == '/') return navigate(`${value.key}`);
+
+      setTela(value.key);
    }
 
    useEffect(() => {
@@ -95,7 +99,20 @@ function AgendamentosSemLogin() {
             setEstabelecimentos(response.data);
          }
       );
-   }, [])
+
+      if (token) {
+         api.get(`/historico-agendamento`, {
+            headers: {
+               Authorization: token
+            }
+         }).then(
+            (response) => {
+               console.log(response.data);
+               setHistorico(response.data);
+            }
+         );
+      }
+   }, [modalCadastro])
 
    return (
       <Layout className="main-home">
@@ -128,11 +145,11 @@ function AgendamentosSemLogin() {
                            label: 'Inicio',
                         },
                         {
-                           key: '/agendamentos',
+                           key: 'agendamentos',
                            label: 'Agendamentos',
                         },
                         {
-                           key: '/estabelecimentos',
+                           key: 'estabelecimentos',
                            label: 'Estabelecimentos',
                         }
                      ]}
@@ -164,6 +181,7 @@ function AgendamentosSemLogin() {
                         mode="inline"
                         defaultSelectedKeys={['estabelecimentos']}
                         className='menu-side'
+                        onClick={mudarPagina}
                         items={[
                            {
                               key: 'estabelecimentos',
@@ -171,7 +189,7 @@ function AgendamentosSemLogin() {
                               label: 'Estabelecimentos'
                            },
                            {
-                              key: 'historico',
+                              key: 'agendamentos',
                               icon: <FaClockRotateLeft />,
                               label: 'Histórico Agen.'
                            }
@@ -186,10 +204,26 @@ function AgendamentosSemLogin() {
                         height: '80vh'
                      }}
                   >
-                     <Row gutter={16} className='pc'>
+                     {tela == 'estabelecimentos' ? <>
+                        <Row gutter={16} className='pc'>
 
-                        {estabelecimentos.map((estabelecimento) => (<Col span={8}>
-                           <Card key={estabelecimento.id}
+                           {estabelecimentos.map((estabelecimento) => (<Col span={8}>
+                              <Card key={estabelecimento.id}
+                                 title={<Typography.Title level={4} style={{ color: '#fff' }}  >{estabelecimento.nome_estabelecimento}</Typography.Title>}
+                                 bordered={false}
+                                 style={{ background: '#FE9CCC', boxShadow: '3px 3px 3px #1E1E1E', color: '#fff' }}
+                                 actions={[
+                                    <TbClockPlus key="setting" onClick={() => { setEstabelecimentoId(estabelecimento.id); handleModalOpen(); }} />,
+                                 ]}
+                                 className='cards-estab'
+                              >
+                                 {estabelecimento.endereco}
+                              </Card>
+                           </Col>))}
+                        </Row>
+
+                        <Row justify="center" gutter={16} className='mobile' >
+                           {estabelecimentos.map((estabelecimento) => (<Card key={estabelecimento.id}
                               title={<Typography.Title level={4} style={{ color: '#fff' }}  >{estabelecimento.nome_estabelecimento}</Typography.Title>}
                               bordered={false}
                               style={{ background: '#FE9CCC', boxShadow: '3px 3px 3px #1E1E1E', color: '#fff' }}
@@ -199,23 +233,41 @@ function AgendamentosSemLogin() {
                               className='cards-estab'
                            >
                               {estabelecimento.endereco}
-                           </Card>
-                        </Col>))}
-                     </Row>
+                           </Card>))}
+                        </Row>
+                     </>
+                        :
+                        <>
+                           <Row gutter={16} className='pc'>
 
-                     <Row justify="center" gutter={16} className='mobile' >
-                        {estabelecimentos.map((estabelecimento) => (<Card key={estabelecimento.id}
-                           title={<Typography.Title level={4} style={{ color: '#fff' }}  >{estabelecimento.nome_estabelecimento}</Typography.Title>}
-                           bordered={false}
-                           style={{ background: '#FE9CCC', boxShadow: '3px 3px 3px #1E1E1E', color: '#fff' }}
-                           actions={[
-                              <TbClockPlus key="setting" onClick={() => { setEstabelecimentoId(estabelecimento.id); handleModalOpen(); }} />,
-                           ]}
-                           className='cards-estab'
-                        >
-                           {estabelecimento.endereco}
-                        </Card>))}
-                     </Row>
+                              {historico.map((histo) => (<Col span={8}>
+                                 <Card key={histo.id}
+                                    title={<Typography.Title level={4} style={{ color: '#fff' }}  >{histo.nome_estabelecimento}</Typography.Title>}
+                                    bordered={false}
+                                    style={{ background: '#FE9CCC', boxShadow: '3px 3px 3px #1E1E1E', color: '#fff' }}
+                                    className='cards-estab'
+                                 >
+                                    <Row>{histo.nome_estabelecimento}</Row>
+                                    <Row>{histo.nome_procedimento}</Row>
+                                    <Row>{histo.nome_profissional}</Row>
+                                    <Row>{histo.data}</Row>
+                                    <Row>{histo.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</Row>
+                                 </Card>
+                              </Col>))}
+                           </Row>
+
+                           <Row justify="center" gutter={16} className='mobile' >
+                              {historico.map((histo) => (<Card key={histo.id}
+                                 title={<Typography.Title level={4} style={{ color: '#fff' }}  >{histo.nome_estabelecimento}</Typography.Title>}
+                                 bordered={false}
+                                 style={{ background: '#FE9CCC', boxShadow: '3px 3px 3px #1E1E1E', color: '#fff' }}
+                                 className='cards-estab'
+                              >
+
+                              </Card>))}
+                           </Row>
+                        </>
+                     }
                   </Content>
                </Layout>
 

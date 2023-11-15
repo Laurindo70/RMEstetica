@@ -128,14 +128,6 @@ class AgendamentoController {
          inner join procedimento on procedimento.id=agendamento.procedimento_id
          where profissional.estabelecimento_id = ${params.id} and Date(agendamento.data_agendamento) BETWEEN '${params.dataInicial}' and '${params.dataFim}' order by data_agendamento`);
 
-         console.log(`select agendamento.id, agendamento.valor, agendamento.nome_cliente, profissional.nome_profissional, TO_CHAR(data_agendamento, 'DD/MM/YYYY HH24:MI') as data, procedimento.nome_procedimento,
-         agendamento.is_finalizado, agendamento.is_pago, agendamento.is_cancelado
-         from agendamento 
-         inner join profissional on profissional.id=agendamento.profissional_id
-         inner join procedimento on procedimento.id=agendamento.procedimento_id
-         where profissional.estabelecimento_id = ${params.id} and Date(agendamento.data_agendamento) BETWEEN '${params.dataInicial}' and '${params.dataFim}' order by data_agendamento`);
-         console.log(datas.rows);
-
          return response.status(200).send(datas.rows);
 
       } catch (error) {
@@ -258,7 +250,7 @@ class AgendamentoController {
 
          const usuario = await auth.getUser();
 
-         const agendamentos = await Database.raw(`select agendamento.id, agendamento.data_agendamento, agendamento.valor,
+         const agendamentos = await Database.raw(`select agendamento.id, TO_CHAR(data_agendamento, 'DD/MM/YYYY HH24:MI') as data, agendamento.valor,
          procedimento.nome_procedimento, profissional.nome_profissional, estabelecimento.nome_estabelecimento
          from agendamento 
          INNER JOIN procedimento ON procedimento_id = procedimento.id
@@ -270,6 +262,54 @@ class AgendamentoController {
 
       } catch (error) {
          console.log(error);
+         return response.status(500).send(
+            {
+               erro: error.message.toString(),
+               mensagem: "Servidor não conseguiu processar a solicitação."
+            }
+         )
+      }
+   }
+
+   async cadastroAgendamento({ request, response }) {
+      const transacao = await Database.beginTransaction();
+      try {
+
+         const validacao = await validateAll(request.all(), camposCadastro, msgCadastro);
+
+         if (validacao.fails()) {
+            return response.status(417).send({ mensagem: validacao.messages() });
+         }
+
+         const { profissional_id, procedimento_id, data_agendamento, hora_agendamento, nome_cliente } = request.all();
+
+         const dadosProcedimento = await Database.raw(`select id, valor_procedimento as valor, duracao_procedimento from procedimento where id = ${procedimento_id};`);
+
+         const verificacao = await Database.raw(`select * from agendamento 
+         where is_cancelado = false 
+         and profissional_id = ${profissional_id} and data_agendamento BETWEEN '${data_agendamento} ${hora_agendamento}' and (cast (CONCAT('${data_agendamento} ', (INTERVAL'${hora_agendamento}' + INTERVAL'${dadosProcedimento.rows[0].duracao_procedimento}')) as timestamp));`);
+
+         if (verificacao.rows.length > 0) {
+            return response.status(401).send({ mensagem: "Esse profissional já possui agendamento para esse horário." });
+         }
+
+         let agendamento;
+
+
+         agendamento = await Agendamento.create({
+            profissional_id,
+            procedimento_id,
+            data_agendamento: `${data_agendamento} ${hora_agendamento}`,
+            valor: dadosProcedimento.rows[0].valor,
+            nome_cliente
+         }, transacao);
+
+         await transacao.commit();
+         return response.status(201).send(agendamento);
+
+      } catch (error) {
+         await transacao.rollback();
+         console.error(error);
          return response.status(500).send(
             {
                erro: error.message.toString(),
