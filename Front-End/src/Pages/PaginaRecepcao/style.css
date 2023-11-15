@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+.container-pagina-inicio{
+   font-family: 'Open Sans', sans-serif;
+}
+
+.botao-cadastro-inicio{
+   color: #A9335D;
+   background: #FE9CCC;
+   width: auto;
+   height: 3vh;
+   padding: 5px;
+   border: none;
+   margin-left: 10px;
+   margin-top: 2vh;
+   border-radius: 5px;
+}
+
+.botao-cadastro-inicio:hover{
+   color: #FE9CCC;
+   background: #fff;
+   transition: 0.5s;
+}
+
+.itens-inicio-1{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   flex-direction: column;
+   background: #fff;
+   width: 50%;
+   margin-top: 3vh;
+   height: 90vh;
+}
+
+.itens-inicio-2{
+   display: flex;
+   align-items: left;
+   justify-content: left;
+   background: #fff;
+   width: 50%;
+   margin-top: 3vh;
+   height: 90vh;
+}
+
+.itens-inicio-2 img{
+   height: 70vh;
+   width: 100%;
+}
+
+@media(max-width:900px){
+   
+   .itens-inicio-1{
+      width: 100%;
+   }
+   
+   .itens-inicio-2{
+      display: none;
+   }
+}
