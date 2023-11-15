@@ -1,0 +1,38 @@
+.mobile {
+   display: none;
+}
+
+.pc {
+   display: block;
+}
+
+.side {
+   background: #FE9CCC;
+   border-radius: 10px;
+   width: 50px;
+}
+
+.menu-side {
+   height: 100%;
+   background: #FE9CCC;
+   color: #fff;
+   font-weight: bold;
+}
+
+@media(max-width:900px) {
+   .side {
+      display: none;
+   }
+
+   .menu-side {
+      display: none;
+   }
+
+   .mobile {
+      display: block;
+   }
+
+   .pc {
+      display: none;
+   }
+}

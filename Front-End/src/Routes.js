@@ -18,6 +18,7 @@ import Feedbacks from './Pages/Feedbacks';
 import Pagamentos from './Pages/Pagamentos';
 import Dashboard from './Pages/Dashboard';
 import PaginaRecepcao from './Pages/PaginaRecepcao';
+import AgendamentosSemLogin from './Pages/AgendamentosSemLogin';
 
 function Rotas() {
    return (
@@ -31,6 +32,7 @@ function Rotas() {
          <Router basename="/rmestetica">
             <Routes>
                <Route path='/' element={<PaginaRecepcao />} />
+               <Route path='/agendamentos' element={<AgendamentosSemLogin />} />
                <Route path='/login' element={<Login />} />
                <Route path='/register-user/:estabelecimentoId?' element={<RegisterUser />} />
                <Route path='/register-estabelecimento' element={<RegisterEstabelecimento />} />

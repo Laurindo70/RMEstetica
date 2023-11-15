@@ -46,7 +46,7 @@ function Home() {
          onOk() {
             localStorage.setItem('TokenRm', ``);
             localStorage.setItem('NomeRm', ``);
-            localStorage.setItem('EstabelecimentonRm', ``);
+            localStorage.setItem('EstabelecimentoRm', ``);
             navigate("/");
          },
          onCancel() {
@@ -58,7 +58,7 @@ function Home() {
       {
          key: '1',
          label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+            <a>
                {nomeUsuario}
             </a>
          ),
@@ -66,7 +66,7 @@ function Home() {
       {
          key: '2',
          label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+            <a>
                Alterar Senha
             </a>
          ),
@@ -87,8 +87,6 @@ function Home() {
    }
 
    useEffect(() => {
-      const permissao = localStorage.getItem('TipoRm');
-      if (permissao === '1') {
          setItens([
             {
                key: '',
@@ -141,27 +139,6 @@ function Home() {
                label: 'Profissionais'
             },
          ]);
-      } else {
-         setItens([
-            {
-               key: '',
-               icon: <HomeOutlined />,
-               label: 'Home',
-            },
-            {
-               key: 'usuarios',
-               icon: <UserOutlined />,
-               label: 'Usuário',
-            },
-            {
-               key: 'agendamento',
-               icon: <CalendarOutlined />,
-               label: 'Agendamentos'
-            }
-         ]);
-      }
-      console.log(location)
-      console.log();
    }, [location]);
 
    useLayoutEffect(() => {
@@ -179,8 +156,7 @@ function Home() {
                   id: Response.data[i].id
                });
             }
-            console.log(data);
-            let est = localStorage.getItem('EstabelecimentonRm');
+            let est = localStorage.getItem('EstabelecimentoRm');
             if (est) {
                console.log(est);
                for (let i = 0; i < Response.data.length; i++) {
@@ -190,7 +166,7 @@ function Home() {
                }
             } else {
                setEstabelecimentoSelecionado(+data[0].value);
-               localStorage.setItem('EstabelecimentonRm', data[0].value);
+               localStorage.setItem('EstabelecimentoRm', data[0].id);
             }
             setEstabelecimentos(data);
          }
@@ -240,7 +216,7 @@ function Home() {
                            onChange={(value) => {
                               if (value != estabelecimentoSelecionado) {
                                  setEstabelecimentoSelecionado(value);
-                                 localStorage.setItem('EstabelecimentonRm', estabelecimentos[value].id);
+                                 localStorage.setItem('EstabelecimentoRm', estabelecimentos[value].id);
                                  window.location.reload();
                               }
                            }}

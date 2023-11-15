@@ -57,6 +57,8 @@ Route.post('/agendamento', 'AgendamentoController.post');
 Route.put('/finalizar-agendamento/:id', 'AgendamentoController.finalizarAtendimento'); 
 Route.put('/cancelar-agendamento/:id', 'AgendamentoController.cancelarAtendimento'); 
 Route.get('/datas-agendadas/:id', 'AgendamentoController.datasAgenda'); 
+Route.get('/lista-estabelecimento', 'AgendamentoController.listaEstabelecimentosAgend');
+Route.get('/historico-agendamento', 'AgendamentoController.historicoAgendamento');
 Route.get('/agendadamentos/estabelecimento=:id/data-inicial=:dataInicial/data-fim=:dataFim', 'AgendamentoController.getByData'); 
 
 /// --------------- Pagamento ---------------

@@ -56,7 +56,7 @@ function PaginaRecepcao() {
                      label: 'Cadastrar-se como estabelecimento',
                   },
                   {
-                     key: '/agendamento',
+                     key: '/agendamentos',
                      label: 'Agendamentos',
                   }
                ]}
@@ -93,7 +93,7 @@ function PaginaRecepcao() {
                      <button className='botao-cadastro-inicio' onClick={() => { navigate("/login"); }}>Realizar Login</button>
                   </Row>
                   <Row>
-                     <button className='botao-cadastro-inicio' onClick={() => { navigate("/register-user"); }} >Realizar Agendamento </button>
+                     <button className='botao-cadastro-inicio' onClick={() => { navigate("/agendamentos"); }} >Realizar Agendamento </button>
                   </Row>
                </div>
                <div className='itens-inicio-2'>

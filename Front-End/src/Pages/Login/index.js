@@ -38,7 +38,10 @@ function Login() {
                localStorage.setItem('NomeRm', `${response.data.permissao.nome_usuario}`);
                localStorage.setItem('TipoRm', `${response.data.permissao.nivel_permissao_id}`);
                messageApi.destroy();
-               navigate("/home");
+
+               if(response.data.permissao.nivel_permissao_id == 1) return navigate("/home");
+
+               return navigate("/agendamentos");
             }
          )
 
