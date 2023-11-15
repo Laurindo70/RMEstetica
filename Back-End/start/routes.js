@@ -64,3 +64,5 @@ Route.post('/parcelas/:id', 'PagamentoController.post');
 Route.get('/parcelas-geradas/:id','PagamentoController.getById');
 Route.put('/baixar-parcela/:id','PagamentoController.baixaParcela');
 Route.get('/forma-pagamento', 'AgendamentoController.formasPagamento');
+
+Route.post('/dashboard/:id', 'PagamentoController.dashboard');

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircleOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import { Divider, Modal, Typography, Row, Button, Table, Col, DatePicker, Form } from 'antd';
 import dayjs from 'dayjs';
 import api from '../../Utils/api';
@@ -121,7 +120,7 @@ function Pagamentos() {
             width={1000}
             footer={[
                <Button onClick={handleModalOpen} danger>
-                  Cancelar
+                  Fechar
                </Button>
             ]}
          >

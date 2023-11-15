@@ -13,6 +13,7 @@ import {
    UsergroupAddOutlined
 } from '@ant-design/icons';
 import { BsFillClipboard2PlusFill, BsTable, BsFillPiggyBankFill } from "react-icons/bs";
+import { AiFillSignal } from "react-icons/ai";
 import { Layout, Menu, Button, Dropdown, Modal, Select, Row } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import api from '../../Utils/api';
@@ -95,6 +96,26 @@ function Home() {
                label: 'Home',
             },
             {
+               key: 'dashboard',
+               icon: <AiFillSignal />,
+               label: 'Dashboard'
+            },
+            {
+               key: 'agendamento',
+               icon: <BsTable />,
+               label: 'Agendamentos'
+            },
+            {
+               key: 'pagamentos',
+               icon: <BsFillPiggyBankFill />,
+               label: 'Pagamentos'
+            },
+            {
+               key: 'despesas',
+               icon: <DollarOutlined />,
+               label: 'Despesas'
+            },
+            {
                key: 'usuarios',
                icon: <UserOutlined />,
                label: 'Usuários',
@@ -105,19 +126,9 @@ function Home() {
                label: 'Estabelecimentos',
             },
             {
-               key: 'despesas',
-               icon: <DollarOutlined />,
-               label: 'Despesas'
-            },
-            {
                key: 'estoque',
                icon: <ShoppingCartOutlined />,
                label: 'Estoque'
-            },
-            {
-               key: 'agendamento',
-               icon: <BsTable />,
-               label: 'Agendamentos'
             },
             {
                key: 'procedimento',
@@ -129,11 +140,6 @@ function Home() {
                icon: <UsergroupAddOutlined />,
                label: 'Profissionais'
             },
-            {
-               key: 'pagamentos',
-               icon: <BsFillPiggyBankFill />,
-               label: 'Pagamentos'
-            }
          ]);
       } else {
          setItens([

@@ -113,6 +113,35 @@ function Estabelecimentos() {
                }
             }).then(
                (Response) => {
+                  setEnderecoBairro('');
+                  setEnderecoNumero('');
+                  setEnderecoBairro('');
+                  setEnderecoLogradouro('');
+                  setEnderecoBairro('');
+                  setEnderecoNomeLogradouro('');
+                  setEnderecoBairro('');
+                  setEnderecoCidade('');
+                  setEnderecoBairro('');
+                  setEnderecoEstado('');
+                  setEnderecoBairro('');
+                  setEnderecoCep('');
+                  setEnderecoBairro('');
+                  setVisivelAgendamento(true);
+                  setEnderecoBairro('');
+                  setHorarioAbertura('');
+                  setEnderecoBairro('');
+                  setHorarioFechamento('');
+                  setEnderecoBairro('');
+                  setFechamentoAlmoco('');
+                  setEnderecoBairro('');
+                  setEnderecoComplemento('');
+                  setEnderecoBairro('');
+                  setHorarioFechamentoAlmoco('');
+                  setEnderecoBairro('');
+                  setHorarioVoltaAlmoco('');
+                  setEnderecoBairro('');
+                  setEstabelecimentoId('');
+                  setEnderecoBairro('');
                   setIsModalOpen(false);
                   messageApi.open({
                      type: 'success',
@@ -226,13 +255,13 @@ function Estabelecimentos() {
    useEffect(() => {
       if (enderecoCep !== null && enderecoCep.length == 9) {
          cep(enderecoCep.replace(/[^a-zA-Z0-9]/g, ""))
-         .then(
-            (response) => {
-               setEnderecoCidade(response.city);
-               setEnderecoEstado(response.state);
-               setEnderecoBairro(response.neighborhood);
-            }
-         )
+            .then(
+               (response) => {
+                  setEnderecoCidade(response.city);
+                  setEnderecoEstado(response.state);
+                  setEnderecoBairro(response.neighborhood);
+               }
+            )
       }
    }, [enderecoCep])
 

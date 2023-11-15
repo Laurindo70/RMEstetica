@@ -10,7 +10,7 @@ const { Title } = Typography;
 
 function Usuarios() {
    const token = localStorage.getItem('TokenRm');
-   const tipoUser = localStorage.getItem('TiponRm');
+   const tipoUser = localStorage.getItem('TipoRm');
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [messageApi, contextHolder] = message.useMessage();
    const [apiNot, contextHolderNot] = notification.useNotification();
@@ -37,9 +37,7 @@ function Usuarios() {
       setIsModalOpen(false);
    };
    const handleChange = (value) => {
-      const estab = estabelecimentosId;
-      estab.push(value);
-      setEstabelecimentosId(estab);
+      setEstabelecimentosId(value);
    };
 
    const colunas = [
@@ -94,6 +92,12 @@ function Usuarios() {
          }).then(
             (Response) => {
                setIsModalOpen(false);
+               setConfSenha(null);
+               setCpf('');
+               setNome(null);
+               setSenha('');
+               setEmail(null);
+               setEstabelecimentosId([]);
                messageApi.open({
                   type: 'success',
                   content: 'Cadastrado com sucesso.',
@@ -226,6 +230,7 @@ function Usuarios() {
                      defaultValue={[]}
                      onChange={handleChange}
                      options={estabelecimentos}
+                     value={estabelecimentosId}
                      required
                   />
                </Row>
@@ -244,7 +249,6 @@ function Usuarios() {
          {tipoUser === '1' ?
             <Row justify="end" className='opcoes-usuarios'>
                <Col span={5}><Button icon={<PlusCircleOutlined />} className='botao' onClick={showModal}>Novo Usuário</Button></Col>
-               <Col span={3}><Button icon={<SearchOutlined />} className='botao'>Filtrar</Button></Col>
                <Col span={8}><Input onChange={e => setFiltro(e.target.value)} value={filtro} className='input-filtro' placeholder="Digite o nome do Usuário" /></Col>
             </Row>
             : null

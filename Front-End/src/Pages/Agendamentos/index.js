@@ -101,9 +101,9 @@ function Agendamentos() {
 
    const finalizar = async (id) => {
       await confirm({
-         title: 'Deseja cancelar agendamento ?',
+         title: 'Deseja finalizar o agendamento ?',
          icon: <ExclamationCircleFilled />,
-         content: 'Realmente deseja cancelar o agendamento ??',
+         content: 'Realmente deseja finalizar o agendamento ??',
          onOk() {
             api.put(`/finalizar-agendamento/${id}`, {
                headers: {

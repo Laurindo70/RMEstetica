@@ -81,6 +81,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
          }
       }).then(
          (Response) => {
+            carregarDados();
             fecharModal();
             apiNot.success({
                message: `Sucesso.`,
@@ -97,7 +98,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
 
    async function baixarParcela(id, posicao) {
       await api.put(`/baixar-parcela/${id}`, {
-         forma_pagamento: parcelasCad[posicao].forma_pagamento, 
+         forma_pagamento: parcelasCad[posicao].forma_pagamento,
          agendamento_id: pagamento[0].id
       }, {
          headers: {
@@ -105,7 +106,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
          }
       }).then(
          (Response) => {
-            fecharModal();
+            carregarDados();
             apiNot.success({
                message: `Sucesso.`,
                description: "Parcelas baixada com sucesso!!",
@@ -129,6 +130,19 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
       setParcelasCad(parcel);
    }
 
+   async function carregarDados() {
+      await api.get(`/parcelas-geradas/${pagamento[0].id}`, {
+         headers: {
+            Authorization: token
+         }
+      }).then(
+         (Response) => {
+            console.log(Response.data);
+            setParcelasCad(Response.data);
+         }
+      );
+   }
+
    useEffect(() => {
       api.get(`/forma-pagamento`, {
          headers: {
@@ -147,16 +161,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
             setFormaPagamento(data[0].value);
          }
       );
-      api.get(`/parcelas-geradas/${pagamento[0].id}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
-         (Response) => {
-            console.log(Response.data);
-            setParcelasCad(Response.data);
-         }
-      );
+      carregarDados();
    }, [parcelas, modalAberto])
 
    return (
@@ -306,7 +311,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
                               options={formasPagamento}
                            /></td>
                            <td>{!parcela.is_pago ? <Text style={{ fontWeight: 'bold' }} type="danger">PENDENTE</Text> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>}</td>
-                           <td className='botao-deletar'>{!parcela.is_pago ? <Button type="primary" onClick={() => {baixarParcela(parcela.id, posicao)}}><CheckOutlined /></Button> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>}</td>
+                           <td className='botao-deletar'>{!parcela.is_pago ? <Button type="primary" onClick={() => { baixarParcela(parcela.id, posicao) }}><CheckOutlined /></Button> : <Text style={{ fontWeight: 'bold' }} type="success">PAGO</Text>}</td>
                         </tr>
                      ))}
                   </table>

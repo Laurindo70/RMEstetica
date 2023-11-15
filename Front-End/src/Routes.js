@@ -16,6 +16,8 @@ import Profissionais from './Pages/Profissionais';
 import Financeiro from './Pages/Financeiro';
 import Feedbacks from './Pages/Feedbacks';
 import Pagamentos from './Pages/Pagamentos';
+import Dashboard from './Pages/Dashboard';
+import PaginaRecepcao from './Pages/PaginaRecepcao';
 
 function Rotas() {
    return (
@@ -28,21 +30,23 @@ function Rotas() {
       >
          <Router basename="/rmestetica">
             <Routes>
-               <Route path='/' element={<Login />} />
+               <Route path='/' element={<PaginaRecepcao />} />
+               <Route path='/login' element={<Login />} />
                <Route path='/register-user/:estabelecimentoId?' element={<RegisterUser />} />
                <Route path='/register-estabelecimento' element={<RegisterEstabelecimento />} />
                <Route path='/home' element={<Home />}>
                   <Route path='' element={<Inicio />} />
+                  <Route path='dashboard' element={<Dashboard />} />
+                  <Route path='agendamento' element={<Agendamentos />} />
+                  <Route path='pagamentos' element={<Pagamentos />} />
+                  <Route path='despesas' element={<Despesas />} />
                   <Route path='usuarios' element={<Usuarios />} />
                   <Route path='estabelecimentos' element={<Estabelecimentos />} />
-                  <Route path='despesas' element={<Despesas />} />
                   <Route path='estoque' element={<Estoque />} />
-                  <Route path='agendamento' element={<Agendamentos />} />
                   <Route path='procedimento' element={<Procedimentos />} />
                   <Route path='profissionais' element={<Profissionais />} />
                   <Route path='financeiro' element={<Financeiro />} />
                   <Route path='feedbacks' element={<Feedbacks />} />
-                  <Route path='pagamentos' element={<Pagamentos />} />
                </Route>
             </Routes>
          </Router>
