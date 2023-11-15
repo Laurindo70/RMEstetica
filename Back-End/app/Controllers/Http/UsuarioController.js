@@ -65,7 +65,7 @@ class UsuarioController {
             senha,
             email_usuario,
             cpf,
-            usuario_criador: usuario.$attributes.id 
+            usuario_criador: usuario.$attributes.id
          });
 
 
@@ -83,7 +83,7 @@ class UsuarioController {
       }
    }
 
-   async registerUser({ request, response }){
+   async registerUser({ request, response }) {
       const transacao = await Database.beginTransaction();
       try {
 
@@ -152,41 +152,20 @@ class UsuarioController {
       }
    }
 
-   async put({ request, response, params }) {
+   async put({ request, response, auth }) {
       try {
 
-         const validacao = await validateAll(request.all(), camposAtualizacao, msgAtualizacao);
+         const usuario = await auth.getUser();
 
-         if (validacao.fails()) {
-            return response.status(417).send({ mensagem: validacao.messages() });
-         }
-
-         const { nome_usuario, nivel_permissao_id, senha, cpf } = request.all();
-
-         if (senha) {
-            const usuarioAtualizado = await Database
-               .table('usuario')
-               .where('id', params.id)
-               .update({
-                  nome_usuario,
-                  senha: await Hash.make(senha),
-                  nivel_permissao_id,
-                  cpf,
-                  atualizado_em: new Date()
-               });
-            return response.status(200).send(usuarioAtualizado);
-         }
+         const { senha } = request.all();
 
          const usuarioAtualizado = await Database
             .table('usuario')
-            .where('id', params.id)
+            .where('id', usuario.$attributes.id)
             .update({
-               nome_usuario,
-               nivel_permissao_id,
-               cpf,
+               senha: await Hash.make(senha),
                atualizado_em: new Date()
             });
-
          return response.status(200).send(usuarioAtualizado);
 
       } catch (error) {
@@ -252,12 +231,16 @@ class UsuarioController {
 
       } catch (error) {
          console.log(error);
-         return response.status(500).send(
-            {
-               erro: error.message.toString(),
-               mensagem: "Servidor não conseguiu processar a solicitação."
-            }
-         )
+         if (error && error.passwordField) {
+            return response.status(401).send({ mensagem: "Senha incorreta." });
+         } else {
+            return response.status(500).send(
+               {
+                  erro: error.message.toString(),
+                  mensagem: "Servidor não conseguiu processar a solicitação."
+               }
+            )
+         }
       }
    }
 

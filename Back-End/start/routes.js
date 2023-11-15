@@ -16,7 +16,7 @@ Route.get('/permissao', 'NivelPermissaoController.getAll');
 Route.post('/usuario', 'UsuarioController.post');
 Route.post('/usuario-register', 'UsuarioController.registerUser');
 Route.post('/login', 'UsuarioController.login');
-Route.put('/usuario/:id', 'UsuarioController.put');
+Route.put('/usuario', 'UsuarioController.put');
 Route.get('/usuario/:nome?', 'UsuarioController.get');
 Route.delete('/usuario/:id', 'UsuarioController.delete');
 

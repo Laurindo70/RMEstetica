@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { TbClockPlus } from "react-icons/tb";
-import { Layout, Menu, Button, Dropdown, Modal, Typography, Card, Col, Row } from 'antd';
+import { Layout, Menu, Button, Dropdown, Modal, Typography, Card, Col, Row, notification, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import api from '../../Utils/api';
 import CadastroAgendamento from './components/cadastroAgendamento';
@@ -17,11 +17,14 @@ const { Title } = Typography;
 
 
 function AgendamentosSemLogin() {
+   const [apiNot, contextHolder] = notification.useNotification();
    const token = localStorage.getItem('TokenRm');
    const nomeUsuario = localStorage.getItem('NomeRm');
    const navigate = useNavigate();
 
    const [modalCadastro, setModalCadastro] = useState(false);
+   const [modalSenha, setModalSenha] = useState(false);
+   const [novaSenha, setNovaSenha] = useState(null);
 
    const [estabelecimentos, setEstabelecimentos] = useState([]);
    const [estabelecimentoId, setEstabelecimentoId] = useState(0);
@@ -30,6 +33,36 @@ function AgendamentosSemLogin() {
 
    const handleModalOpen = () => {
       setModalCadastro(!modalCadastro);
+   }
+
+   const handleModalOpenSenha = () => {
+      setModalSenha(!modalSenha);
+   }
+
+   async function mudarSenha(){
+      try {
+
+         if (token) {
+            await api.put('/usuario', {senha: novaSenha}, {
+               headers: {
+                  Authorization: token
+               }
+            }).then(
+               (Response) => {
+                  handleModalOpenSenha();
+                  Modal.success({
+                     content: 'Senha alterado com sucesso.',
+                  });
+               }
+            )
+         }
+
+      } catch (error) {
+         Modal.error({
+            title: 'Error',
+            content: error.response.data.mensagem,
+         });
+      }
    }
 
    const sair = () => {
@@ -54,11 +87,11 @@ function AgendamentosSemLogin() {
       });
    };
 
-   const items = [
+   const items = (token ? [
       {
          key: '1',
          label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+            <a>
                {nomeUsuario ? nomeUsuario : 'Anonimo'}
             </a>
          ),
@@ -66,7 +99,7 @@ function AgendamentosSemLogin() {
       {
          key: '2',
          label: (
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+            <a onClick={handleModalOpenSenha} >
                Alterar Senha
             </a>
          ),
@@ -79,10 +112,36 @@ function AgendamentosSemLogin() {
             </a>
          ),
       },
-   ];
+   ] : 
+   [
+      {
+         key: '1',
+         label: (
+            <a>
+               {nomeUsuario ? nomeUsuario : 'Anonimo'}
+            </a>
+         ),
+      },
+      {
+         key: '3',
+         label: (
+            <a onClick={sair} rel="noopener noreferrer">
+               Sair
+            </a>
+         ),
+      },
+   ]);
 
    function mudarPagina(value) {
-      console.log(value);
+
+      if (!token && value.key !== 'estabelecimentos' && value.key !== '/') {
+         return apiNot.warning({
+            message: `É necessario realizar o login`,
+            description: "Não é possível acessar o histórico sem fazer login.",
+            placement: 'topRight',
+         });
+      }
+
       if (value == '/') return navigate(`${value.key}`);
 
       setTela(value.key);
@@ -116,6 +175,17 @@ function AgendamentosSemLogin() {
 
    return (
       <Layout className="main-home">
+         {contextHolder}
+         <Modal
+            title={<Title level={2} >Alterar Senha</Title>}
+            centered
+            open={modalSenha}
+            onOk={mudarSenha}
+            onCancel={handleModalOpenSenha}
+         >
+            <label>*Nova Senha:</label>
+            <Input placeholder='Digite a nova senha' value={novaSenha} onChange={e => setNovaSenha(e.target.value)}  />
+         </Modal>
          <Modal
             title={<Title level={2} >Cadastro de agendamento</Title>}
             centered
@@ -139,6 +209,7 @@ function AgendamentosSemLogin() {
                      style={{ background: 'none', color: '#FE9CCC', fontWeight: 'bold' }}
                      mode="horizontal"
                      onClick={mudarPagina}
+                     defaultSelectedKeys={['estabelecimentos']}
                      items={[
                         {
                            key: '/',

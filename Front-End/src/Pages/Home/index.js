@@ -14,12 +14,13 @@ import {
 } from '@ant-design/icons';
 import { BsFillClipboard2PlusFill, BsTable, BsFillPiggyBankFill } from "react-icons/bs";
 import { AiFillSignal } from "react-icons/ai";
-import { Layout, Menu, Button, Dropdown, Modal, Select, Row } from 'antd';
+import { Layout, Menu, Button, Dropdown, Modal, Select, Row , Input, Typography } from 'antd';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import api from '../../Utils/api';
 
 const { Header, Sider, Content } = Layout;
 const { confirm } = Modal;
+const { Title } = Typography;
 
 function Home() {
    const token = localStorage.getItem('TokenRm');
@@ -30,6 +31,8 @@ function Home() {
    const [collapsed, setCollapsed] = useState(false);
    const [estabelecimentos, setEstabelecimentos] = useState(null);
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
+   const [modalSenha, setModalSenha] = useState(false);
+   const [novaSenha, setNovaSenha] = useState(null);
    const [itens, setItens] = useState([]);
 
    const sair = () => {
@@ -54,19 +57,23 @@ function Home() {
       });
    };
 
-   const items = [
+   const handleModalOpenSenha = () => {
+      setModalSenha(!modalSenha);
+   }
+
+   const items = (token ? [
       {
          key: '1',
          label: (
             <a>
-               {nomeUsuario}
+               {nomeUsuario ? nomeUsuario : 'Anonimo'}
             </a>
          ),
       },
       {
          key: '2',
          label: (
-            <a>
+            <a onClick={handleModalOpenSenha} >
                Alterar Senha
             </a>
          ),
@@ -79,7 +86,51 @@ function Home() {
             </a>
          ),
       },
-   ];
+   ] : 
+   [
+      {
+         key: '1',
+         label: (
+            <a>
+               {nomeUsuario ? nomeUsuario : 'Anonimo'}
+            </a>
+         ),
+      },
+      {
+         key: '3',
+         label: (
+            <a onClick={sair} rel="noopener noreferrer">
+               Sair
+            </a>
+         ),
+      },
+   ]);
+
+   async function mudarSenha(){
+      try {
+
+         if (token) {
+            await api.put('/usuario', {senha: novaSenha}, {
+               headers: {
+                  Authorization: token
+               }
+            }).then(
+               (Response) => {
+                  handleModalOpenSenha();
+                  Modal.success({
+                     content: 'Senha alterado com sucesso.',
+                  });
+               }
+            )
+         }
+
+      } catch (error) {
+         Modal.error({
+            title: 'Error',
+            content: error.response.data.mensagem,
+         });
+      }
+   }
 
    function mudarPagina(value) {
       setCollapsed(true)
@@ -87,58 +138,58 @@ function Home() {
    }
 
    useEffect(() => {
-         setItens([
-            {
-               key: '',
-               icon: <HomeOutlined />,
-               label: 'Home',
-            },
-            {
-               key: 'dashboard',
-               icon: <AiFillSignal />,
-               label: 'Dashboard'
-            },
-            {
-               key: 'agendamento',
-               icon: <BsTable />,
-               label: 'Agendamentos'
-            },
-            {
-               key: 'pagamentos',
-               icon: <BsFillPiggyBankFill />,
-               label: 'Pagamentos'
-            },
-            {
-               key: 'despesas',
-               icon: <DollarOutlined />,
-               label: 'Despesas'
-            },
-            {
-               key: 'usuarios',
-               icon: <UserOutlined />,
-               label: 'Usuários',
-            },
-            {
-               key: 'estabelecimentos',
-               icon: <BankOutlined />,
-               label: 'Estabelecimentos',
-            },
-            {
-               key: 'estoque',
-               icon: <ShoppingCartOutlined />,
-               label: 'Estoque'
-            },
-            {
-               key: 'procedimento',
-               icon: <BsFillClipboard2PlusFill />,
-               label: 'Procedimentos'
-            },
-            {
-               key: 'profissionais',
-               icon: <UsergroupAddOutlined />,
-               label: 'Profissionais'
-            },
-         ]);
+      setItens([
+         {
+            key: '',
+            icon: <HomeOutlined />,
+            label: 'Home',
+         },
+         {
+            key: 'dashboard',
+            icon: <AiFillSignal />,
+            label: 'Dashboard'
+         },
+         {
+            key: 'agendamento',
+            icon: <BsTable />,
+            label: 'Agendamentos'
+         },
+         {
+            key: 'pagamentos',
+            icon: <BsFillPiggyBankFill />,
+            label: 'Pagamentos'
+         },
+         {
+            key: 'despesas',
+            icon: <DollarOutlined />,
+            label: 'Despesas'
+         },
+         {
+            key: 'usuarios',
+            icon: <UserOutlined />,
+            label: 'Usuários',
+         },
+         {
+            key: 'estabelecimentos',
+            icon: <BankOutlined />,
+            label: 'Estabelecimentos',
+         },
+         {
+            key: 'estoque',
+            icon: <ShoppingCartOutlined />,
+            label: 'Estoque'
+         },
+         {
+            key: 'procedimento',
+            icon: <BsFillClipboard2PlusFill />,
+            label: 'Procedimentos'
+         },
+         {
+            key: 'profissionais',
+            icon: <UsergroupAddOutlined />,
+            label: 'Profissionais'
+         },
+      ]);
    }, [location]);
 
    useLayoutEffect(() => {
@@ -160,7 +211,7 @@ function Home() {
             if (est) {
                console.log(est);
                for (let i = 0; i < Response.data.length; i++) {
-                  if(Response.data[i].id == est){
+                  if (Response.data[i].id == est) {
                      setEstabelecimentoSelecionado(i);
                   }
                }
@@ -175,6 +226,16 @@ function Home() {
 
    return (
       <Layout className="main-home">
+         <Modal
+            title={<Title level={2} >Alterar Senha</Title>}
+            centered
+            open={modalSenha}
+            onOk={mudarSenha}
+            onCancel={handleModalOpenSenha}
+         >
+            <label>*Nova Senha:</label>
+            <Input placeholder='Digite a nova senha' value={novaSenha} onChange={e => setNovaSenha(e.target.value)} />
+         </Modal>
          <Sider style={{ background: '#FE9CCC' }} className='sidebar-home' trigger={null} collapsible collapsed={collapsed}>
             <Menu
                style={{ background: '#FE9CCC', color: '#fff', fontWeight: 'bold' }}
