@@ -62,7 +62,6 @@ function RegisterEstabelecimento() {
          await api.post('/estabelecimento', dados).then(
             (Response) => {
                navigate(`/register-user/${Response.data.id}`);
-               console.log(Response.data);
             }
          )
       } catch (error) {
@@ -75,7 +74,6 @@ function RegisterEstabelecimento() {
          cep(enderecoCep.replace(/[^a-zA-Z0-9]/g, ""))
             .then(
                (response) => {
-                  console.log(response);
                   setEnderecoCidade(response.city);
                   setEnderecoEstado(response.state);
                   setEnderecoBairro(response.neighborhood);

@@ -154,7 +154,6 @@ function AgendamentosSemLogin() {
          }
       }).then(
          (response) => {
-            console.log(response.data);
             setEstabelecimentos(response.data);
          }
       );
@@ -166,7 +165,6 @@ function AgendamentosSemLogin() {
             }
          }).then(
             (response) => {
-               console.log(response.data);
                setHistorico(response.data);
             }
          );

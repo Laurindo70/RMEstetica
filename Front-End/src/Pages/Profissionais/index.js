@@ -38,8 +38,8 @@ function Profissionais() {
    ];
 
    useEffect(() => {
-      const estab = localStorage.getItem('EstabelecimentonRm');
-      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      const estab = localStorage.getItem('EstabelecimentoRm');
+      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
       api.get(`/profissional/${estab}`, {
          headers: {
             Authorization: token

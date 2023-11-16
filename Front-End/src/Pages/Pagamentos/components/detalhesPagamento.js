@@ -137,7 +137,6 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
          }
       }).then(
          (Response) => {
-            console.log(Response.data);
             setParcelasCad(Response.data);
          }
       );

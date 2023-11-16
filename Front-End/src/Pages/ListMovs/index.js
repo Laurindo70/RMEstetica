@@ -38,7 +38,6 @@ function ListMov(props) {
             }
          }).then(
             (response) => {
-               console.log(response);
                let dados = [];
                for (let i = 0; i < response.data.length; i++) {
                   dados.push(

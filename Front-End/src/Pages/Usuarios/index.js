@@ -145,7 +145,6 @@ function Usuarios() {
          }
       }).then(
          (Response) => {
-            console.log(Response.data);
             let usuarioss = [];
 
             for (let i = 0; i < Response.data.length; i++) {

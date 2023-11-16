@@ -33,7 +33,6 @@ function Login() {
 
          await api.post('/login', { email_usuario, senha }).then(
             (response) => {
-               console.log(response.data);
                localStorage.setItem('TokenRm', `bearer ${response.data.token}`);
                localStorage.setItem('NomeRm', `${response.data.permissao.nome_usuario}`);
                localStorage.setItem('TipoRm', `${response.data.permissao.nivel_permissao_id}`);

@@ -205,7 +205,6 @@ function Estabelecimentos() {
    async function editar(id) {
       setEstabelecimentoId(id);
       setIsModalOpen(true);
-      console.log(id);
       await api.get(`/estabelecimento/${id}`, {
          headers: {
             Authorization: token

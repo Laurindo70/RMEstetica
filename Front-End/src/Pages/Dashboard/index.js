@@ -60,8 +60,7 @@ function Dashboard() {
    const [dataColuna, setDataColuna] = useState([]);
 
    useLayoutEffect(() => {
-      const estab = localStorage.getItem('EstabelecimentonRm');
-      console.log(ano);
+      const estab = localStorage.getItem('EstabelecimentoRm');
       api.post(`/dashboard/${estab}`, {
          ano: ano
       }, {

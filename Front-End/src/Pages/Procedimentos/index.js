@@ -77,7 +77,6 @@ function Procedimentos() {
    ]
 
    async function inativar(id) {
-      console.log(id);
       try {
          await api.delete(`/procedimento/${id[1]}`, {
             headers: {
@@ -98,7 +97,7 @@ function Procedimentos() {
    }
 
    async function carregarDados() {
-      const estab = localStorage.getItem('EstabelecimentonRm');
+      const estab = localStorage.getItem('EstabelecimentoRm');
 
       try {
          await api.get(`/procedimento/${estab}`, {
@@ -140,8 +139,6 @@ function Procedimentos() {
                   })
                }
 
-               console.log(dadosProfissionais);
-
                setProfissionais(dadosProfissionais);
             }
          )
@@ -153,8 +150,8 @@ function Procedimentos() {
    }
 
    useEffect(() => {
-      const estab = localStorage.getItem('EstabelecimentonRm');
-      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      const estab = localStorage.getItem('EstabelecimentoRm');
+      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
       carregarDados();
 
       api.get(`/produto/${estab}`, {

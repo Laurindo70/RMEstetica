@@ -153,8 +153,6 @@ function Estoque({ estabelecimento }) {
          "produtos": produtosSelecMov
       }
 
-      console.log(dados);
-
       try {
 
          await api.post('/movimentacao', dados, {
@@ -183,8 +181,8 @@ function Estoque({ estabelecimento }) {
    }
 
    useEffect(() => {
-      const estab = localStorage.getItem('EstabelecimentonRm');
-      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentonRm'))
+      const estab = localStorage.getItem('EstabelecimentoRm');
+      setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
       api.get(`/produto/${estab}`, {
          headers: {
             Authorization: token
@@ -333,9 +331,6 @@ function Estoque({ estabelecimento }) {
          <Title level={3}>Estoque</Title>
          <Divider />
          <Row justify="end" className='opcoes-usuarios'>
-            <Col span={5}>
-               <Button icon={<SyncOutlined />} className='botao' onClick={handleModal}>Trocar Estabelecimento</Button>
-            </Col>
             <Col span={5}>
                <Button icon={<SyncOutlined />} className='botao' onClick={() => { setIsModalListMov(true) }}>Lista Movimentações</Button>
             </Col>

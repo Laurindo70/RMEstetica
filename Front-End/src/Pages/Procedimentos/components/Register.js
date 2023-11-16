@@ -60,7 +60,6 @@ export default function RegisterProcedimento({ estabelecimento_id, produtos, fec
    function adicionarProduto(e) {
       e.preventDefault();
       try {
-         console.log(produtos[produtoSelec]);
          let dadosProd = produtosCadastro;
          dadosProd.push({
             nome_produto: produtos[produtoSelec].label,

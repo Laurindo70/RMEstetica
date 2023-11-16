@@ -19,8 +19,6 @@ function RegisterUser() {
    const [confSenha, setConfSenha] = useState('');
    const [cpf, setCpf] = useState(null);
 
-   console.log(estabelecimentoId);
-
    async function salvar(e) {
       e.preventDefault();
       messageApi.open({

@@ -105,7 +105,7 @@ function Agendamentos() {
          icon: <ExclamationCircleFilled />,
          content: 'Realmente deseja finalizar o agendamento ??',
          onOk() {
-            api.put(`/finalizar-agendamento/${id}`, {
+            api.put(`/finalizar-agendamento/${id}`, {},{
                headers: {
                   Authorization: token
                }
@@ -135,7 +135,6 @@ function Agendamentos() {
          }
       }).then(
          (Response) => {
-            console.log(Response.data)
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {
                data.push({
@@ -157,7 +156,6 @@ function Agendamentos() {
 
    useEffect(() => {
       if (datasInicio && datasFim){
-         console.log(datasInicio);
          carregarDados();
       } else {
          setDataInicio(`01-${date.getMonth() + 1}-${date.getFullYear()}`);

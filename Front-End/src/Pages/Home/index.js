@@ -209,7 +209,6 @@ function Home() {
             }
             let est = localStorage.getItem('EstabelecimentoRm');
             if (est) {
-               console.log(est);
                for (let i = 0; i < Response.data.length; i++) {
                   if (Response.data[i].id == est) {
                      setEstabelecimentoSelecionado(i);
@@ -221,7 +220,14 @@ function Home() {
             }
             setEstabelecimentos(data);
          }
-      );
+      ).catch((error) => {
+         if (error.response.status === 401) {
+            localStorage.setItem('TokenRm', ``);
+            localStorage.setItem('NomeRm', ``);
+            localStorage.setItem('EstabelecimentoRm', ``);
+            navigate("/");
+         }
+      });
    }, []);
 
    return (

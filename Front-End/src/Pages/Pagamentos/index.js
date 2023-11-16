@@ -68,19 +68,17 @@ function Pagamentos() {
 
    async function expandir(id) {
       handleModalOpen();
-      console.log(agendadamentos.filter((word) => word.id == id));
       setDadosPagamento(agendadamentos.filter((word) => word.id == id));
    }
 
    async function carregarDados() {
-      const estab = localStorage.getItem('EstabelecimentonRm');
+      const estab = localStorage.getItem('EstabelecimentoRm');
       await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
          headers: {
             Authorization: token
          }
       }).then(
          (Response) => {
-            console.log(Response.data)
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {
                data.push({
@@ -101,7 +99,6 @@ function Pagamentos() {
 
    useEffect(() => {
       if (datasInicio && datasFim) {
-         console.log(datasInicio);
          carregarDados();
       } else {
          setDataInicio(`01-${date.getMonth() + 1}-${date.getFullYear()}`);

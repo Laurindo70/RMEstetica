@@ -64,8 +64,6 @@ class PagamentoController {
          const parcelas = await Database.raw(`select pagamentos.id, formas_pagamento.nome_forma_pagamento as nome_forma_pagamento,formas_pagamento_id as forma_pagamento, valor, is_pago, to_char(data_vencimento, 'DD/MM/YYYY') as data_vencimento from pagamentos inner JOIN formas_pagamento on formas_pagamento.id = pagamentos.formas_pagamento_id
          where pagamentos.agendamento_id = ${params.id};`);
 
-         console.log(parcelas.rows);
-
          return response.status(200).send(parcelas.rows);
 
       } catch (error) {

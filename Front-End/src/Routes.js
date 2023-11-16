@@ -31,7 +31,7 @@ function Rotas() {
       >
          <Router basename="/rmestetica">
             <Routes>
-               <Route path='/' element={<PaginaRecepcao />} />
+               <Route path='/' element={ <PaginaRecepcao />} />
                <Route path='/agendamentos' element={<AgendamentosSemLogin />} />
                <Route path='/login' element={<Login />} />
                <Route path='/register-user/:estabelecimentoId?' element={<RegisterUser />} />
