@@ -85,7 +85,7 @@ function Login() {
                      <div className='card-footer'>
                         <button>Login</button>
                         <a onClick={cadastroUser}>Inscrever-se</a>
-                        <a onClick={cadastroEstabelecimento}>Cadastrar Empresa</a>
+                        {screenWidth >= 900 ? <a onClick={cadastroEstabelecimento}>Cadastrar Empresa</a> : null}
                      </div>
                   </form>
                </div>

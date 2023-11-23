@@ -104,10 +104,3 @@
 .imagem-login img {
    height: 90%;
 }
-
-@media(max-width:900px) {
-   .card-login {
-
-      width: 80%;
-   }
-}
