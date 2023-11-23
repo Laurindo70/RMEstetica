@@ -7,6 +7,7 @@ import api from '../../Utils/api';
 import { cpfMask } from '../../Utils/mascaras';
 
 function RegisterUser() {
+   const screenWidth = window.innerWidth;
    const navigate = useNavigate();
    const [messageApi, contextHolder] = message.useMessage();
    const [apiNot, contextHolderNot] = notification.useNotification();
@@ -28,7 +29,7 @@ function RegisterUser() {
       });
 
       try {
-         if(senha != confSenha){
+         if (senha != confSenha) {
             return apiNot.error({
                message: `Não foi possível realizar o cadastro.`,
                description: 'As senhas não são iguais.',
@@ -38,7 +39,7 @@ function RegisterUser() {
 
          await api.post('/usuario-register', {
             nome_usuario: nome,
-            nivel_permissao_id: (estabelecimentoId === undefined ? 2 : 1 ),
+            nivel_permissao_id: (estabelecimentoId === undefined ? 2 : 1),
             senha: senha,
             email_usuario: email,
             cpf: cpf,
@@ -64,10 +65,10 @@ function RegisterUser() {
 
    return (
       <div className="main">
-         <div className="card-login">
+         <div className="card-login" style={screenWidth >= 900 ? { width: '40%' } : { width: '100%' }}>
             {contextHolderNot}
             {contextHolder}
-            <div className="card">
+            <div className="card" style={screenWidth >= 900 ? { width: '40%' } : { width: '100%' }}>
                <h1>Cadastro Usuário</h1>
                <div className='main-card'>
                   <form onSubmit={salvar}>
@@ -96,10 +97,11 @@ function RegisterUser() {
                </div>
             </div>
          </div>
-         <div className="imagem-login">
+
+         {screenWidth >= 900 ? <div className="imagem-login">
             <h1>Seja muito Bem-Vindo</h1>
             <img src={imagemInicio}></img>
-         </div>
+         </div> : null}
       </div>
    )
 }

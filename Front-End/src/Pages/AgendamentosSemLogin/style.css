@@ -6,6 +6,10 @@
    display: block;
 }
 
+.cards-estab{
+   margin-bottom: 5%;
+}
+
 .side {
    background: #FE9CCC;
    border-radius: 10px;

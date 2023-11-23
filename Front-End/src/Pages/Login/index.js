@@ -7,6 +7,7 @@ import api from '../../Utils/api';
 
 function Login() {
    const navigate = useNavigate();
+   const screenWidth = window.innerWidth;
    const [messageApi, contextHolder] = message.useMessage();
    const [apiNot, contextHolderNot] = notification.useNotification();
 
@@ -68,10 +69,10 @@ function Login() {
 
    return (
       <div className="main">
-         <div className="card-login">
+         <div className="card-login" style={screenWidth >= 900 ? {width: '40%'} : {width: '100%'}}>
             {contextHolderNot}
             {contextHolder}
-            <div className="card">
+            <div className="card" style={screenWidth >= 900 ? {width: '40%'} : {width: '100%'}}>
                <h1>Login</h1>
                <div className='main-card'>
                   <form onSubmit={entrar}>
@@ -90,10 +91,10 @@ function Login() {
                </div>
             </div>
          </div>
-         <div className="imagem-login">
+         {screenWidth >= 900 ? <div className="imagem-login">
             <h1>Seja muito Bem-Vindo</h1>
             <img src={imagemInicio}></img>
-         </div>
+         </div> : null}
       </div>
    )
 }

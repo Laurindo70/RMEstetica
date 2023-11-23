@@ -82,7 +82,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
       }).then(
          (Response) => {
             carregarDados();
-            fecharModal();
+            fechar();
             apiNot.success({
                message: `Sucesso.`,
                description: "Parcelas cadastradas com sucesso!!",
@@ -130,6 +130,11 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
       setParcelasCad(parcel);
    }
 
+   function fechar(){
+      setParcelasCad();
+      fecharModal();
+   }
+
    async function carregarDados() {
       await api.get(`/parcelas-geradas/${pagamento[0].id}`, {
          headers: {
@@ -161,7 +166,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
          }
       );
       carregarDados();
-   }, [parcelas, modalAberto])
+   }, [parcelas, modalAberto, pagamento])
 
    return (
       <>
