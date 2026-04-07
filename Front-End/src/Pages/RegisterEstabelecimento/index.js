@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, Input } from 'antd';
+import { Switch, Input, Modal } from 'antd';
 import './style.css';
 import cep from 'cep-promise';
 import imagemInicio from '../../Images/Spring flower-pana.svg';
@@ -65,7 +65,7 @@ function RegisterEstabelecimento() {
             }
          )
       } catch (error) {
-         console.log(error.response.data.mensagem);
+         Modal.error({ title: 'Erro', content: error.response?.data?.mensagem || 'Erro ao cadastrar.' });
       }
    }
 

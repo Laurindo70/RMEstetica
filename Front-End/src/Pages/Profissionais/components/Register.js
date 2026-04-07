@@ -4,7 +4,6 @@ import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, mes
 
 export default function RegisterProfissional({ estabelecimento_id, fecharModal }) {
    const [messageApi, contextHolder] = message.useMessage();
-   const token = localStorage.getItem('TokenRm');
 
    const [nomeProfissional, setNomeProfissional] = useState(null);
    const [horarioInicio, setHorarioInicio] = useState(null);
@@ -23,11 +22,7 @@ export default function RegisterProfissional({ estabelecimento_id, fecharModal }
 
       try {
 
-         await api.post('/profissional', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/profissional', dados).then(
             (Response) => {
                fecharModal();
                messageApi.open({
@@ -38,10 +33,9 @@ export default function RegisterProfissional({ estabelecimento_id, fecharModal }
          )
 
       } catch (error) {
-         console.log(error.data);
          messageApi.open({
             type: 'error',
-            content: 'Erro ao realizar cadastro.',
+            content: error.response?.data?.mensagem || 'Erro ao realizar cadastro.',
          });
       }
 

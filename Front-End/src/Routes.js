@@ -5,6 +5,7 @@ import Login from './Pages/Login';
 import RegisterUser from './Pages/RegisterUser';
 import RegisterEstabelecimento from './Pages/RegisterEstabelecimento';
 import Home from './Pages/Home';
+import ProtectedRoute from './Components/ProtectedRoute';
 import Usuarios from './Pages/Usuarios';
 import Estabelecimentos from './Pages/Estabelecimentos';
 import Inicio from './Pages/Inicio';
@@ -36,7 +37,7 @@ function Rotas() {
                <Route path='/login' element={<Login />} />
                <Route path='/register-user/:estabelecimentoId?' element={<RegisterUser />} />
                <Route path='/register-estabelecimento' element={<RegisterEstabelecimento />} />
-               <Route path='/home' element={<Home />}>
+               <Route path='/home' element={<ProtectedRoute><Home /></ProtectedRoute>}>
                   <Route path='' element={<Inicio />} />
                   <Route path='dashboard' element={<Dashboard />} />
                   <Route path='agendamento' element={<Agendamentos />} />

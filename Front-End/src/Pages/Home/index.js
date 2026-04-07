@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.css';
 import {
    HomeOutlined,
@@ -23,7 +23,6 @@ const { confirm } = Modal;
 const { Title } = Typography;
 
 function Home() {
-   const token = localStorage.getItem('TokenRm');
    let location = useLocation();
    const nomeUsuario = localStorage.getItem('NomeRm');
    const navigate = useNavigate();
@@ -31,6 +30,7 @@ function Home() {
    const [collapsed, setCollapsed] = useState(false);
    const [estabelecimentos, setEstabelecimentos] = useState(null);
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
+   const [outletKey, setOutletKey] = useState(0);
    const [modalSenha, setModalSenha] = useState(false);
    const [novaSenha, setNovaSenha] = useState(null);
    const [itens, setItens] = useState([]);
@@ -61,7 +61,7 @@ function Home() {
       setModalSenha(!modalSenha);
    }
 
-   const items = (token ? [
+   const items = [
       {
          key: '1',
          label: (
@@ -86,44 +86,18 @@ function Home() {
             </a>
          ),
       },
-   ] : 
-   [
-      {
-         key: '1',
-         label: (
-            <a>
-               {nomeUsuario ? nomeUsuario : 'Anonimo'}
-            </a>
-         ),
-      },
-      {
-         key: '3',
-         label: (
-            <a onClick={sair} rel="noopener noreferrer">
-               Sair
-            </a>
-         ),
-      },
-   ]);
+   ];
 
    async function mudarSenha(){
       try {
-
-         if (token) {
-            await api.put('/usuario', {senha: novaSenha}, {
-               headers: {
-                  Authorization: token
-               }
-            }).then(
-               (Response) => {
-                  handleModalOpenSenha();
-                  Modal.success({
-                     content: 'Senha alterado com sucesso.',
-                  });
-               }
-            )
-         }
-
+         await api.put('/usuario', {senha: novaSenha}).then(
+            (Response) => {
+               handleModalOpenSenha();
+               Modal.success({
+                  content: 'Senha alterado com sucesso.',
+               });
+            }
+         )
       } catch (error) {
          Modal.error({
             title: 'Error',
@@ -192,12 +166,8 @@ function Home() {
       ]);
    }, [location]);
 
-   useLayoutEffect(() => {
-      api.get(`/estabelecimento/nome=`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+   useEffect(() => {
+      api.get(`/estabelecimento/nome=`).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {
@@ -220,14 +190,7 @@ function Home() {
             }
             setEstabelecimentos(data);
          }
-      ).catch((error) => {
-         if (error.response.status === 401) {
-            localStorage.setItem('TokenRm', ``);
-            localStorage.setItem('NomeRm', ``);
-            localStorage.setItem('EstabelecimentoRm', ``);
-            navigate("/");
-         }
-      });
+      );
    }, []);
 
    return (
@@ -284,7 +247,7 @@ function Home() {
                               if (value != estabelecimentoSelecionado) {
                                  setEstabelecimentoSelecionado(value);
                                  localStorage.setItem('EstabelecimentoRm', estabelecimentos[value].id);
-                                 window.location.reload();
+                                 setOutletKey((k) => k + 1);
                               }
                            }}
                         />
@@ -303,7 +266,7 @@ function Home() {
             <Content
                className='home-main'
             >
-               <Outlet />
+               <Outlet key={outletKey} />
             </Content>
          </Layout>
       </Layout>

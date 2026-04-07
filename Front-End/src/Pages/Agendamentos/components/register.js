@@ -3,8 +3,6 @@ import api from '../../../Utils/api';
 import { Col, Divider, Row, Typography, Table, Button, Input, Modal, Select, message } from 'antd';
 
 export default function RegisterAgendamento({ estabelecimento_id, fecharModal }) {
-   const token = localStorage.getItem('TokenRm');
-
    const [profissionalId, setProfissionalId] = useState(null);
    const [procedimentoId, setProcedimentoId] = useState(null);
    const [horaAgendamento, SetHoraAgendamento] = useState(null);
@@ -27,11 +25,7 @@ export default function RegisterAgendamento({ estabelecimento_id, fecharModal })
 
       try {
 
-         await api.post('/agendamento', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/agendamento', dados).then(
             (Response) => {
                fecharModal();
                Modal.success({
@@ -51,11 +45,7 @@ export default function RegisterAgendamento({ estabelecimento_id, fecharModal })
    useEffect(() => {
 
       if (procedimentoId !== null) {
-         api.get(`/profissional/procedimento/${procedimentoId}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         api.get(`/profissional/procedimento/${procedimentoId}`).then(
             (Response) => {
                let data = [];
                for (let i = 0; i < Response.data.length; i++) {
@@ -74,11 +64,7 @@ export default function RegisterAgendamento({ estabelecimento_id, fecharModal })
    useEffect(() => {
 
       if (estabelecimento_id !== null) {
-         api.get(`/procedimento/${estabelecimento_id}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         api.get(`/procedimento/${estabelecimento_id}`).then(
             (Response) => {
                let data = [];
                for (let i = 0; i < Response.data.length; i++) {

@@ -9,8 +9,6 @@ const { Title } = Typography;
 
 
 function Estoque({ estabelecimento }) {
-   const token = localStorage.getItem('TokenRm');
-
    const [isModalSelecEstab, setIsModalSelecEstab] = useState(true);
    const [isModalCadastro, setIsModalCadastro] = useState(false);
    const [isModalMovimentacao, setIsModalMovimentacao] = useState(false);
@@ -69,11 +67,7 @@ function Estoque({ estabelecimento }) {
 
    async function inativar(id) {
       try {
-         await api.delete(`/produto/${id}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.delete(`/produto/${id}`).then(
             (Response) => {
                messageApi.open({
                   type: 'success',
@@ -82,7 +76,7 @@ function Estoque({ estabelecimento }) {
             }
          )
       } catch (error) {
-         console.log(error.response.data.mensagem);
+         messageApi.open({ type: 'error', content: error.response?.data?.mensagem || 'Erro ao inativar.' });
       }
    }
 
@@ -97,11 +91,7 @@ function Estoque({ estabelecimento }) {
 
       try {
 
-         await api.post('/produto', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/produto', dados).then(
             (Response) => {
                handleModalCadastro();
                messageApi.open({
@@ -112,8 +102,7 @@ function Estoque({ estabelecimento }) {
          )
 
       } catch (error) {
-         console.log(error.data);
-         alert('Erro no cadastro')
+         messageApi.open({ type: 'error', content: error.response?.data?.mensagem || 'Erro no cadastro.' });
       }
 
    }
@@ -128,7 +117,6 @@ function Estoque({ estabelecimento }) {
             quantidade: quantidadeMov,
             remove: produtos[produtoSelecMovimentacao].id
          });
-         console.log(dadosProd);
          setProdutosSelecMov(dadosProd);
          setQuantidadeMov(0);
 
@@ -155,11 +143,7 @@ function Estoque({ estabelecimento }) {
 
       try {
 
-         await api.post('/movimentacao', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/movimentacao', dados).then(
             (Response) => {
                handleModalMovimentacao();
                setProdutosSelecMov([]);
@@ -172,10 +156,9 @@ function Estoque({ estabelecimento }) {
          )
 
       } catch (error) {
-         console.log(error.data);
          messageApi.open({
             type: 'error',
-            content: 'Erro ao realizar movimentação.',
+            content: error.response?.data?.mensagem || 'Erro ao realizar movimentação.',
          });
       }
    }
@@ -183,11 +166,7 @@ function Estoque({ estabelecimento }) {
    useEffect(() => {
       const estab = localStorage.getItem('EstabelecimentoRm');
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
-      api.get(`/produto/${estab}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/produto/${estab}`).then(
          (Response) => {
             let dadosProdutos = [];
             let dadosMov = [];
@@ -214,11 +193,7 @@ function Estoque({ estabelecimento }) {
    }, [isModalSelecEstab, isModalCadastro, isModalMovimentacao, estabelecimento]);
 
    useEffect(() => {
-      api.get(`/estabelecimento/nome=`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/estabelecimento/nome=`).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {

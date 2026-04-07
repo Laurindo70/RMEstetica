@@ -6,8 +6,6 @@ import { moneyMask } from '../../Utils/mascaras';
 const { Title } = Typography;
 
 function Despesas() {
-   const token = localStorage.getItem('TokenRm');
-
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [messageApi, contextHolder] = message.useMessage();
    const [despesas, setDespesas] = useState([]);
@@ -61,11 +59,7 @@ function Despesas() {
       }
 
       try {
-         await api.post('/despesa', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/despesa', dados).then(
             (Response) => {
                handleModal();
                messageApi.open({
@@ -75,18 +69,13 @@ function Despesas() {
             }
          )
       } catch (error) {
-         console.log(error.data);
-         alert('Erro no cadastro')
+         messageApi.open({ type: 'error', content: error.response?.data?.mensagem || 'Erro no cadastro.' });
       }
    }
 
    async function inativar(id) {
       try {
-         await api.delete(`/despesa/${id}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.delete(`/despesa/${id}`).then(
             (Response) => {
                setIsModalOpen(false);
                messageApi.open({
@@ -96,29 +85,21 @@ function Despesas() {
             }
          )
       } catch (error) {
-         console.log(error.response.data.mensagem);
+         messageApi.open({ type: 'error', content: error.response?.data?.mensagem || 'Erro ao inativar.' });
       }
    }
 
    useEffect(() => {
-      api.get(`/despesa`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/despesa`).then(
          (Response) => {
-            let dadosDespesas = [];
-
-            for (let i = 0; i < Response.data.length; i++) {
-               dadosDespesas.push({
-                  id: Response.data[i].id,
-                  nome_despesa: Response.data[i].nome_despesa,
-                  valor_despesa: Response.data[i].valor_despesa,
-                  ativo: [Response.data[i].ativo, Response.data[i].id],
-                  usuario: Response.data[i].usuario,
-                  estabelecimento: Response.data[i].estabelecimento
-               })
-            }
+            const dadosDespesas = Response.data.map((item) => ({
+               id: item.id,
+               nome_despesa: item.nome_despesa,
+               valor_despesa: item.valor_despesa,
+               ativo: [item.ativo, item.id],
+               usuario: item.usuario,
+               estabelecimento: item.estabelecimento
+            }));
 
             setDespesas(dadosDespesas);
          }
@@ -126,11 +107,7 @@ function Despesas() {
    }, [isModalOpen]);
 
    useEffect(() => {
-      api.get(`/estabelecimento/nome=`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/estabelecimento/nome=`).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {

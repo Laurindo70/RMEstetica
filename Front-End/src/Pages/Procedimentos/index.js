@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Col, Row, Table, Button, Typography, List, Modal, message } from 'antd';
+import { Col, Row, Table, Button, Typography, List, Modal, message, notification } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import api from '../../Utils/api';
 import RegisterProcedimento from './components/Register';
@@ -7,8 +7,6 @@ import RegisterProcedimento from './components/Register';
 const { Title } = Typography;
 
 function Procedimentos() {
-   const token = localStorage.getItem('TokenRm');
-
    const [isModalCadastro, setIsModalCadastro] = useState(false);
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
@@ -18,6 +16,7 @@ function Procedimentos() {
    const [procedimentos, setProcedimentos] = useState([]);
 
    const [messageApi, contextHolder] = message.useMessage();
+   const [apiNot, contextHolderNot] = notification.useNotification();
 
    const handleModalCad = () => {
       setIsModalCadastro(!isModalCadastro);
@@ -78,21 +77,17 @@ function Procedimentos() {
 
    async function inativar(id) {
       try {
-         await api.delete(`/procedimento/${id[1]}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.delete(`/procedimento/${id[1]}`).then(
             (Response) => {
                messageApi.open({
                   type: 'success',
                   content: id[0] ? 'Inativado com sucesso.' : 'ativado com sucesso.',
                });
-               window.location.reload();
+               carregarDados();
             }
          )
       } catch (error) {
-         console.log(error.response.data.mensagem);
+         apiNot.error({ message: error.response?.data?.mensagem || 'Erro ao inativar.', placement: 'topRight' });
       }
    }
 
@@ -100,11 +95,7 @@ function Procedimentos() {
       const estab = localStorage.getItem('EstabelecimentoRm');
 
       try {
-         await api.get(`/procedimento/${estab}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.get(`/procedimento/${estab}`).then(
             (Response) => {
                let dadosProcedimentos = [];
 
@@ -124,11 +115,7 @@ function Procedimentos() {
             }
          )
 
-         await api.get(`/profissional/${estab}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.get(`/profissional/${estab}`).then(
             (Response) => {
                let dadosProfissionais = [];
 
@@ -143,8 +130,7 @@ function Procedimentos() {
             }
          )
       } catch (error) {
-         console.log(error.data);
-         alert('Erro ao carregar dados.')
+         apiNot.error({ message: 'Erro ao carregar dados.', placement: 'topRight' });
       }
 
    }
@@ -154,11 +140,7 @@ function Procedimentos() {
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
       carregarDados();
 
-      api.get(`/produto/${estab}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/produto/${estab}`).then(
          (Response) => {
             let dadosProdutos = [];
 
@@ -178,6 +160,7 @@ function Procedimentos() {
    return (
       <>
          {contextHolder}
+         {contextHolderNot}
          <Modal title={<Title level={3}>Cadastro de Procedimento</Title>} open={isModalCadastro} onCancel={handleModalCad} footer={[]}>
             <RegisterProcedimento estabelecimento_id={estabelecimentoSelecionado} produtos={produtos} fecharModal={handleModalCad} listaProfissionais={profissionais} />
          </Modal>

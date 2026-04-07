@@ -28,11 +28,7 @@ export default function CadastroAgendamento({ fecharModal, estabelecimento }) {
       try {
 
          if (token) {
-            await api.post('/agendamento', dados, {
-               headers: {
-                  Authorization: token
-               }
-            }).then(
+            await api.post('/agendamento', dados).then(
                (Response) => {
                   fecharModal();
                   Modal.success({
@@ -62,11 +58,7 @@ export default function CadastroAgendamento({ fecharModal, estabelecimento }) {
    useEffect(() => {
 
       if (procedimentoId !== null) {
-         api.get(`/profissional/procedimento/${procedimentoId}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         api.get(`/profissional/procedimento/${procedimentoId}`).then(
             (Response) => {
                let data = [];
                for (let i = 0; i < Response.data.length; i++) {
@@ -85,11 +77,7 @@ export default function CadastroAgendamento({ fecharModal, estabelecimento }) {
    useEffect(() => {
 
       if (estabelecimento !== null) {
-         api.get(`/procedimento/${estabelecimento}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         api.get(`/procedimento/${estabelecimento}`).then(
             (Response) => {
                let data = [];
                for (let i = 0; i < Response.data.length; i++) {

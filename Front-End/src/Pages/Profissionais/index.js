@@ -7,8 +7,6 @@ import RegisterProfissional from './components/Register';
 const { Title } = Typography;
 
 function Profissionais() {
-   const token = localStorage.getItem('TokenRm');
-
    const [isModalCadastro, setIsModalCadastro] = useState(false);
 
    const [estabelecimentoSelecionado, setEstabelecimentoSelecionado] = useState(null);
@@ -40,11 +38,7 @@ function Profissionais() {
    useEffect(() => {
       const estab = localStorage.getItem('EstabelecimentoRm');
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
-      api.get(`/profissional/${estab}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/profissional/${estab}`).then(
          (Response) => {
             setProfissionais(Response.data);
          }

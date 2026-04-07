@@ -7,7 +7,6 @@ import DetalhesPagemento from './components/detalhesPagamento';
 const { Title, Text } = Typography;
 
 function Pagamentos() {
-   const token = localStorage.getItem('TokenRm');
    const date = new Date();
 
    const [datasInicio, setDataInicio] = useState(null);
@@ -73,11 +72,7 @@ function Pagamentos() {
 
    async function carregarDados() {
       const estab = localStorage.getItem('EstabelecimentoRm');
-      await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {

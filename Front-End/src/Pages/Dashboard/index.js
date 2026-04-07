@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdOutlineAttachMoney, MdMoneyOff } from "react-icons/md";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { TbPigMoney } from "react-icons/tb";
@@ -49,7 +49,6 @@ export const options = {
 };
 
 function Dashboard() {
-   const token = localStorage.getItem('TokenRm');
    const dataAtual = new Date();
    const [ano, setAno] = useState(dataAtual.getFullYear());
    const [gasto, setGasto] = useState(null);
@@ -59,14 +58,10 @@ function Dashboard() {
    const [dataPizza, setDataPizza] = useState([]);
    const [dataColuna, setDataColuna] = useState([]);
 
-   useLayoutEffect(() => {
+   useEffect(() => {
       const estab = localStorage.getItem('EstabelecimentoRm');
       api.post(`/dashboard/${estab}`, {
          ano: ano
-      }, {
-         headers: {
-            Authorization: token
-         }
       }).then(
          (Response) => {
             let dados = Response.data;

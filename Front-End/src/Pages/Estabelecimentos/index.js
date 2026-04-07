@@ -10,7 +10,6 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 function Estabelecimentos() {
-   const token = localStorage.getItem('TokenRm');
    const [messageApi, contextHolder] = message.useMessage();
    const [apiNot, contextHolderNot] = notification.useNotification();
    const [isModalOpen, setIsModalOpen] = useState(false);
@@ -107,11 +106,7 @@ function Estabelecimentos() {
       if (estabelecimentoId == null) {
 
          try {
-            await api.post('/cadastro-estabelecimento', dados, {
-               headers: {
-                  Authorization: token
-               }
-            }).then(
+            await api.post('/cadastro-estabelecimento', dados).then(
                (Response) => {
                   setEnderecoBairro('');
                   setEnderecoNumero('');
@@ -158,11 +153,7 @@ function Estabelecimentos() {
          }
       } else {
          try {
-            await api.put(`/estabelecimento/${estabelecimentoId}`, {
-               headers: {
-                  Authorization: token
-               }
-            }, dados).then(
+            await api.put(`/estabelecimento/${estabelecimentoId}`, dados).then(
                (Response) => {
                   setIsModalOpen(false);
                   messageApi.open({
@@ -183,11 +174,7 @@ function Estabelecimentos() {
 
    async function inativar(id) {
       try {
-         await api.delete(`/estabelecimento/${id}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.delete(`/estabelecimento/${id}`).then(
             (Response) => {
                setIsModalOpen(false);
                messageApi.open({
@@ -197,7 +184,7 @@ function Estabelecimentos() {
             }
          )
       } catch (error) {
-         console.log(error.response.data.mensagem);
+         apiNot.error({ message: error.response?.data?.mensagem || 'Erro ao inativar.', placement: 'top' });
       }
 
    }
@@ -205,11 +192,7 @@ function Estabelecimentos() {
    async function editar(id) {
       setEstabelecimentoId(id);
       setIsModalOpen(true);
-      await api.get(`/estabelecimento/${id}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      await api.get(`/estabelecimento/${id}`).then(
          (response) => {
             setNomeEstabelecimento(response.data[0].nome_estabelecimento);
             setEnderecoBairro(response.data[0].endereco_bairro);
@@ -231,21 +214,14 @@ function Estabelecimentos() {
    }
 
    useEffect(() => {
-      api.get(`/estabelecimento/nome=${filtro}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/estabelecimento/nome=${filtro}`).then(
          (Response) => {
-            let data = [];
-            for (let i = 0; i < Response.data.length; i++) {
-               data.push({
-                  nome_estabelecimento: Response.data[i].nome_estabelecimento,
-                  situacao: Response.data[i].situacao,
-                  ativo: [Response.data[i].ativo, Response.data[i].id],
-                  editar: [Response.data[i].ativo, Response.data[i].id]
-               });
-            }
+            const data = Response.data.map((item) => ({
+               nome_estabelecimento: item.nome_estabelecimento,
+               situacao: item.situacao,
+               ativo: [item.ativo, item.id],
+               editar: [item.ativo, item.id]
+            }));
             setEstabelecimentos(data);
          }
       );

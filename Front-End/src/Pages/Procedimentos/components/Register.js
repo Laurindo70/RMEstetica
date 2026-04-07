@@ -6,7 +6,6 @@ import { moneyMask } from '../../../Utils/mascaras';
 
 export default function RegisterProcedimento({ estabelecimento_id, produtos, fecharModal, listaProfissionais }) {
    const [messageApi, contextHolder] = message.useMessage();
-   const token = localStorage.getItem('TokenRm');
 
    const [nomeProcedimento, setNomeProcedimento] = useState(null);
    const [duracaoProcedimento, setDuracaoProcedimento] = useState(null);
@@ -25,19 +24,14 @@ export default function RegisterProcedimento({ estabelecimento_id, produtos, fec
          "nome_procedimento": nomeProcedimento,
          "duracao_procedimento": duracaoProcedimento,
          "estabelecimento_id": estabelecimento_id,
-         "profissionais": [],
+         "profissionais": profissionais,
          "produtos": produtosCadastro,
-         "valor_procedimento": valorProcedimento,
-         "profissionais": profissionais
+         "valor_procedimento": valorProcedimento
       }
 
       try {
 
-         await api.post('/procedimento', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/procedimento', dados).then(
             (Response) => {
                fecharModal();
                messageApi.open({
@@ -48,10 +42,9 @@ export default function RegisterProcedimento({ estabelecimento_id, produtos, fec
          )
 
       } catch (error) {
-         console.log(error.data);
          messageApi.open({
             type: 'error',
-            content: 'Erro ao realizar cadastro.',
+            content: error.response?.data?.mensagem || 'Erro ao realizar cadastro.',
          });
       }
 

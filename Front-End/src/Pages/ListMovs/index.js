@@ -6,7 +6,6 @@ const { RangePicker } = DatePicker;
 const { Text } = Typography;
 
 function ListMov(props) {
-   const token = localStorage.getItem('TokenRm');
    const [apiNot, contextHolderNot] = notification.useNotification();
 
    const [dataInicio, setDataInicio] = useState(null);
@@ -32,11 +31,7 @@ function ListMov(props) {
       e.preventDefault();
 
       try {
-         await api.get(`/movimentacao/estabelecimento-id=${props.estabelecimento_id}/data-inicio=${dataInicio}/data-fim=${dataFim}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.get(`/movimentacao/estabelecimento-id=${props.estabelecimento_id}/data-inicio=${dataInicio}/data-fim=${dataFim}`).then(
             (response) => {
                let dados = [];
                for (let i = 0; i < response.data.length; i++) {

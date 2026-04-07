@@ -43,11 +43,7 @@ function AgendamentosSemLogin() {
       try {
 
          if (token) {
-            await api.put('/usuario', {senha: novaSenha}, {
-               headers: {
-                  Authorization: token
-               }
-            }).then(
+            await api.put('/usuario', {senha: novaSenha}).then(
                (Response) => {
                   handleModalOpenSenha();
                   Modal.success({
@@ -79,7 +75,7 @@ function AgendamentosSemLogin() {
          onOk() {
             localStorage.setItem('TokenRm', ``);
             localStorage.setItem('NomeRm', ``);
-            localStorage.setItem('EstabelecimentonRm', ``);
+            localStorage.setItem('EstabelecimentoRm', ``);
             navigate("/");
          },
          onCancel() {
@@ -148,22 +144,14 @@ function AgendamentosSemLogin() {
    }
 
    useEffect(() => {
-      api.get(`/lista-estabelecimento`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/lista-estabelecimento`).then(
          (response) => {
             setEstabelecimentos(response.data);
          }
       );
 
       if (token) {
-         api.get(`/historico-agendamento`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         api.get(`/historico-agendamento`).then(
             (response) => {
                setHistorico(response.data);
             }

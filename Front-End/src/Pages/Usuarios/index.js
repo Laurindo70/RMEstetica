@@ -9,7 +9,6 @@ const { Title } = Typography;
 
 
 function Usuarios() {
-   const token = localStorage.getItem('TokenRm');
    const tipoUser = localStorage.getItem('TipoRm');
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [messageApi, contextHolder] = message.useMessage();
@@ -85,11 +84,7 @@ function Usuarios() {
 
       try {
 
-         await api.post('/usuario', dados, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.post('/usuario', dados).then(
             (Response) => {
                setIsModalOpen(false);
                setConfSenha(null);
@@ -116,11 +111,7 @@ function Usuarios() {
 
    async function inativar(id) {
       try {
-         await api.delete(`/usuario/${id}`, {
-            headers: {
-               Authorization: token
-            }
-         }).then(
+         await api.delete(`/usuario/${id}`).then(
             (Response) => {
                carregarDados();
                messageApi.open({
@@ -139,22 +130,14 @@ function Usuarios() {
    }
 
    async function carregarDados() {
-      await api.get(`/usuario/${filtro}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      await api.get(`/usuario/${filtro}`).then(
          (Response) => {
-            let usuarioss = [];
-
-            for (let i = 0; i < Response.data.length; i++) {
-               usuarioss.push({
-                  nome_usuario: Response.data[i].nome_usuario,
-                  permissao: Response.data[i].permissao,
-                  email_usuario: Response.data[i].email_usuario,
-                  ativo: [Response.data[i].ativo, Response.data[i].id]
-               });
-            }
+            const usuarioss = Response.data.map((item) => ({
+               nome_usuario: item.nome_usuario,
+               permissao: item.permissao,
+               email_usuario: item.email_usuario,
+               ativo: [item.ativo, item.id]
+            }));
 
             setUsuarios(usuarioss);
          }
@@ -166,11 +149,7 @@ function Usuarios() {
    }, [filtro, isModalOpen]);
 
    useEffect(() => {
-      api.get(`/estabelecimento/nome=`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/estabelecimento/nome=`).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {

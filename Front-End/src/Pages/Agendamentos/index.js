@@ -10,7 +10,6 @@ const { Title, Text } = Typography;
 
 function Agendamentos() {
    const [apiNot, contextHolder] = notification.useNotification();
-   const token = localStorage.getItem('TokenRm');
    const date = new Date();
 
    const { confirm } = Modal;
@@ -79,11 +78,7 @@ function Agendamentos() {
          icon: <ExclamationCircleFilled />,
          content: 'Realmente deseja cancelar o agendamento ??',
          onOk() {
-            api.put(`/cancelar-agendamento/${id}`, {
-               headers: {
-                  Authorization: token
-               }
-            }).then(
+            api.put(`/cancelar-agendamento/${id}`).then(
                (Response) => {
                   carregarDados();
                   apiNot.success({
@@ -105,11 +100,7 @@ function Agendamentos() {
          icon: <ExclamationCircleFilled />,
          content: 'Realmente deseja finalizar o agendamento ??',
          onOk() {
-            api.put(`/finalizar-agendamento/${id}`, {},{
-               headers: {
-                  Authorization: token
-               }
-            }).then(
+            api.put(`/finalizar-agendamento/${id}`).then(
                (Response) => {
                   carregarDados();
                   apiNot.success({
@@ -129,26 +120,19 @@ function Agendamentos() {
       const estab = localStorage.getItem('EstabelecimentoRm');
       setEstabelecimentoSelecionado(localStorage.getItem('EstabelecimentoRm'))
 
-      await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      await api.get(`/agendadamentos/estabelecimento=${estab}/data-inicial=${datasInicio}/data-fim=${datasFim}`).then(
          (Response) => {
-            let data = [];
-            for (let i = 0; i < Response.data.length; i++) {
-               data.push({
-                  id: Response.data[i].id,
-                  nome_cliente: Response.data[i].nome_cliente,
-                  valor: Response.data[i].valor,
-                  nome_profissional: Response.data[i].nome_profissional,
-                  nome_procedimento: Response.data[i].nome_procedimento,
-                  data: Response.data[i].data,
-                  finalizar: [Response.data[i].is_finalizado, Response.data[i].id, Response.data[i].is_cancelado],
-                  ativo: [Response.data[i].is_cancelado, Response.data[i].id, Response.data[i].is_finalizado],
-                  financeiro: [Response.data[i].is_pago, Response.data[i].id, Response.data[i].is_cancelado]
-               })
-            }
+            const data = Response.data.map((item) => ({
+               id: item.id,
+               nome_cliente: item.nome_cliente,
+               valor: item.valor,
+               nome_profissional: item.nome_profissional,
+               nome_procedimento: item.nome_procedimento,
+               data: item.data,
+               finalizar: [item.is_finalizado, item.id, item.is_cancelado],
+               ativo: [item.is_cancelado, item.id, item.is_finalizado],
+               financeiro: [item.is_pago, item.id, item.is_cancelado]
+            }));
             setAgendamentos(data);
          }
       );

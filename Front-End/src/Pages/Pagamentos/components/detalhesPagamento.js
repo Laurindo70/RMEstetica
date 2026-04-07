@@ -23,7 +23,6 @@ const tailLayout = {
 
 export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto }) {
    const [apiNot, contextHolder] = notification.useNotification();
-   const token = localStorage.getItem('TokenRm');
    const [formasPagamento, setFormasPagamento] = useState([]);
 
    const [valorParcela, setValorParcela] = useState(null);
@@ -75,10 +74,6 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
 
       await api.post(`/parcelas/${pagamento[0].id}`, {
          pagamentos: parcelas
-      }, {
-         headers: {
-            Authorization: token
-         }
       }).then(
          (Response) => {
             carregarDados();
@@ -100,10 +95,6 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
       await api.put(`/baixar-parcela/${id}`, {
          forma_pagamento: parcelasCad[posicao].forma_pagamento,
          agendamento_id: pagamento[0].id
-      }, {
-         headers: {
-            Authorization: token
-         }
       }).then(
          (Response) => {
             carregarDados();
@@ -136,11 +127,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
    }
 
    async function carregarDados() {
-      await api.get(`/parcelas-geradas/${pagamento[0].id}`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      await api.get(`/parcelas-geradas/${pagamento[0].id}`).then(
          (Response) => {
             setParcelasCad(Response.data);
          }
@@ -148,11 +135,7 @@ export default function DetalhesPagemento({ fecharModal, pagamento, modalAberto 
    }
 
    useEffect(() => {
-      api.get(`/forma-pagamento`, {
-         headers: {
-            Authorization: token
-         }
-      }).then(
+      api.get(`/forma-pagamento`).then(
          (Response) => {
             let data = [];
             for (let i = 0; i < Response.data.length; i++) {
